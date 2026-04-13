@@ -2,17 +2,13 @@
 
 from __future__ import annotations
 
-import pytest
-
-from lab_harness.models.instrument import InstrumentBus, InstrumentRecord, LabInventory
+from lab_harness.models.instrument import InstrumentRecord, LabInventory
 from lab_harness.models.measurement import (
-    DataChannel,
     MeasurementPlan,
     MeasurementType,
     SweepAxis,
 )
 from lab_harness.models.safety import Decision, SafetyPolicy, ValidationResult
-
 
 # ---------------------------------------------------------------------------
 # InstrumentRecord

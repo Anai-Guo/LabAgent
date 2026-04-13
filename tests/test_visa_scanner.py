@@ -5,7 +5,6 @@ from __future__ import annotations
 from lab_harness.discovery.visa_scanner import _detect_bus, _parse_idn
 from lab_harness.models.instrument import InstrumentBus
 
-
 # ---------------------------------------------------------------------------
 # _parse_idn
 # ---------------------------------------------------------------------------

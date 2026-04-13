@@ -9,6 +9,7 @@ from pydantic import BaseModel
 
 class Decision(str, Enum):
     """Safety decision for a plan or action."""
+
     ALLOW = "allow"
     REQUIRE_CONFIRM = "require_confirm"
     BLOCK = "block"
@@ -17,7 +18,7 @@ class Decision(str, Enum):
 class BoundaryViolation(BaseModel):
     """A single boundary violation found during validation."""
 
-    parameter: str          # e.g. "max_current_a"
+    parameter: str  # e.g. "max_current_a"
     limit: float
     requested: float
     severity: Decision = Decision.BLOCK

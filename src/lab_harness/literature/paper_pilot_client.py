@@ -1,7 +1,8 @@
 """Client for paper-pilot MCP server."""
+
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from typing import Any
 
 from pydantic import BaseModel
@@ -38,10 +39,7 @@ RESEARCH_QUESTIONS: dict[str, str] = {
         "What temperature ranges, sweep rates, and source current levels are used "
         "for resistance vs temperature measurements?"
     ),
-    "CV": (
-        "What DC bias ranges, frequencies, and procedures are used for "
-        "capacitance-voltage measurements?"
-    ),
+    "CV": ("What DC bias ranges, frequencies, and procedures are used for capacitance-voltage measurements?"),
 }
 
 
@@ -62,9 +60,7 @@ class PaperPilotClient:
         will connect to paper-pilot's deep_read_topic tool.
         """
         mt = measurement_type.upper()
-        question = RESEARCH_QUESTIONS.get(
-            mt, f"What measurement protocol is used for {mt}?"
-        )
+        question = RESEARCH_QUESTIONS.get(mt, f"What measurement protocol is used for {mt}?")
 
         if sample_description:
             question = f"{question} Specifically for {sample_description}."

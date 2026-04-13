@@ -1,13 +1,17 @@
 """Iteration budget management for agent loops."""
+
 from __future__ import annotations
+
 import logging
 from dataclasses import dataclass
 
 logger = logging.getLogger(__name__)
 
+
 @dataclass
 class Budget:
     """Tracks iteration count with progressive warnings."""
+
     max_iterations: int = 50
     current: int = 0
     _warned_70: bool = False

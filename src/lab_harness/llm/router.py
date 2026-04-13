@@ -24,6 +24,7 @@ class LLMRouter:
             provider_key = f"{self.config.provider.upper()}_API_KEY"
             litellm.api_key = self.config.api_key
             import os
+
             os.environ[provider_key] = self.config.api_key
 
         if self.config.base_url:

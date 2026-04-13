@@ -17,11 +17,13 @@ def _make_instrument(resource: str, vendor: str, model: str) -> InstrumentRecord
 
 def test_classify_ahe_basic():
     """Test AHE classification with typical instruments."""
-    inventory = LabInventory(instruments=[
-        _make_instrument("GPIB0::5::INSTR", "KEITHLEY INSTRUMENTS INC.", "MODEL 2400"),
-        _make_instrument("GPIB0::2::INSTR", "KEITHLEY INSTRUMENTS INC.", "MODEL 2000"),
-        _make_instrument("COM3", "LAKESHORE", "MODEL 425"),
-    ])
+    inventory = LabInventory(
+        instruments=[
+            _make_instrument("GPIB0::5::INSTR", "KEITHLEY INSTRUMENTS INC.", "MODEL 2400"),
+            _make_instrument("GPIB0::2::INSTR", "KEITHLEY INSTRUMENTS INC.", "MODEL 2000"),
+            _make_instrument("COM3", "LAKESHORE", "MODEL 425"),
+        ]
+    )
 
     assignments = classify_instruments(inventory, "AHE")
 
@@ -33,9 +35,11 @@ def test_classify_ahe_basic():
 
 def test_classify_iv_minimal():
     """IV measurement only needs a source meter."""
-    inventory = LabInventory(instruments=[
-        _make_instrument("GPIB0::5::INSTR", "KEITHLEY", "2400"),
-    ])
+    inventory = LabInventory(
+        instruments=[
+            _make_instrument("GPIB0::5::INSTR", "KEITHLEY", "2400"),
+        ]
+    )
 
     assignments = classify_instruments(inventory, "IV")
     assert "source_meter" in assignments
@@ -43,9 +47,11 @@ def test_classify_iv_minimal():
 
 def test_classify_missing_instrument():
     """Gracefully handle missing instruments."""
-    inventory = LabInventory(instruments=[
-        _make_instrument("GPIB0::5::INSTR", "KEITHLEY", "2400"),
-    ])
+    inventory = LabInventory(
+        instruments=[
+            _make_instrument("GPIB0::5::INSTR", "KEITHLEY", "2400"),
+        ]
+    )
 
     assignments = classify_instruments(inventory, "AHE")
     # Should assign source_meter but miss dmm and gaussmeter
@@ -56,6 +62,7 @@ def test_classify_missing_instrument():
 # ---------------------------------------------------------------------------
 # LLM fallback tests
 # ---------------------------------------------------------------------------
+
 
 def _make_mock_router(response_json: str) -> MagicMock:
     """Create a mock LLMRouter whose complete() returns *response_json*."""
@@ -68,12 +75,14 @@ def _make_mock_router(response_json: str) -> MagicMock:
 
 def test_classify_with_llm_fills_gaps():
     """LLM fallback fills roles that dict lookup could not match."""
-    inventory = LabInventory(instruments=[
-        # Known: matches source_meter via dict
-        _make_instrument("GPIB0::5::INSTR", "KEITHLEY", "MODEL 2400"),
-        # Unknown to the dict -- LLM should classify it as gaussmeter
-        _make_instrument("USB0::0x1234::INSTR", "ACME", "MagSensor-9000"),
-    ])
+    inventory = LabInventory(
+        instruments=[
+            # Known: matches source_meter via dict
+            _make_instrument("GPIB0::5::INSTR", "KEITHLEY", "MODEL 2400"),
+            # Unknown to the dict -- LLM should classify it as gaussmeter
+            _make_instrument("USB0::0x1234::INSTR", "ACME", "MagSensor-9000"),
+        ]
+    )
 
     llm_response = (
         '{"assignments": {'
@@ -99,10 +108,12 @@ def test_classify_with_llm_fills_gaps():
 
 def test_classify_with_llm_ignores_filled_roles():
     """LLM cannot override a role already filled by dict lookup."""
-    inventory = LabInventory(instruments=[
-        _make_instrument("GPIB0::5::INSTR", "KEITHLEY", "MODEL 2400"),
-        _make_instrument("USB0::0x5678::INSTR", "ACME", "VoltMaster-X"),
-    ])
+    inventory = LabInventory(
+        instruments=[
+            _make_instrument("GPIB0::5::INSTR", "KEITHLEY", "MODEL 2400"),
+            _make_instrument("USB0::0x5678::INSTR", "ACME", "VoltMaster-X"),
+        ]
+    )
 
     # LLM tries to reassign source_meter (already filled) and also dmm
     llm_response = (
@@ -126,10 +137,12 @@ def test_classify_with_llm_ignores_filled_roles():
 
 def test_classify_without_router_unchanged():
     """Without a router, behaviour is identical to the original dict-only path."""
-    inventory = LabInventory(instruments=[
-        _make_instrument("GPIB0::5::INSTR", "KEITHLEY", "MODEL 2400"),
-        _make_instrument("USB0::0x1234::INSTR", "ACME", "MagSensor-9000"),
-    ])
+    inventory = LabInventory(
+        instruments=[
+            _make_instrument("GPIB0::5::INSTR", "KEITHLEY", "MODEL 2400"),
+            _make_instrument("USB0::0x1234::INSTR", "ACME", "MagSensor-9000"),
+        ]
+    )
 
     assignments = classify_instruments(inventory, "AHE", router=None)
 

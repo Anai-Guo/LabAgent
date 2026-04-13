@@ -1,4 +1,5 @@
 """AI-powered contextual safety advisor."""
+
 from __future__ import annotations
 
 import logging
@@ -47,8 +48,10 @@ def advise_on_warnings(
         user_msg += f"Sample: {sample_description}\n"
     user_msg += "Warnings triggered:\n" + "\n".join(f"- {w}" for w in warnings)
 
-    response = router.complete([
-        {"role": "system", "content": SYSTEM_SAFETY},
-        {"role": "user", "content": user_msg},
-    ])
+    response = router.complete(
+        [
+            {"role": "system", "content": SYSTEM_SAFETY},
+            {"role": "user", "content": user_msg},
+        ]
+    )
     return response["choices"][0]["message"]["content"].strip()

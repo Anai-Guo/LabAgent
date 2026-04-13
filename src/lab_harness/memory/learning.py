@@ -1,9 +1,13 @@
 """Learning engine - extracts reusable insights from experiment history."""
+
 from __future__ import annotations
+
 import logging
+
 from lab_harness.memory.store import MemoryStore
 
 logger = logging.getLogger(__name__)
+
 
 def suggest_parameters_from_history(
     store: MemoryStore,
@@ -26,12 +30,14 @@ def suggest_parameters_from_history(
     past_params = []
     for exp in experiments:
         if exp.parameters:
-            past_params.append({
-                "date": exp.timestamp[:10],
-                "sample": exp.sample,
-                "parameters": exp.parameters,
-                "notes": exp.notes[:100] if exp.notes else "",
-            })
+            past_params.append(
+                {
+                    "date": exp.timestamp[:10],
+                    "sample": exp.sample,
+                    "parameters": exp.parameters,
+                    "notes": exp.notes[:100] if exp.notes else "",
+                }
+            )
 
     suggestion = f"Found {len(past_params)} prior {measurement_type} experiment(s). "
     if past_params:
@@ -39,6 +45,7 @@ def suggest_parameters_from_history(
         suggestion += f"Most recent on {latest['date']} for '{latest['sample']}'."
 
     return {"past_parameters": past_params, "suggestion": suggestion}
+
 
 def summarize_experiment_history(store: MemoryStore, limit: int = 20) -> str:
     """Generate a human-readable summary of recent experiments.
@@ -55,8 +62,5 @@ def summarize_experiment_history(store: MemoryStore, limit: int = 20) -> str:
         if exp.parameters:
             key_params = {k: v for k, v in list(exp.parameters.items())[:3]}
             params_str = f" | params: {key_params}"
-        lines.append(
-            f"  [{exp.timestamp[:10]}] {exp.measurement_type} on '{exp.sample}'"
-            f"{params_str}"
-        )
+        lines.append(f"  [{exp.timestamp[:10]}] {exp.measurement_type} on '{exp.sample}'{params_str}")
     return "\n".join(lines)

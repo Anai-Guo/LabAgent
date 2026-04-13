@@ -1,9 +1,12 @@
 """RT (Resistance vs Temperature) data analysis."""
-import numpy as np
+
 import matplotlib
+import numpy as np
+
 matplotlib.use("Agg")
-import matplotlib.pyplot as plt
 from pathlib import Path
+
+import matplotlib.pyplot as plt
 
 data_path = Path("{{DATA_PATH}}")
 output_dir = Path("{{OUTPUT_DIR}}")

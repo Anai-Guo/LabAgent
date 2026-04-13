@@ -6,12 +6,12 @@ Three-tier approach:
   2. AI-generated: LLM creates custom analysis scripts
   3. AI-interpreted: LLM explains results and provides physics insights
 """
+
 from __future__ import annotations
 
-import csv
 import logging
 import subprocess
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
@@ -128,10 +128,12 @@ class Analyzer:
         if custom_instructions:
             user_msg += f"\nAdditional instructions:\n{custom_instructions}\n"
 
-        response = router.complete([
-            {"role": "system", "content": system_prompt},
-            {"role": "user", "content": user_msg},
-        ])
+        response = router.complete(
+            [
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": user_msg},
+            ]
+        )
         script = response["choices"][0]["message"]["content"].strip()
 
         # Strip markdown fences if present
@@ -189,10 +191,12 @@ class Analyzer:
             preview = _read_data_preview(data_path, max_rows=5)
             context += f"\nData preview:\n{preview}\n"
 
-        response = router.complete([
-            {"role": "system", "content": system_prompt},
-            {"role": "user", "content": context},
-        ])
+        response = router.complete(
+            [
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": context},
+            ]
+        )
         return response["choices"][0]["message"]["content"].strip()
 
     # --- Common methods ---
@@ -261,9 +265,7 @@ class Analyzer:
             AnalysisResult with script, figures, values, and optional interpretation.
         """
         if use_ai:
-            script = self.generate_script_with_ai(
-                data_path, measurement_type, custom_instructions
-            )
+            script = self.generate_script_with_ai(data_path, measurement_type, custom_instructions)
         else:
             try:
                 script = self.generate_script(data_path, measurement_type)
@@ -272,9 +274,7 @@ class Analyzer:
                     "No template for '%s', falling back to AI generation",
                     measurement_type,
                 )
-                script = self.generate_script_with_ai(
-                    data_path, measurement_type, custom_instructions
-                )
+                script = self.generate_script_with_ai(data_path, measurement_type, custom_instructions)
 
         script_path = self.save_script(script, measurement_type.lower())
         result = self.run_script(script_path)

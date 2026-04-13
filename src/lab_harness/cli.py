@@ -60,9 +60,7 @@ def cmd_literature(args: argparse.Namespace, settings: Settings) -> None:
     from lab_harness.literature.paper_pilot_client import PaperPilotClient
 
     client = PaperPilotClient()
-    ctx = asyncio.run(
-        client.search_for_protocol(args.measurement_type, args.sample or "")
-    )
+    ctx = asyncio.run(client.search_for_protocol(args.measurement_type, args.sample or ""))
     print(json.dumps(ctx.model_dump(), indent=2))
 
 

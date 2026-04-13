@@ -1,4 +1,5 @@
 """Tests for the iteration budget system."""
+
 from __future__ import annotations
 
 import logging
@@ -20,8 +21,8 @@ class TestBudget:
     def test_budget_exhausted(self):
         """Returns False when budget is used up."""
         b = Budget(max_iterations=3)
-        assert b.tick() is True   # 1/3
-        assert b.tick() is True   # 2/3
+        assert b.tick() is True  # 1/3
+        assert b.tick() is True  # 2/3
         assert b.tick() is False  # 3/3 -> exhausted
         assert b.exhausted is True
 

@@ -1,17 +1,22 @@
 """Skill registry - discovers and loads measurement protocol skills."""
+
 from __future__ import annotations
+
 import logging
 from dataclasses import dataclass
 from pathlib import Path
+
 import yaml
 
 logger = logging.getLogger(__name__)
 
 SKILLS_DIR = Path(__file__).parent.parent.parent.parent / "skills"
 
+
 @dataclass
 class SkillMeta:
     """Level 0: skill metadata only (for progressive disclosure)."""
+
     name: str
     description: str
     measurement_type: str
@@ -19,11 +24,14 @@ class SkillMeta:
     version: str
     path: Path
 
+
 @dataclass
 class Skill:
     """Level 1: full skill content."""
+
     meta: SkillMeta
     steps: str  # markdown body
+
 
 def load_skill_meta(path: Path) -> SkillMeta | None:
     """Parse YAML frontmatter from a skill markdown file."""
@@ -41,6 +49,7 @@ def load_skill_meta(path: Path) -> SkillMeta | None:
         path=path,
     )
 
+
 def load_skill(path: Path) -> Skill | None:
     """Load full skill content."""
     meta = load_skill_meta(path)
@@ -50,6 +59,7 @@ def load_skill(path: Path) -> Skill | None:
     end = text.index("---", 3) + 3
     body = text[end:].strip()
     return Skill(meta=meta, steps=body)
+
 
 class SkillRegistry:
     """Discovers and manages measurement protocol skills."""

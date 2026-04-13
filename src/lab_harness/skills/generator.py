@@ -1,5 +1,7 @@
 """AI-powered measurement skill generator."""
+
 from __future__ import annotations
+
 import logging
 from pathlib import Path
 
@@ -33,6 +35,7 @@ version: "1.0"
 
 Use the example skills as reference for style and detail level.
 """
+
 
 def generate_skill(
     measurement_type: str,
@@ -70,22 +73,25 @@ def generate_skill(
     if example_skills:
         user_msg += "\nExample skills for reference:\n"
         for i, ex in enumerate(example_skills):
-            user_msg += f"\n--- Example {i+1} ---\n{ex}\n"
+            user_msg += f"\n--- Example {i + 1} ---\n{ex}\n"
 
-    response = router.complete([
-        {"role": "system", "content": SYSTEM_GENERATE_SKILL},
-        {"role": "user", "content": user_msg},
-    ])
+    response = router.complete(
+        [
+            {"role": "system", "content": SYSTEM_GENERATE_SKILL},
+            {"role": "user", "content": user_msg},
+        ]
+    )
     content = response["choices"][0]["message"]["content"].strip()
 
     # Strip markdown fences if present
     if content.startswith("```"):
-        content = content[content.index("\n")+1:]
+        content = content[content.index("\n") + 1 :]
         if content.endswith("```"):
             content = content[:-3]
         content = content.strip()
 
     return content
+
 
 def save_skill(measurement_type: str, content: str) -> Path:
     """Save a generated skill to the skills directory."""

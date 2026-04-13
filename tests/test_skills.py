@@ -1,9 +1,8 @@
 """Tests for the skill registry."""
+
 from __future__ import annotations
 
 from pathlib import Path
-
-import pytest
 
 from lab_harness.skills.registry import SkillRegistry, load_skill, load_skill_meta
 
@@ -14,6 +13,7 @@ SKILLS_DIR = Path(__file__).parent.parent / "skills"
 # ------------------------------------------------------------------
 # load_skill_meta / load_skill (standalone functions)
 # ------------------------------------------------------------------
+
 
 class TestLoadSkillMeta:
     def test_load_skill_meta(self):
@@ -51,6 +51,7 @@ class TestLoadSkillMeta:
 # ------------------------------------------------------------------
 # SkillRegistry
 # ------------------------------------------------------------------
+
 
 class TestSkillRegistry:
     def test_discover_skills(self):

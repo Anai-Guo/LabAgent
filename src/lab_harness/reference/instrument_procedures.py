@@ -4,29 +4,30 @@ These are standard instrument control sequences for common measurement types,
 based on patterns from the PICA project (MIT License, UGC-DAE CSR Mumbai).
 Reference: https://github.com/prathameshnium/PICA-Python-Instrument-Control-and-Automation
 """
+
 from __future__ import annotations
 
 # Keithley 2400 SourceMeter control sequences
 K2400_INIT_SEQUENCE = [
-    "*RST",                          # Reset to defaults
-    ":SOUR:FUNC CURR",               # Source current mode
-    ":SOUR:CURR:RANG:AUTO ON",       # Auto-range
-    ":SENS:FUNC 'VOLT'",             # Measure voltage
+    "*RST",  # Reset to defaults
+    ":SOUR:FUNC CURR",  # Source current mode
+    ":SOUR:CURR:RANG:AUTO ON",  # Auto-range
+    ":SENS:FUNC 'VOLT'",  # Measure voltage
     ":SENS:VOLT:PROT {compliance}",  # Set compliance voltage
-    ":SENS:VOLT:RANG:AUTO ON",       # Auto-range sense
-    ":FORM:ELEM VOLT,CURR",          # Return V and I
+    ":SENS:VOLT:RANG:AUTO ON",  # Auto-range sense
+    ":FORM:ELEM VOLT,CURR",  # Return V and I
 ]
 
 K2400_IV_SWEEP = [
-    ":SOUR:CURR {current}",          # Set source current
-    ":OUTP ON",                       # Enable output
+    ":SOUR:CURR {current}",  # Set source current
+    ":OUTP ON",  # Enable output
     # ... wait settling_time ...
-    ":READ?",                         # Trigger and read
+    ":READ?",  # Trigger and read
 ]
 
 K2400_SHUTDOWN = [
-    ":SOUR:CURR 0",                  # Zero current
-    ":OUTP OFF",                      # Disable output
+    ":SOUR:CURR 0",  # Zero current
+    ":OUTP OFF",  # Disable output
 ]
 
 # Keithley 6221 + 2182A Delta Mode (Ultra-low resistance)
@@ -34,32 +35,32 @@ K6221_DELTA_INIT = [
     "*RST",
     ":SYST:COMM:SER:SEND ':SENS:FUNC \"VOLT\"'",  # Configure 2182A
     ":SYST:COMM:SER:SEND ':SENS:VOLT:CHAN1:RANG:AUTO ON'",
-    ":SOUR:DELT:HIGH {current}",     # High current
+    ":SOUR:DELT:HIGH {current}",  # High current
     ":SOUR:DELT:LOW {low_current}",  # Low current (negative)
-    ":SOUR:DELT:DEL {delay}",        # Delay between pulses
-    ":SOUR:DELT:COUN {count}",       # Number of readings
+    ":SOUR:DELT:DEL {delay}",  # Delay between pulses
+    ":SOUR:DELT:COUN {count}",  # Number of readings
 ]
 
 # Lakeshore 350 Temperature Control
 LS350_TEMP_SEQUENCE = [
-    "SETP {loop},{setpoint}",         # Set target temperature
-    "RANGE {loop},{range}",           # Set heater range
-    "RAMP {loop},1,{rate}",           # Enable ramp at rate K/min
+    "SETP {loop},{setpoint}",  # Set target temperature
+    "RANGE {loop},{range}",  # Set heater range
+    "RAMP {loop},1,{rate}",  # Enable ramp at rate K/min
     # ... poll KRDG? until stable ...
-    "KRDG? {input}",                  # Read temperature
+    "KRDG? {input}",  # Read temperature
 ]
 
 # Keysight E4980A LCR Meter
 E4980A_CV_SEQUENCE = [
     "*RST",
-    ":FUNC:IMP CPD",                  # Capacitance + Dissipation
-    ":FREQ {frequency}",              # Set test frequency
-    ":VOLT:LEV {ac_voltage}",         # AC test voltage
-    ":BIAS:VOLT:LEV {dc_bias}",       # DC bias voltage
-    ":TRIG:SOUR BUS",                 # Bus trigger
-    ":INIT",                          # Initialize
-    ":TRIG",                          # Trigger measurement
-    ":FETC?",                         # Fetch result
+    ":FUNC:IMP CPD",  # Capacitance + Dissipation
+    ":FREQ {frequency}",  # Set test frequency
+    ":VOLT:LEV {ac_voltage}",  # AC test voltage
+    ":BIAS:VOLT:LEV {dc_bias}",  # DC bias voltage
+    ":TRIG:SOUR BUS",  # Bus trigger
+    ":INIT",  # Initialize
+    ":TRIG",  # Trigger measurement
+    ":FETC?",  # Fetch result
 ]
 
 # Measurement procedure templates
@@ -70,7 +71,7 @@ PROCEDURES = {
         "measure": K2400_IV_SWEEP,
         "shutdown": K2400_SHUTDOWN,
         "parameters": {
-            "compliance": "20",      # V
+            "compliance": "20",  # V
             "current_start": "-1e-3",
             "current_stop": "1e-3",
             "current_step": "1e-5",

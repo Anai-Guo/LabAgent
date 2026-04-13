@@ -1,6 +1,5 @@
 """Tests for plan_builder role_assignments feature."""
 
-import json
 import logging
 
 from lab_harness.models.measurement import MeasurementType

@@ -263,9 +263,7 @@ measurement plans, search literature, and recall past experiments."""
 
     def _maybe_record_measurement(self, response: str) -> None:
         """Detect completed measurements in the response and record them."""
-        measurement_keywords = (
-            r"\b(measurement completed|data saved|scan finished|sweep completed)\b"
-        )
+        measurement_keywords = r"\b(measurement completed|data saved|scan finished|sweep completed)\b"
         if not re.search(measurement_keywords, response, re.IGNORECASE):
             return
         # Extract measurement type from response if possible

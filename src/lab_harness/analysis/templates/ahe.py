@@ -1,9 +1,12 @@
 """AHE (Anomalous Hall Effect) data analysis."""
-import numpy as np
+
 import matplotlib
+import numpy as np
+
 matplotlib.use("Agg")
-import matplotlib.pyplot as plt
 from pathlib import Path
+
+import matplotlib.pyplot as plt
 
 data_path = Path("{{DATA_PATH}}")
 output_dir = Path("{{OUTPUT_DIR}}")
@@ -12,7 +15,7 @@ output_dir.mkdir(parents=True, exist_ok=True)
 # Load data
 data = np.genfromtxt(data_path, delimiter=",", skip_header=1, names=True)
 field = data[data.dtype.names[0]]  # First column: field (Oe)
-v_xy = data[data.dtype.names[1]]   # Second column: V_xy (V)
+v_xy = data[data.dtype.names[1]]  # Second column: V_xy (V)
 
 # Calculate Hall resistance (assuming source current from filename or default)
 I_source = 1e-4  # 100 uA default
@@ -30,9 +33,15 @@ ax.plot(field, R_xy * 1e3, "b-", linewidth=1.5)
 ax.set_xlabel("Magnetic Field (Oe)", fontsize=14)
 ax.set_ylabel("R$_{xy}$ (m$\\Omega$)", fontsize=14)
 ax.set_title("Anomalous Hall Effect", fontsize=16)
-ax.text(0.05, 0.95, f"R_AHE = {R_AHE*1e3:.2f} m\u03a9\nH_c = {H_c:.0f} Oe",
-        transform=ax.transAxes, fontsize=12, verticalalignment="top",
-        bbox=dict(boxstyle="round", facecolor="wheat", alpha=0.5))
+ax.text(
+    0.05,
+    0.95,
+    f"R_AHE = {R_AHE * 1e3:.2f} m\u03a9\nH_c = {H_c:.0f} Oe",
+    transform=ax.transAxes,
+    fontsize=12,
+    verticalalignment="top",
+    bbox=dict(boxstyle="round", facecolor="wheat", alpha=0.5),
+)
 ax.grid(True, alpha=0.3)
 fig.tight_layout()
 fig.savefig(output_dir / "ahe_plot.png", dpi=300)

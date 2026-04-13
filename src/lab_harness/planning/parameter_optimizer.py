@@ -1,4 +1,5 @@
 """AI-powered measurement parameter optimization."""
+
 from __future__ import annotations
 
 import json
@@ -62,10 +63,12 @@ def optimize_parameters(
         user_msg += f"Current defaults:\n{json.dumps(current_params, indent=2)}\n"
     user_msg += "\nSuggest optimized parameters."
 
-    response = router.complete([
-        {"role": "system", "content": SYSTEM_OPTIMIZE},
-        {"role": "user", "content": user_msg},
-    ])
+    response = router.complete(
+        [
+            {"role": "system", "content": SYSTEM_OPTIMIZE},
+            {"role": "user", "content": user_msg},
+        ]
+    )
     content = response["choices"][0]["message"]["content"].strip()
 
     # Parse JSON from response (strip markdown fences if present)

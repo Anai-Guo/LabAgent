@@ -64,53 +64,65 @@ def check_boundaries(
 
     # --- Tier 1: Absolute limits (BLOCK) ---
     if plan.max_current_a > policy.abs_max_current_a:
-        violations.append(BoundaryViolation(
-            parameter="max_current_a",
-            limit=policy.abs_max_current_a,
-            requested=plan.max_current_a,
-            severity=Decision.BLOCK,
-            message=f"Current {plan.max_current_a} A exceeds absolute limit {policy.abs_max_current_a} A",
-        ))
+        violations.append(
+            BoundaryViolation(
+                parameter="max_current_a",
+                limit=policy.abs_max_current_a,
+                requested=plan.max_current_a,
+                severity=Decision.BLOCK,
+                message=f"Current {plan.max_current_a} A exceeds absolute limit {policy.abs_max_current_a} A",
+            )
+        )
 
     if plan.max_voltage_v > policy.abs_max_voltage_v:
-        violations.append(BoundaryViolation(
-            parameter="max_voltage_v",
-            limit=policy.abs_max_voltage_v,
-            requested=plan.max_voltage_v,
-            severity=Decision.BLOCK,
-            message=f"Voltage {plan.max_voltage_v} V exceeds absolute limit {policy.abs_max_voltage_v} V",
-        ))
+        violations.append(
+            BoundaryViolation(
+                parameter="max_voltage_v",
+                limit=policy.abs_max_voltage_v,
+                requested=plan.max_voltage_v,
+                severity=Decision.BLOCK,
+                message=f"Voltage {plan.max_voltage_v} V exceeds absolute limit {policy.abs_max_voltage_v} V",
+            )
+        )
 
     if plan.max_field_oe > policy.abs_max_field_oe:
-        violations.append(BoundaryViolation(
-            parameter="max_field_oe",
-            limit=policy.abs_max_field_oe,
-            requested=plan.max_field_oe,
-            severity=Decision.BLOCK,
-            message=f"Field {plan.max_field_oe} Oe exceeds absolute limit {policy.abs_max_field_oe} Oe",
-        ))
+        violations.append(
+            BoundaryViolation(
+                parameter="max_field_oe",
+                limit=policy.abs_max_field_oe,
+                requested=plan.max_field_oe,
+                severity=Decision.BLOCK,
+                message=f"Field {plan.max_field_oe} Oe exceeds absolute limit {policy.abs_max_field_oe} Oe",
+            )
+        )
 
     if plan.max_temperature_k > policy.abs_max_temperature_k:
-        violations.append(BoundaryViolation(
-            parameter="max_temperature_k",
-            limit=policy.abs_max_temperature_k,
-            requested=plan.max_temperature_k,
-            severity=Decision.BLOCK,
-            message=f"Temperature {plan.max_temperature_k} K exceeds absolute limit {policy.abs_max_temperature_k} K",
-        ))
+        violations.append(
+            BoundaryViolation(
+                parameter="max_temperature_k",
+                limit=policy.abs_max_temperature_k,
+                requested=plan.max_temperature_k,
+                severity=Decision.BLOCK,
+                message=(
+                    f"Temperature {plan.max_temperature_k} K exceeds absolute limit {policy.abs_max_temperature_k} K"
+                ),
+            )
+        )
 
     # Check sweep ranges against limits
     x = plan.x_axis
     if "field" in x.label.lower() or x.unit.lower() == "oe":
         max_field = max(abs(x.start), abs(x.stop))
         if max_field > policy.abs_max_field_oe:
-            violations.append(BoundaryViolation(
-                parameter="x_axis.field",
-                limit=policy.abs_max_field_oe,
-                requested=max_field,
-                severity=Decision.BLOCK,
-                message=f"Sweep field {max_field} Oe exceeds absolute limit",
-            ))
+            violations.append(
+                BoundaryViolation(
+                    parameter="x_axis.field",
+                    limit=policy.abs_max_field_oe,
+                    requested=max_field,
+                    severity=Decision.BLOCK,
+                    message=f"Sweep field {max_field} Oe exceeds absolute limit",
+                )
+            )
 
     if "current" in x.label.lower() or x.unit.lower() in ("a", "ma", "ua"):
         max_current = max(abs(x.start), abs(x.stop))
@@ -120,24 +132,22 @@ def check_boundaries(
         elif x.unit.lower() == "ua":
             max_current /= 1e6
         if max_current > policy.abs_max_current_a:
-            violations.append(BoundaryViolation(
-                parameter="x_axis.current",
-                limit=policy.abs_max_current_a,
-                requested=max_current,
-                severity=Decision.BLOCK,
-                message=f"Sweep current {max_current} A exceeds absolute limit",
-            ))
+            violations.append(
+                BoundaryViolation(
+                    parameter="x_axis.current",
+                    limit=policy.abs_max_current_a,
+                    requested=max_current,
+                    severity=Decision.BLOCK,
+                    message=f"Sweep current {max_current} A exceeds absolute limit",
+                )
+            )
 
     # --- Tier 2: Warning thresholds (REQUIRE_CONFIRM) ---
     if not violations:
         if plan.max_current_a > policy.warn_current_a:
-            warnings.append(
-                f"Current {plan.max_current_a} A exceeds warning threshold {policy.warn_current_a} A"
-            )
+            warnings.append(f"Current {plan.max_current_a} A exceeds warning threshold {policy.warn_current_a} A")
         if plan.max_field_oe > policy.warn_field_oe:
-            warnings.append(
-                f"Field {plan.max_field_oe} Oe exceeds warning threshold {policy.warn_field_oe} Oe"
-            )
+            warnings.append(f"Field {plan.max_field_oe} Oe exceeds warning threshold {policy.warn_field_oe} Oe")
         if plan.max_temperature_k > policy.warn_temperature_k:
             warnings.append(
                 f"Temperature {plan.max_temperature_k} K exceeds warning threshold {policy.warn_temperature_k} K"

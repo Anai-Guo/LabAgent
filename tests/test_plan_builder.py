@@ -7,7 +7,6 @@ import pytest
 from lab_harness.models.measurement import MeasurementType
 from lab_harness.planning.plan_builder import build_plan_from_template
 
-
 # ---------------------------------------------------------------------------
 # Template loading
 # ---------------------------------------------------------------------------

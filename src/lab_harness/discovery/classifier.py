@@ -20,20 +20,64 @@ logger = logging.getLogger(__name__)
 
 # Known instrument model -> capability mapping
 KNOWN_INSTRUMENTS: dict[str, dict] = {
-    "2400": {"roles": ["source_meter"], "vendor": "keithley", "capabilities": ["source_iv", "measure_iv"]},
-    "2410": {"roles": ["source_meter"], "vendor": "keithley", "capabilities": ["source_iv", "measure_iv"]},
+    "2400": {
+        "roles": ["source_meter"],
+        "vendor": "keithley",
+        "capabilities": ["source_iv", "measure_iv"],
+    },
+    "2410": {
+        "roles": ["source_meter"],
+        "vendor": "keithley",
+        "capabilities": ["source_iv", "measure_iv"],
+    },
     "2000": {"roles": ["dmm"], "vendor": "keithley", "capabilities": ["measure_v", "measure_r"]},
-    "2182": {"roles": ["nanovoltmeter"], "vendor": "keithley", "capabilities": ["measure_v_low_noise"]},
-    "2182A": {"roles": ["nanovoltmeter"], "vendor": "keithley", "capabilities": ["measure_v_low_noise"]},
-    "6221": {"roles": ["ac_current_source"], "vendor": "keithley", "capabilities": ["source_i_pulse", "source_i_ac"]},
-    "6517": {"roles": ["electrometer"], "vendor": "keithley", "capabilities": ["measure_r_high", "source_v"]},
-    "6517B": {"roles": ["electrometer"], "vendor": "keithley", "capabilities": ["measure_r_high", "source_v"]},
+    "2182": {
+        "roles": ["nanovoltmeter"],
+        "vendor": "keithley",
+        "capabilities": ["measure_v_low_noise"],
+    },
+    "2182A": {
+        "roles": ["nanovoltmeter"],
+        "vendor": "keithley",
+        "capabilities": ["measure_v_low_noise"],
+    },
+    "6221": {
+        "roles": ["ac_current_source"],
+        "vendor": "keithley",
+        "capabilities": ["source_i_pulse", "source_i_ac"],
+    },
+    "6517": {
+        "roles": ["electrometer"],
+        "vendor": "keithley",
+        "capabilities": ["measure_r_high", "source_v"],
+    },
+    "6517B": {
+        "roles": ["electrometer"],
+        "vendor": "keithley",
+        "capabilities": ["measure_r_high", "source_v"],
+    },
     "425": {"roles": ["gaussmeter"], "vendor": "lakeshore", "capabilities": ["measure_field"]},
     "455": {"roles": ["gaussmeter"], "vendor": "lakeshore", "capabilities": ["measure_field"]},
-    "335": {"roles": ["temperature_controller"], "vendor": "lakeshore", "capabilities": ["measure_temp", "control_temp"]},
-    "340": {"roles": ["temperature_controller"], "vendor": "lakeshore", "capabilities": ["measure_temp", "control_temp"]},
-    "350": {"roles": ["temperature_controller"], "vendor": "lakeshore", "capabilities": ["measure_temp", "control_temp"]},
-    "E4980": {"roles": ["lcr_meter"], "vendor": "keysight", "capabilities": ["measure_c", "measure_z"]},
+    "335": {
+        "roles": ["temperature_controller"],
+        "vendor": "lakeshore",
+        "capabilities": ["measure_temp", "control_temp"],
+    },
+    "340": {
+        "roles": ["temperature_controller"],
+        "vendor": "lakeshore",
+        "capabilities": ["measure_temp", "control_temp"],
+    },
+    "350": {
+        "roles": ["temperature_controller"],
+        "vendor": "lakeshore",
+        "capabilities": ["measure_temp", "control_temp"],
+    },
+    "E4980": {
+        "roles": ["lcr_meter"],
+        "vendor": "keysight",
+        "capabilities": ["measure_c", "measure_z"],
+    },
 }
 
 # Measurement type -> required roles
@@ -194,7 +238,8 @@ def classify_instruments(
     # LLM fallback
     if unassigned_roles and unmatched and router is not None:
         logger.info(
-            "Dict lookup incomplete; invoking LLM for roles %s", unassigned_roles,
+            "Dict lookup incomplete; invoking LLM for roles %s",
+            unassigned_roles,
         )
         llm_result = classify_with_llm(unmatched, unassigned_roles, mt, router)
         assignments.update(llm_result)

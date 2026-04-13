@@ -1,14 +1,17 @@
 """SQLite-backed experiment memory store with FTS5 search."""
+
 from __future__ import annotations
+
 import json
-import sqlite3
 import logging
+import sqlite3
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
 from typing import Any
 
 logger = logging.getLogger(__name__)
+
 
 @dataclass
 class ExperimentRecord:
@@ -19,6 +22,7 @@ class ExperimentRecord:
     parameters: dict[str, Any] | None = None
     result_path: str = ""
     notes: str = ""
+
 
 @dataclass
 class MemoryStore:
@@ -74,29 +78,31 @@ class MemoryStore:
         ts = datetime.now().isoformat()
         params_json = json.dumps(parameters or {})
         with sqlite3.connect(self.db_path) as conn:
-            cursor = conn.execute(
-                "INSERT INTO experiments (timestamp, sample, measurement_type, parameters, result_path, notes) VALUES (?, ?, ?, ?, ?, ?)",
-                (ts, sample, measurement_type, params_json, result_path, notes),
+            sql = (
+                "INSERT INTO experiments"
+                " (timestamp, sample, measurement_type, parameters, result_path, notes)"
+                " VALUES (?, ?, ?, ?, ?, ?)"
             )
+            cursor = conn.execute(sql, (ts, sample, measurement_type, params_json, result_path, notes))
             return cursor.lastrowid
 
     def search(self, query: str, limit: int = 10) -> list[ExperimentRecord]:
         """Full-text search across experiments."""
         with sqlite3.connect(self.db_path) as conn:
             conn.row_factory = sqlite3.Row
-            rows = conn.execute(
-                "SELECT e.* FROM experiments e JOIN experiments_fts f ON e.id = f.rowid WHERE experiments_fts MATCH ? ORDER BY rank LIMIT ?",
-                (query, limit),
-            ).fetchall()
+            sql = (
+                "SELECT e.* FROM experiments e"
+                " JOIN experiments_fts f ON e.id = f.rowid"
+                " WHERE experiments_fts MATCH ? ORDER BY rank LIMIT ?"
+            )
+            rows = conn.execute(sql, (query, limit)).fetchall()
         return [self._row_to_record(r) for r in rows]
 
     def get_recent(self, limit: int = 10) -> list[ExperimentRecord]:
         """Get most recent experiments."""
         with sqlite3.connect(self.db_path) as conn:
             conn.row_factory = sqlite3.Row
-            rows = conn.execute(
-                "SELECT * FROM experiments ORDER BY timestamp DESC LIMIT ?", (limit,)
-            ).fetchall()
+            rows = conn.execute("SELECT * FROM experiments ORDER BY timestamp DESC LIMIT ?", (limit,)).fetchall()
         return [self._row_to_record(r) for r in rows]
 
     def get_by_type(self, measurement_type: str, limit: int = 20) -> list[ExperimentRecord]:

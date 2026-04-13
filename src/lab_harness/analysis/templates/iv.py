@@ -1,9 +1,12 @@
 """IV (Current-Voltage) data analysis."""
-import numpy as np
+
 import matplotlib
+import numpy as np
+
 matplotlib.use("Agg")
-import matplotlib.pyplot as plt
 from pathlib import Path
+
+import matplotlib.pyplot as plt
 
 data_path = Path("{{DATA_PATH}}")
 output_dir = Path("{{OUTPUT_DIR}}")
@@ -22,8 +25,15 @@ ax.plot(current, voltage * 1e3, "ro-", markersize=3, linewidth=1)
 ax.set_xlabel("Current (mA)", fontsize=14)
 ax.set_ylabel("Voltage (mV)", fontsize=14)
 ax.set_title("I-V Characteristic", fontsize=16)
-ax.text(0.05, 0.95, f"R = {R:.2f} \u03a9", transform=ax.transAxes, fontsize=12,
-        verticalalignment="top", bbox=dict(boxstyle="round", facecolor="wheat", alpha=0.5))
+ax.text(
+    0.05,
+    0.95,
+    f"R = {R:.2f} \u03a9",
+    transform=ax.transAxes,
+    fontsize=12,
+    verticalalignment="top",
+    bbox=dict(boxstyle="round", facecolor="wheat", alpha=0.5),
+)
 ax.grid(True, alpha=0.3)
 fig.tight_layout()
 fig.savefig(output_dir / "iv_plot.png", dpi=300)

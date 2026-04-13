@@ -12,8 +12,8 @@ import logging
 from mcp.server.fastmcp import FastMCP
 
 from lab_harness.config import Settings
-from lab_harness.discovery.visa_scanner import scan_visa_instruments
 from lab_harness.discovery.classifier import classify_instruments
+from lab_harness.discovery.visa_scanner import scan_visa_instruments
 from lab_harness.llm.router import LLMRouter
 from lab_harness.models.instrument import InstrumentRecord, LabInventory
 
@@ -69,9 +69,7 @@ async def classify_lab_instruments(
     assignments = classify_instruments(inventory, measurement_type, router=router)
     return {
         "measurement_type": measurement_type,
-        "role_assignments": {
-            role: inst.model_dump() for role, inst in assignments.items()
-        },
+        "role_assignments": {role: inst.model_dump() for role, inst in assignments.items()},
     }
 
 
@@ -96,10 +94,7 @@ async def propose_measurement(
     role_assignments: dict[str, InstrumentRecord] | None = None
     if roles_json:
         raw: dict = json.loads(roles_json)
-        role_assignments = {
-            role: InstrumentRecord.model_validate(data)
-            for role, data in raw.items()
-        }
+        role_assignments = {role: InstrumentRecord.model_validate(data) for role, data in raw.items()}
 
     plan = build_plan_from_template(
         measurement_type,
@@ -273,9 +268,7 @@ async def healthcheck() -> dict:
         settings = Settings.load()
         status["llm_provider"] = settings.model.provider
         status["llm_model"] = settings.model.model
-        status["llm_configured"] = bool(
-            settings.model.provider and settings.model.model
-        )
+        status["llm_configured"] = bool(settings.model.provider and settings.model.model)
     except Exception as exc:
         logger.debug("LLM config not available: %s", exc)
 

@@ -1,7 +1,9 @@
 """Tests for experiment memory store and snapshot."""
+
 from pathlib import Path
-from lab_harness.memory.store import MemoryStore, ExperimentRecord
+
 from lab_harness.memory.snapshot import MemorySnapshot
+from lab_harness.memory.store import MemoryStore
 
 
 def test_record_and_retrieve(tmp_path: Path):
