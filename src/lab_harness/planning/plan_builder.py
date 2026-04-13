@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import logging
 from pathlib import Path
+from typing import Any
 
 import yaml
 
@@ -36,15 +37,33 @@ def _load_template(measurement_type: str) -> dict:
         return yaml.safe_load(f)
 
 
+def _collect_required_roles(template: dict) -> set[str]:
+    """Extract all instrument roles referenced in a template."""
+    roles: set[str] = set()
+    if x_role := template.get("x_axis", {}).get("role"):
+        roles.add(x_role)
+    for ch in template.get("y_channels", []):
+        if ch_role := ch.get("role"):
+            roles.add(ch_role)
+    if outer := template.get("outer_sweep"):
+        if outer_role := outer.get("role"):
+            roles.add(outer_role)
+    return roles
+
+
 def build_plan_from_template(
     measurement_type: str,
     overrides: dict | None = None,
+    role_assignments: dict[str, Any] | None = None,
 ) -> MeasurementPlan:
     """Build a measurement plan from a template with optional overrides.
 
     Args:
         measurement_type: Type of measurement (AHE, MR, IV, RT).
         overrides: Optional dict of parameter overrides.
+        role_assignments: Optional mapping of role name to instrument info.
+            When provided, validates that all required roles for the
+            measurement type have assignments and logs warnings for missing ones.
 
     Returns:
         A MeasurementPlan ready for validation and execution.
@@ -58,6 +77,25 @@ def build_plan_from_template(
                 template[key].update(value)
             else:
                 template[key] = value
+
+    # Validate role assignments against template requirements
+    if role_assignments is not None:
+        required_roles = _collect_required_roles(template)
+        assigned_roles = set(role_assignments.keys())
+        missing = required_roles - assigned_roles
+        for role in sorted(missing):
+            logger.warning(
+                "Role '%s' required by %s template but not assigned",
+                role,
+                measurement_type,
+            )
+        extra = assigned_roles - required_roles
+        for role in sorted(extra):
+            logger.info(
+                "Role '%s' assigned but not used by %s template",
+                role,
+                measurement_type,
+            )
 
     x_axis = SweepAxis(**template["x_axis"])
     y_channels = [DataChannel(**ch) for ch in template.get("y_channels", [])]

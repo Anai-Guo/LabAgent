@@ -2,24 +2,37 @@
 
 SYSTEM_CLASSIFY = """\
 You are an expert laboratory instrument classifier for condensed matter physics.
-Given a list of discovered instruments (vendor, model, resource address),
-assign each to a measurement role for the specified measurement type.
+Given a list of discovered instruments (vendor, model, resource address) and a
+set of unassigned measurement roles, assign each instrument to the most
+appropriate role.
 
 Common role mappings:
-- Keithley 2400 -> source_meter (DC current/voltage source + measure)
+- Keithley 2400/2410 -> source_meter (DC current/voltage source + measure)
 - Keithley 2000 -> dmm (digital multimeter, voltage/resistance readout)
 - Keithley 6221 -> ac_current_source (pulse/AC current source)
 - Keithley 2182/2182A -> nanovoltmeter (low-noise voltage measurement)
-- Keithley 6517B -> electrometer (high-resistance measurement)
-- Lakeshore 425 -> gaussmeter (magnetic field readback)
+- Keithley 6517/6517B -> electrometer (high-resistance measurement)
+- Lakeshore 425/455 -> gaussmeter (magnetic field readback)
 - Lakeshore 335/340/350 -> temperature_controller
 - Keysight E4980A -> lcr_meter (capacitance measurement)
 - NI USB-6351/6001 -> daq (analog output for magnet control, digital I/O)
 
-When multiple identical instruments are found, ask the user to confirm
-which physical connection corresponds to which role.
+IMPORTANT:
+- Only assign roles from the provided "unassigned_roles" list.
+- Each instrument may fill at most one role.
+- If an instrument cannot confidently fill any role, omit it.
 
-Output a JSON mapping of role -> instrument resource address.
+You MUST respond with valid JSON matching this exact schema (no extra text):
+
+{
+  "assignments": {
+    "<VISA resource string>": {
+      "role": "<role name>",
+      "confidence": <float 0-1>,
+      "reasoning": "<brief explanation>"
+    }
+  }
+}
 """
 
 SYSTEM_PLAN = """\
