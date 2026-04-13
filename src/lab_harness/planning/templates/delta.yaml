@@ -1,0 +1,22 @@
+# Ultra-low resistance (Delta Mode) measurement template
+# Uses Keithley 6221 current source + 2182A nanovoltmeter in delta mode
+name: "Delta Mode Resistance"
+description: "Sweep DC current and measure nanovoltage for ultra-low resistance samples"
+
+x_axis:
+  label: "Source Current"
+  unit: "mA"
+  start: -10.0
+  stop: 10.0
+  step: 0.1
+  role: "ac_current_source"
+
+y_channels:
+  - label: "Nanovoltage"
+    unit: "uV"
+    role: "nanovoltmeter"
+
+max_current_a: 0.01        # 10 mA max
+max_voltage_v: 1.0         # Low voltage expected
+settling_time_s: 0.5
+num_averages: 5             # Higher averaging for nanovolt signals

@@ -1,0 +1,21 @@
+# Gas Sensor Response measurement template
+name: "Gas Sensor"
+description: "Gas concentration sweep, measure resistance change for sensor characterization"
+
+x_axis:
+  label: "Gas Concentration"
+  unit: "ppm"
+  start: 0.0
+  stop: 1000.0
+  step: 10.0
+  role: "gas_controller"
+
+y_channels:
+  - label: "Sensor Resistance"
+    unit: "Ohm"
+    role: "dmm"
+
+max_voltage_v: 5.0
+max_current_a: 0.01
+settling_time_s: 10.0
+num_averages: 3

@@ -1,0 +1,24 @@
+# Nernst Effect measurement template
+name: "Nernst Effect"
+description: "Magnetic field sweep, measure transverse thermoelectric voltage"
+
+x_axis:
+  label: "Magnetic Field"
+  unit: "Oe"
+  start: -10000.0
+  stop: 10000.0
+  step: 100.0
+  role: "magnet"
+
+y_channels:
+  - label: "Nernst Voltage"
+    unit: "uV"
+    role: "nanovoltmeter"
+  - label: "Temperature Gradient"
+    unit: "K"
+    role: "temperature_controller"
+
+max_field_oe: 10000.0
+max_temperature_k: 400.0
+settling_time_s: 2.0
+num_averages: 3

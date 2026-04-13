@@ -82,12 +82,59 @@ KNOWN_INSTRUMENTS: dict[str, dict] = {
 
 # Measurement type -> required roles
 MEASUREMENT_ROLES: dict[str, list[str]] = {
+    # Electrical characterization
     "AHE": ["source_meter", "dmm", "gaussmeter"],
     "MR": ["source_meter", "dmm", "gaussmeter"],
     "IV": ["source_meter"],
     "RT": ["source_meter", "temperature_controller"],
     "SOT": ["source_meter", "ac_current_source", "dmm", "gaussmeter"],
     "CV": ["lcr_meter", "temperature_controller"],
+    "DELTA": ["ac_current_source", "nanovoltmeter"],
+    "HIGH_R": ["electrometer"],
+    "TRANSFER": ["source_meter_gate", "source_meter_drain"],
+    "OUTPUT": ["source_meter_drain", "source_meter_gate"],
+    "BREAKDOWN": ["electrometer"],
+    # Thermoelectric
+    "SEEBECK": ["temperature_controller", "nanovoltmeter"],
+    "THERMAL_CONDUCTIVITY": ["source_meter", "temperature_controller"],
+    # Magnetic
+    "HALL": ["source_meter", "dmm", "magnet"],
+    "FMR": ["magnet", "lock_in"],
+    "HYSTERESIS": ["magnet", "magnetometer"],
+    # Optical / Photonic
+    "PHOTOCURRENT": ["monochromator", "source_meter"],
+    "PHOTORESPONSE": ["source_meter"],
+    # Superconductivity
+    "TC": ["temperature_controller", "dmm"],
+    "JC": ["source_meter", "nanovoltmeter", "temperature_controller"],
+    # Dielectric / Ferroelectric
+    "PE_LOOP": ["hv_amplifier", "ferroelectric_tester"],
+    "PYROELECTRIC": ["temperature_controller", "electrometer"],
+    # Chemistry / Electrochemistry
+    "CYCLIC_VOLTAMMETRY": ["potentiostat"],
+    "EIS": ["impedance_analyzer"],
+    "CHRONOAMPEROMETRY": ["potentiostat"],
+    "POTENTIOMETRY": ["electrometer"],
+    # Biology / Biosensors
+    "IMPEDANCE_BIOSENSOR": ["impedance_analyzer"],
+    "CELL_COUNTING": ["source_meter"],
+    # Materials Science
+    "STRAIN_GAUGE": ["strain_controller", "dmm"],
+    "FATIGUE": ["strain_controller", "dmm", "load_cell"],
+    "HUMIDITY_RESPONSE": ["humidity_chamber", "dmm", "lcr_meter"],
+    # Environmental / Sensor
+    "GAS_SENSOR": ["gas_controller", "dmm"],
+    "PH_CALIBRATION": ["ph_meter", "electrometer"],
+    # Semiconductor (additional)
+    "CAPACITANCE_FREQUENCY": ["lcr_meter"],
+    "DLTS": ["temperature_controller", "lcr_meter"],
+    "PHOTO_IV": ["source_meter"],
+    # Additional Physics
+    "MAGNETOSTRICTION": ["magnet", "strain_gauge", "gaussmeter"],
+    "NERNST": ["magnet", "nanovoltmeter", "temperature_controller"],
+    "TUNNELING": ["source_meter", "lock_in"],
+    # General purpose
+    "CUSTOM_SWEEP": ["source_meter", "dmm"],
 }
 
 

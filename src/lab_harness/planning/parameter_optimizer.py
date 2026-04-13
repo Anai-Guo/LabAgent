@@ -9,7 +9,7 @@ from typing import Any
 logger = logging.getLogger(__name__)
 
 SYSTEM_OPTIMIZE = """\
-You are an expert in condensed matter physics transport measurements.
+You are an expert in materials science and physics transport measurements.
 Given a measurement type and sample description, suggest optimal measurement parameters.
 
 Consider:
@@ -40,7 +40,7 @@ def optimize_parameters(
 
     Args:
         measurement_type: Type of measurement (AHE, MR, etc.)
-        sample_description: Material/sample info (e.g. "10nm CoFeB/MgO")
+        sample_description: Material/sample info (e.g. "100nm NiFe film")
         current_params: Current template parameters for context
 
     Returns:

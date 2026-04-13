@@ -1,0 +1,20 @@
+# pH Calibration measurement template
+name: "pH Calibration"
+description: "pH buffer sweep, measure electrode voltage for calibration curve"
+
+x_axis:
+  label: "pH"
+  unit: "pH"
+  start: 2.0
+  stop: 12.0
+  step: 1.0
+  role: "ph_meter"
+
+y_channels:
+  - label: "Electrode Voltage"
+    unit: "mV"
+    role: "electrometer"
+
+max_voltage_v: 1.0
+settling_time_s: 5.0
+num_averages: 3

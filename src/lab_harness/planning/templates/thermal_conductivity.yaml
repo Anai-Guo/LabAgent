@@ -1,0 +1,29 @@
+# Thermal conductivity measurement template
+# Sweep heater power, measure temperature difference across sample
+name: "Thermal Conductivity"
+description: "Sweep heater power and measure temperature difference for thermal conductivity"
+
+x_axis:
+  label: "Heater Power"
+  unit: "mW"
+  start: 0.0
+  stop: 100.0
+  step: 2.0
+  role: "source_meter"
+
+y_channels:
+  - label: "Temperature Difference"
+    unit: "K"
+    role: "temperature_controller"
+  - label: "Hot Side Temperature"
+    unit: "K"
+    role: "temperature_controller"
+  - label: "Cold Side Temperature"
+    unit: "K"
+    role: "temperature_controller_secondary"
+
+max_current_a: 0.1         # Heater current limit
+max_voltage_v: 20.0
+max_temperature_k: 600.0
+settling_time_s: 60.0       # Thermal equilibrium requires long settling
+num_averages: 3

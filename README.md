@@ -43,13 +43,13 @@ labharness classify AHE
 labharness propose AHE
 
 # Search literature for measurement protocols
-labharness literature AHE --sample "CoFeB/MgO"
+labharness literature RT --sample "silicon wafer"
 
 # Analyze data with AI interpretation
 labharness analyze data.csv --type AHE --interpret
 
 # Generate a new measurement protocol with AI
-labharness generate-skill MR --sample "Fe/MgO"
+labharness generate-skill MR --sample "NiFe thin film"
 
 # List PICA reference measurement procedures
 labharness procedures

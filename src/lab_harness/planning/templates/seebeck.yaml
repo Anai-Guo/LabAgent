@@ -1,0 +1,28 @@
+# Seebeck coefficient measurement template
+# Sweep temperature difference, measure thermovoltage
+name: "Seebeck Coefficient"
+description: "Sweep temperature gradient and measure Seebeck voltage"
+
+x_axis:
+  label: "Temperature Difference"
+  unit: "K"
+  start: 0.0
+  stop: 20.0
+  step: 0.5
+  role: "temperature_controller"
+
+y_channels:
+  - label: "Seebeck Voltage"
+    unit: "uV"
+    role: "nanovoltmeter"
+  - label: "Hot Side Temperature"
+    unit: "K"
+    role: "temperature_controller"
+  - label: "Cold Side Temperature"
+    unit: "K"
+    role: "temperature_controller_secondary"
+
+max_temperature_k: 600.0   # Thermoelectric materials often measured to high T
+max_voltage_v: 1.0
+settling_time_s: 30.0       # Temperature equilibration takes time
+num_averages: 3

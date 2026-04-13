@@ -1,0 +1,30 @@
+# FET output curve measurement template
+# Drain voltage sweep at fixed gate voltage, measure drain current
+name: "FET Output Curve"
+description: "Sweep drain voltage at fixed gate voltage for transistor output characterization"
+
+x_axis:
+  label: "Drain Voltage"
+  unit: "V"
+  start: 0.0
+  stop: 10.0
+  step: 0.05
+  role: "source_meter_drain"
+
+y_channels:
+  - label: "Drain Current"
+    unit: "mA"
+    role: "source_meter_drain"
+
+outer_sweep:
+  label: "Gate Voltage"
+  unit: "V"
+  start: 0.0
+  stop: 5.0
+  step: 1.0
+  role: "source_meter_gate"
+
+max_voltage_v: 40.0
+max_current_a: 0.1         # 100 mA drain current limit
+settling_time_s: 0.2
+num_averages: 1

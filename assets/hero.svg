@@ -1,70 +1,148 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 280">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 360">
   <defs>
-    <linearGradient id="hg1" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#6366F1"/><stop offset="100%" style="stop-color:#8B5CF6"/>
+    <!-- Genshin-style deep blue-black sky gradient -->
+    <linearGradient id="sky" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#0a0e27"/>
+      <stop offset="40%" style="stop-color:#0f1a3a"/>
+      <stop offset="100%" style="stop-color:#1a1040"/>
     </linearGradient>
-    <linearGradient id="hg2" x1="0%" y1="0%" x2="100%" y2="0%">
-      <stop offset="0%" style="stop-color:#06B6D4"/><stop offset="100%" style="stop-color:#3B82F6"/>
+    <!-- Golden accent (Genshin amber/gold) -->
+    <linearGradient id="gold" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#C9963A"/>
+      <stop offset="50%" style="stop-color:#F2D06B"/>
+      <stop offset="100%" style="stop-color:#C9963A"/>
     </linearGradient>
-    <linearGradient id="hg3" x1="0%" y1="0%" x2="100%" y2="0%">
-      <stop offset="0%" style="stop-color:#F59E0B"/><stop offset="100%" style="stop-color:#EF4444"/>
-    </linearGradient>
-    <linearGradient id="hgBg" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#0F172A"/><stop offset="100%" style="stop-color:#1E293B"/>
-    </linearGradient>
+    <!-- Element vision glow -->
+    <radialGradient id="electro" cx="50%" cy="50%">
+      <stop offset="0%" style="stop-color:#B565E0;stop-opacity:0.25"/>
+      <stop offset="100%" style="stop-color:#B565E0;stop-opacity:0"/>
+    </radialGradient>
+    <radialGradient id="cryo" cx="50%" cy="50%">
+      <stop offset="0%" style="stop-color:#72D5F2;stop-opacity:0.15"/>
+      <stop offset="100%" style="stop-color:#72D5F2;stop-opacity:0"/>
+    </radialGradient>
+    <radialGradient id="pyro" cx="50%" cy="50%">
+      <stop offset="0%" style="stop-color:#EF7938;stop-opacity:0.12"/>
+      <stop offset="100%" style="stop-color:#EF7938;stop-opacity:0"/>
+    </radialGradient>
+    <!-- Star shimmer -->
+    <filter id="starGlow">
+      <feGaussianBlur stdDeviation="1.5" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
   </defs>
 
-  <!-- Background -->
-  <rect width="800" height="280" rx="16" fill="url(#hgBg)"/>
+  <!-- Night sky background -->
+  <rect width="900" height="360" rx="16" fill="url(#sky)"/>
 
-  <!-- Subtle grid pattern -->
-  <g opacity="0.04" stroke="#818CF8" stroke-width="0.5">
-    <line x1="0" y1="40" x2="800" y2="40"/><line x1="0" y1="80" x2="800" y2="80"/>
-    <line x1="0" y1="120" x2="800" y2="120"/><line x1="0" y1="160" x2="800" y2="160"/>
-    <line x1="0" y1="200" x2="800" y2="200"/><line x1="0" y1="240" x2="800" y2="240"/>
-    <line x1="100" y1="0" x2="100" y2="280"/><line x1="200" y1="0" x2="200" y2="280"/>
-    <line x1="300" y1="0" x2="300" y2="280"/><line x1="400" y1="0" x2="400" y2="280"/>
-    <line x1="500" y1="0" x2="500" y2="280"/><line x1="600" y1="0" x2="600" y2="280"/>
-    <line x1="700" y1="0" x2="700" y2="280"/>
+  <!-- Element vision orbs -->
+  <circle cx="150" cy="120" r="140" fill="url(#electro)"/>
+  <circle cx="750" cy="100" r="160" fill="url(#cryo)"/>
+  <circle cx="450" cy="300" r="120" fill="url(#pyro)"/>
+
+  <!-- Stars -->
+  <g fill="#F2D06B" filter="url(#starGlow)">
+    <circle cx="120" cy="35" r="1.2" opacity="0.9"/>
+    <circle cx="230" cy="52" r="0.8" opacity="0.6"/>
+    <circle cx="340" cy="28" r="1" opacity="0.8"/>
+    <circle cx="480" cy="18" r="1.3" opacity="0.7"/>
+    <circle cx="560" cy="42" r="0.9" opacity="0.9"/>
+    <circle cx="670" cy="25" r="1.1" opacity="0.6"/>
+    <circle cx="780" cy="48" r="0.7" opacity="0.8"/>
+    <circle cx="830" cy="30" r="1" opacity="0.5"/>
+    <circle cx="75" cy="60" r="0.6" opacity="0.4"/>
+    <circle cx="400" cy="55" r="0.8" opacity="0.5"/>
+    <circle cx="620" cy="15" r="0.6" opacity="0.7"/>
+    <circle cx="290" cy="15" r="0.7" opacity="0.6"/>
+    <circle cx="710" cy="55" r="0.9" opacity="0.4"/>
   </g>
 
-  <!-- Glow effect behind title -->
-  <ellipse cx="400" cy="85" rx="250" ry="60" fill="#6366F1" opacity="0.06"/>
+  <!-- Decorative diamond ornaments (Genshin UI style) -->
+  <!-- Left diamond cluster -->
+  <g transform="translate(100, 160) rotate(45)" opacity="0.12" stroke="#F2D06B" stroke-width="1" fill="none">
+    <rect x="-12" y="-12" width="24" height="24" rx="2"/>
+    <rect x="-6" y="-6" width="12" height="12" rx="1"/>
+  </g>
+  <!-- Right diamond cluster -->
+  <g transform="translate(800, 160) rotate(45)" opacity="0.12" stroke="#F2D06B" stroke-width="1" fill="none">
+    <rect x="-12" y="-12" width="24" height="24" rx="2"/>
+    <rect x="-6" y="-6" width="12" height="12" rx="1"/>
+  </g>
 
-  <!-- Main title -->
-  <text x="400" y="75" text-anchor="middle" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="52" font-weight="800" fill="white" letter-spacing="-1">
-    <tspan fill="#A78BFA">AI</tspan> Harness
+  <!-- Horizontal golden ornament lines -->
+  <g opacity="0.15">
+    <line x1="160" y1="160" x2="320" y2="160" stroke="url(#gold)" stroke-width="0.8"/>
+    <line x1="580" y1="160" x2="740" y2="160" stroke="url(#gold)" stroke-width="0.8"/>
+    <!-- Small diamond at line ends -->
+    <rect x="154" y="157" width="6" height="6" rx="1" fill="#C9963A" transform="rotate(45 157 160)"/>
+    <rect x="740" y="157" width="6" height="6" rx="1" fill="#C9963A" transform="rotate(45 743 160)"/>
+  </g>
+
+  <!-- Main Title — Genshin-style serif with gold accent -->
+  <text x="450" y="110" text-anchor="middle" font-family="'Palatino Linotype', 'Book Antiqua', Palatino, Georgia, serif" font-size="68" font-weight="700" fill="url(#gold)" letter-spacing="2">
+    AI Harness
   </text>
-  <text x="400" y="110" text-anchor="middle" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="30" font-weight="300" fill="#64748B" letter-spacing="1">
-    for Lab
+  <text x="450" y="148" text-anchor="middle" font-family="'Palatino Linotype', 'Book Antiqua', Palatino, Georgia, serif" font-size="28" font-weight="400" fill="#8B8FAE" letter-spacing="10">
+    FOR LAB
   </text>
 
-  <!-- Slogan bar -->
-  <rect x="225" y="128" width="350" height="34" rx="17" fill="url(#hg3)"/>
-  <text x="400" y="151" text-anchor="middle" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="14" font-weight="700" fill="white" letter-spacing="3">
+  <!-- Central ornament under title -->
+  <g transform="translate(450, 168)" opacity="0.3">
+    <line x1="-80" y1="0" x2="-15" y2="0" stroke="#C9963A" stroke-width="0.8"/>
+    <line x1="15" y1="0" x2="80" y2="0" stroke="#C9963A" stroke-width="0.8"/>
+    <rect x="-5" y="-5" width="10" height="10" rx="1.5" fill="none" stroke="#F2D06B" stroke-width="1" transform="rotate(45 0 0)"/>
+  </g>
+
+  <!-- Slogan — Genshin golden banner style -->
+  <rect x="250" y="185" width="400" height="42" rx="4" fill="rgba(201,150,58,0.08)" stroke="#C9963A" stroke-width="0.8" opacity="0.9"/>
+  <!-- Corner ornaments on banner -->
+  <path d="M250 185 L260 185 L250 195 Z" fill="#C9963A" opacity="0.3"/>
+  <path d="M650 185 L640 185 L650 195 Z" fill="#C9963A" opacity="0.3"/>
+  <path d="M250 227 L260 227 L250 217 Z" fill="#C9963A" opacity="0.3"/>
+  <path d="M650 227 L640 227 L650 217 Z" fill="#C9963A" opacity="0.3"/>
+  <text x="450" y="213" text-anchor="middle" font-family="'Palatino Linotype', Georgia, serif" font-size="16" font-weight="600" fill="#F2D06B" letter-spacing="3">
     FULLY AUTOMATED LAB ASSISTANT
   </text>
 
-  <!-- Feature pills row -->
-  <g transform="translate(0, 185)">
-    <rect x="108" y="0" width="90" height="26" rx="13" fill="rgba(99,102,241,0.15)" stroke="#6366F1" stroke-width="0.8"/>
-    <text x="153" y="17" text-anchor="middle" font-family="Segoe UI, Arial" font-size="10" fill="#A78BFA">AI Analysis</text>
-
-    <rect x="213" y="0" width="100" height="26" rx="13" fill="rgba(16,185,129,0.12)" stroke="#10B981" stroke-width="0.8"/>
-    <text x="263" y="17" text-anchor="middle" font-family="Segoe UI, Arial" font-size="10" fill="#34D399">Auto Discovery</text>
-
-    <rect x="328" y="0" width="90" height="26" rx="13" fill="rgba(245,158,11,0.12)" stroke="#F59E0B" stroke-width="0.8"/>
-    <text x="373" y="17" text-anchor="middle" font-family="Segoe UI, Arial" font-size="10" fill="#FCD34D">Safety First</text>
-
-    <rect x="433" y="0" width="90" height="26" rx="13" fill="rgba(239,68,68,0.12)" stroke="#EF4444" stroke-width="0.8"/>
-    <text x="478" y="17" text-anchor="middle" font-family="Segoe UI, Arial" font-size="10" fill="#FCA5A5">6 AI Models</text>
-
-    <rect x="538" y="0" width="95" height="26" rx="13" fill="rgba(6,182,212,0.12)" stroke="#06B6D4" stroke-width="0.8"/>
-    <text x="585" y="17" text-anchor="middle" font-family="Segoe UI, Arial" font-size="10" fill="#67E8F9">Lab Memory</text>
+  <!-- Element-style feature badges -->
+  <g transform="translate(0, 250)">
+    <!-- Electro - AI Analysis -->
+    <g transform="translate(130, 0)">
+      <circle cx="20" cy="15" r="15" fill="rgba(181,101,224,0.15)" stroke="#B565E0" stroke-width="0.8"/>
+      <text x="20" y="20" text-anchor="middle" font-family="Georgia, serif" font-size="12" fill="#D4A0F5">&#x26A1;</text>
+      <text x="50" y="20" font-family="'Segoe UI', Arial" font-size="12" fill="#C4B5FD">AI Analysis</text>
+    </g>
+    <!-- Dendro - Discovery -->
+    <g transform="translate(270, 0)">
+      <circle cx="20" cy="15" r="15" fill="rgba(95,189,67,0.12)" stroke="#5FBD43" stroke-width="0.8"/>
+      <text x="20" y="20" text-anchor="middle" font-family="Georgia, serif" font-size="12" fill="#86E065">&#x25C9;</text>
+      <text x="50" y="20" font-family="'Segoe UI', Arial" font-size="12" fill="#86EFAC">Auto Discovery</text>
+    </g>
+    <!-- Pyro - Safety -->
+    <g transform="translate(420, 0)">
+      <circle cx="20" cy="15" r="15" fill="rgba(239,121,56,0.12)" stroke="#EF7938" stroke-width="0.8"/>
+      <text x="20" y="20" text-anchor="middle" font-family="Georgia, serif" font-size="12" fill="#FBA56A">&#x25B2;</text>
+      <text x="50" y="20" font-family="'Segoe UI', Arial" font-size="12" fill="#FDBA74">Safety First</text>
+    </g>
+    <!-- Cryo - Models -->
+    <g transform="translate(555, 0)">
+      <circle cx="20" cy="15" r="15" fill="rgba(114,213,242,0.1)" stroke="#72D5F2" stroke-width="0.8"/>
+      <text x="20" y="20" text-anchor="middle" font-family="Georgia, serif" font-size="12" fill="#72D5F2">&#x2736;</text>
+      <text x="50" y="20" font-family="'Segoe UI', Arial" font-size="12" fill="#7DD3FC">6 AI Models</text>
+    </g>
+    <!-- Geo - Memory -->
+    <g transform="translate(690, 0)">
+      <circle cx="20" cy="15" r="15" fill="rgba(242,208,107,0.1)" stroke="#F2D06B" stroke-width="0.8"/>
+      <text x="20" y="20" text-anchor="middle" font-family="Georgia, serif" font-size="12" fill="#F2D06B">&#x25C6;</text>
+      <text x="50" y="20" font-family="'Segoe UI', Arial" font-size="12" fill="#FDE68A">Lab Memory</text>
+    </g>
   </g>
 
-  <!-- Tagline -->
-  <text x="400" y="248" text-anchor="middle" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="13" fill="#475569">
+  <!-- Bottom tagline -->
+  <text x="450" y="315" text-anchor="middle" font-family="'Palatino Linotype', Georgia, serif" font-size="13" fill="#6B7280" font-style="italic" letter-spacing="0.5">
     From research question to publication-ready data — guided by AI at every step
   </text>
+
+  <!-- Bottom golden accent line -->
+  <rect x="0" y="357" width="900" height="3" rx="1.5" fill="url(#gold)" opacity="0.4"/>
 </svg>

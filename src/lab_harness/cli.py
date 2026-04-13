@@ -192,12 +192,12 @@ def main() -> None:
     # literature
     p_lit = sub.add_parser("literature", help="Search literature for measurement protocols")
     p_lit.add_argument("measurement_type", help="Measurement type (AHE, MR, SOT, IV, RT, CV)")
-    p_lit.add_argument("--sample", help="Sample description (e.g. 'CoFeB/MgO')")
+    p_lit.add_argument("--sample", help="Sample description (e.g. 'silicon wafer')")
 
     # generate-skill
     p_genskill = sub.add_parser("generate-skill", help="Generate a measurement skill using AI")
     p_genskill.add_argument("measurement_type", help="Measurement type (e.g. MR, AHE, SOT)")
-    p_genskill.add_argument("--sample", help="Sample description (e.g. 'Fe/MgO')")
+    p_genskill.add_argument("--sample", help="Sample description (e.g. 'NiFe thin film')")
 
     # analyze
     p_analyze = sub.add_parser("analyze", help="Analyze measurement data")

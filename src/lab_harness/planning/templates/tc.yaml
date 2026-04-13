@@ -1,0 +1,26 @@
+# Superconducting transition temperature measurement template
+# Temperature sweep, measure resistance to determine Tc
+name: "Superconducting Transition"
+description: "Sweep temperature and measure resistance to find superconducting Tc"
+
+x_axis:
+  label: "Temperature"
+  unit: "K"
+  start: 2.0
+  stop: 300.0
+  step: 0.5
+  role: "temperature_controller"
+
+y_channels:
+  - label: "Resistance"
+    unit: "Ohm"
+    role: "dmm"
+  - label: "Voltage"
+    unit: "V"
+    role: "nanovoltmeter"
+
+max_current_a: 0.0001      # 100 uA to avoid heating near Tc
+max_voltage_v: 1.0
+max_temperature_k: 350.0
+settling_time_s: 5.0         # Slow temperature ramp for sharp transition
+num_averages: 3

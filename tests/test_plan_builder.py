@@ -20,9 +20,19 @@ def test_load_ahe():
     assert plan.x_axis.unit == "Oe"
 
 
-def test_load_all_6_templates():
-    """All six built-in templates load without error."""
-    for mt in ("AHE", "MR", "IV", "RT", "SOT", "CV"):
+def test_load_all_templates():
+    """All built-in templates load without error."""
+    all_types = (
+        "AHE", "MR", "IV", "RT", "SOT", "CV",
+        "DELTA", "HIGH_R", "TRANSFER", "OUTPUT", "BREAKDOWN",
+        "SEEBECK", "THERMAL_CONDUCTIVITY",
+        "HALL", "FMR", "HYSTERESIS",
+        "PHOTOCURRENT", "PHOTORESPONSE",
+        "TC", "JC",
+        "PE_LOOP", "PYROELECTRIC",
+        "CUSTOM_SWEEP",
+    )
+    for mt in all_types:
         plan = build_plan_from_template(mt)
         assert plan.measurement_type == MeasurementType(mt)
 

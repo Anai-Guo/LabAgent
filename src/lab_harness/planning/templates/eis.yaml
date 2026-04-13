@@ -1,0 +1,26 @@
+# Electrochemical Impedance Spectroscopy (EIS) measurement template
+name: "Electrochemical Impedance Spectroscopy"
+description: "Frequency sweep at fixed DC bias, measure complex impedance (Z real/imaginary)"
+
+x_axis:
+  label: "Frequency"
+  unit: "Hz"
+  start: 0.1
+  stop: 1000000.0
+  step: 0  # logarithmic sweep, step handled by instrument
+  role: "impedance_analyzer"
+
+y_channels:
+  - label: "Z Real"
+    unit: "Ohm"
+    role: "impedance_analyzer"
+  - label: "Z Imaginary"
+    unit: "Ohm"
+    role: "impedance_analyzer"
+  - label: "Phase"
+    unit: "deg"
+    role: "impedance_analyzer"
+
+max_voltage_v: 1.0
+settling_time_s: 0.05
+num_averages: 3

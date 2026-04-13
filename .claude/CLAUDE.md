@@ -71,7 +71,7 @@ pip install -e ".[dev]"
 labharness scan                          # Scan instruments
 labharness classify AHE                  # Classify for measurement
 labharness propose AHE                   # Generate measurement plan
-labharness literature AHE --sample "CoFeB/MgO"  # Search literature
+labharness literature AHE --sample "silicon wafer"  # Search literature
 labharness analyze data.csv --type AHE   # Analyze data
 labharness serve                         # Start MCP server
 

@@ -1,0 +1,22 @@
+# High resistance measurement template
+# Uses Keithley 6517B electrometer for GΩ-TΩ range
+name: "High Resistance"
+description: "Sweep voltage and measure picoamp current for high-resistance samples"
+
+x_axis:
+  label: "Source Voltage"
+  unit: "V"
+  start: 0.0
+  stop: 200.0
+  step: 1.0
+  role: "electrometer"
+
+y_channels:
+  - label: "Current"
+    unit: "pA"
+    role: "electrometer"
+
+max_voltage_v: 200.0       # 6517B supports up to 1000 V
+max_current_a: 0.0001      # 100 uA safety limit
+settling_time_s: 2.0        # High-R measurements need long settling
+num_averages: 3

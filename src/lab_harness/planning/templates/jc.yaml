@@ -1,0 +1,26 @@
+# Critical current density measurement template
+# Current sweep at fixed temperature, find Ic where voltage appears
+name: "Critical Current Density"
+description: "Sweep current at fixed temperature and field to determine critical current Ic"
+
+x_axis:
+  label: "Source Current"
+  unit: "A"
+  start: 0.0
+  stop: 10.0
+  step: 0.01
+  role: "source_meter"
+
+y_channels:
+  - label: "Voltage"
+    unit: "uV"
+    role: "nanovoltmeter"
+  - label: "Temperature"
+    unit: "K"
+    role: "temperature_controller"
+
+max_current_a: 10.0        # High current for Jc measurement
+max_voltage_v: 1.0          # Low voltage criterion (e.g. 1 uV/cm)
+max_temperature_k: 100.0
+settling_time_s: 0.5
+num_averages: 1

@@ -1,0 +1,23 @@
+# Humidity Response measurement template
+name: "Humidity Response"
+description: "Humidity sweep, measure resistance or capacitance change of sensor"
+
+x_axis:
+  label: "Relative Humidity"
+  unit: "%RH"
+  start: 10.0
+  stop: 90.0
+  step: 5.0
+  role: "humidity_chamber"
+
+y_channels:
+  - label: "Resistance"
+    unit: "Ohm"
+    role: "dmm"
+  - label: "Capacitance"
+    unit: "pF"
+    role: "lcr_meter"
+
+max_voltage_v: 5.0
+settling_time_s: 30.0
+num_averages: 3

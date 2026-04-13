@@ -10,7 +10,7 @@ def test_record_and_retrieve(tmp_path: Path):
     store = MemoryStore(db_path=tmp_path / "test.db")
     rec_id = store.record_experiment(
         measurement_type="HALL",
-        sample="CoFeB-10nm",
+        sample="Si-wafer-001",
         parameters={"field_range": [-1, 1], "temperature": 300},
         result_path="/data/hall_001.csv",
         notes="Room temperature Hall measurement",
@@ -21,7 +21,7 @@ def test_record_and_retrieve(tmp_path: Path):
     assert len(recent) == 1
     rec = recent[0]
     assert rec.id == rec_id
-    assert rec.sample == "CoFeB-10nm"
+    assert rec.sample == "Si-wafer-001"
     assert rec.measurement_type == "HALL"
     assert rec.parameters == {"field_range": [-1, 1], "temperature": 300}
     assert rec.result_path == "/data/hall_001.csv"
@@ -32,7 +32,7 @@ def test_search_fts(tmp_path: Path):
     store = MemoryStore(db_path=tmp_path / "test.db")
     store.record_experiment(
         measurement_type="HALL",
-        sample="CoFeB-10nm",
+        sample="Si-wafer-001",
         notes="Anomalous Hall effect at room temperature",
     )
     store.record_experiment(
@@ -49,7 +49,7 @@ def test_search_fts(tmp_path: Path):
     results = store.search("Hall")
     assert len(results) == 2
     samples = {r.sample for r in results}
-    assert "CoFeB-10nm" in samples
+    assert "Si-wafer-001" in samples
     assert "Pt/Co" in samples
 
     results_mr = store.search("Magnetoresistance")
@@ -79,7 +79,7 @@ def test_snapshot_render(tmp_path: Path):
     # With records
     store.record_experiment(
         measurement_type="HALL",
-        sample="CoFeB-10nm",
+        sample="Si-wafer-001",
         notes="First Hall measurement",
     )
     store.record_experiment(
@@ -95,5 +95,5 @@ def test_snapshot_render(tmp_path: Path):
     rendered = snap.render_for_prompt()
     assert "2 total" in rendered
     assert "HALL" in rendered
-    assert "CoFeB-10nm" in rendered
+    assert "Si-wafer-001" in rendered
     assert "MR" in rendered

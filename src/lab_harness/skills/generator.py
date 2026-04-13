@@ -10,7 +10,7 @@ logger = logging.getLogger(__name__)
 SKILLS_DIR = Path(__file__).parent.parent.parent.parent / "skills"
 
 SYSTEM_GENERATE_SKILL = """\
-You are an expert in condensed matter physics measurement protocols.
+You are an expert in materials science and physics measurement protocols.
 Generate a measurement protocol skill in markdown format with YAML frontmatter.
 
 The skill must follow this exact format:

@@ -1,0 +1,20 @@
+# Cyclic Voltammetry (CV sweep) measurement template
+name: "Cyclic Voltammetry"
+description: "Triangle wave voltage sweep, measure current for redox reaction analysis"
+
+x_axis:
+  label: "Applied Potential"
+  unit: "V"
+  start: -0.5
+  stop: 0.5
+  step: 0.005
+  role: "potentiostat"
+
+y_channels:
+  - label: "Current"
+    unit: "uA"
+    role: "potentiostat"
+
+max_voltage_v: 2.0
+settling_time_s: 0.01
+num_averages: 1

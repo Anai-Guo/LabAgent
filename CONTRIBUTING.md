@@ -3,7 +3,7 @@
 ## Development Setup
 
 ```bash
-git clone https://github.com/Anai-Guo/labharness.git
+git clone https://github.com/Anai-Guo/AIharnessforlab.git
 cd labharness
 python -m venv .venv
 source .venv/bin/activate  # Windows: .venv\Scripts\activate

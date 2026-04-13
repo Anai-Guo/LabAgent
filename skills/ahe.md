@@ -1,6 +1,6 @@
 ---
 name: AHE Measurement
-description: Anomalous Hall Effect measurement protocol for magnetic thin films
+description: Anomalous Hall Effect measurement protocol 
 measurement_type: AHE
 instruments: [source_meter, dmm, gaussmeter]
 version: "1.0"

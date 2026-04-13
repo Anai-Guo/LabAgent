@@ -84,7 +84,7 @@ def build_plan_from_template(
         role_assignments: Optional mapping of role name to instrument info.
             When provided, validates that all required roles for the
             measurement type have assignments and logs warnings for missing ones.
-        sample_description: Optional sample/material info (e.g. "10nm CoFeB/MgO").
+        sample_description: Optional sample/material info (e.g. "100nm NiFe film").
             When provided and an LLM is configured, AI-suggested parameter
             optimizations are merged before user overrides.
 

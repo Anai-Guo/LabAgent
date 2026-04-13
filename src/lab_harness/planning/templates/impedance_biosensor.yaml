@@ -1,0 +1,23 @@
+# Impedance Biosensor Calibration measurement template
+name: "Impedance Biosensor"
+description: "Impedance vs analyte concentration for biosensor calibration curves"
+
+x_axis:
+  label: "Concentration"
+  unit: "ng/mL"
+  start: 0.0
+  stop: 1000.0
+  step: 10.0
+  role: "impedance_analyzer"
+
+y_channels:
+  - label: "Impedance Magnitude"
+    unit: "Ohm"
+    role: "impedance_analyzer"
+  - label: "Phase"
+    unit: "deg"
+    role: "impedance_analyzer"
+
+max_voltage_v: 0.5
+settling_time_s: 1.0
+num_averages: 3

@@ -1,0 +1,24 @@
+# Photo-IV (Solar Cell IV under illumination) measurement template
+name: "Photo-IV"
+description: "Solar cell IV curve under illumination, extract power characteristics"
+
+x_axis:
+  label: "Voltage"
+  unit: "V"
+  start: -0.2
+  stop: 1.0
+  step: 0.005
+  role: "source_meter"
+
+y_channels:
+  - label: "Current"
+    unit: "mA"
+    role: "source_meter"
+  - label: "Power"
+    unit: "mW"
+    role: "source_meter"
+
+max_voltage_v: 2.0
+max_current_a: 0.5
+settling_time_s: 0.05
+num_averages: 1

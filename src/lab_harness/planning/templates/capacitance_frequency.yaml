@@ -1,0 +1,23 @@
+# Capacitance-Frequency (C-f) measurement template
+name: "Capacitance-Frequency"
+description: "Frequency sweep at fixed DC bias, measure capacitance for trap analysis"
+
+x_axis:
+  label: "Frequency"
+  unit: "Hz"
+  start: 100.0
+  stop: 1000000.0
+  step: 0  # logarithmic sweep, step handled by instrument
+  role: "lcr_meter"
+
+y_channels:
+  - label: "Capacitance"
+    unit: "pF"
+    role: "lcr_meter"
+  - label: "Conductance"
+    unit: "uS"
+    role: "lcr_meter"
+
+max_voltage_v: 5.0
+settling_time_s: 0.1
+num_averages: 3

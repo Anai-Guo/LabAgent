@@ -1,0 +1,25 @@
+# Photocurrent spectroscopy measurement template
+# Sweep wavelength, measure photocurrent under illumination
+name: "Photocurrent Spectroscopy"
+description: "Sweep illumination wavelength and measure photocurrent for spectral response"
+
+x_axis:
+  label: "Wavelength"
+  unit: "nm"
+  start: 300.0
+  stop: 1100.0
+  step: 5.0
+  role: "monochromator"
+
+y_channels:
+  - label: "Photocurrent"
+    unit: "nA"
+    role: "source_meter"
+  - label: "Dark Current"
+    unit: "nA"
+    role: "source_meter"
+
+max_current_a: 0.001       # 1 mA photocurrent limit
+max_voltage_v: 10.0
+settling_time_s: 1.0        # Allow lamp/monochromator to stabilize
+num_averages: 3

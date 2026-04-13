@@ -1,0 +1,21 @@
+# Strain Gauge / Piezoresistive Characterization measurement template
+name: "Strain Gauge"
+description: "Strain sweep, measure resistance change for piezoresistive characterization"
+
+x_axis:
+  label: "Strain"
+  unit: "ustrain"
+  start: 0.0
+  stop: 5000.0
+  step: 50.0
+  role: "strain_controller"
+
+y_channels:
+  - label: "Resistance"
+    unit: "Ohm"
+    role: "dmm"
+
+max_voltage_v: 10.0
+max_current_a: 0.01
+settling_time_s: 0.5
+num_averages: 1

@@ -1,0 +1,26 @@
+# Pyroelectric current measurement template
+# Temperature ramp, measure pyroelectric current to find Curie temperature
+name: "Pyroelectric Current"
+description: "Ramp temperature and measure pyroelectric current for Curie temperature determination"
+
+x_axis:
+  label: "Temperature"
+  unit: "K"
+  start: 200.0
+  stop: 600.0
+  step: 1.0
+  role: "temperature_controller"
+
+y_channels:
+  - label: "Pyroelectric Current"
+    unit: "pA"
+    role: "electrometer"
+  - label: "Polarization"
+    unit: "uC/cm2"
+    role: "electrometer"
+
+max_temperature_k: 700.0   # High T for Curie temperature search
+max_voltage_v: 500.0
+max_current_a: 0.0001
+settling_time_s: 5.0         # Slow temperature ramp for pyroelectric measurement
+num_averages: 1

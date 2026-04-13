@@ -142,8 +142,37 @@ def test_plan_total_points_no_outer():
 
 
 def test_measurement_type_values():
-    """All seven measurement types are defined."""
-    expected = {"AHE", "MR", "IV", "RT", "SOT", "CV", "CUSTOM"}
+    """All measurement types are defined."""
+    expected = {
+        # Original
+        "AHE", "MR", "IV", "RT", "SOT", "CV",
+        # Electrical characterization
+        "DELTA", "HIGH_R", "TRANSFER", "OUTPUT", "BREAKDOWN",
+        # Thermoelectric
+        "SEEBECK", "THERMAL_CONDUCTIVITY",
+        # Magnetic
+        "HALL", "FMR", "HYSTERESIS",
+        # Optical / Photonic
+        "PHOTOCURRENT", "PHOTORESPONSE",
+        # Superconductivity
+        "TC", "JC",
+        # Dielectric / Ferroelectric
+        "PE_LOOP", "PYROELECTRIC",
+        # Chemistry / Electrochemistry
+        "CYCLIC_VOLTAMMETRY", "EIS", "CHRONOAMPEROMETRY", "POTENTIOMETRY",
+        # Biology / Biosensors
+        "IMPEDANCE_BIOSENSOR", "CELL_COUNTING",
+        # Materials Science
+        "STRAIN_GAUGE", "FATIGUE", "HUMIDITY_RESPONSE",
+        # Environmental / Sensor
+        "GAS_SENSOR", "PH_CALIBRATION",
+        # Semiconductor
+        "CAPACITANCE_FREQUENCY", "DLTS", "PHOTO_IV",
+        # Additional Physics
+        "MAGNETOSTRICTION", "NERNST", "TUNNELING",
+        # General purpose
+        "CUSTOM_SWEEP", "CUSTOM",
+    }
     actual = {mt.value for mt in MeasurementType}
     assert actual == expected
 

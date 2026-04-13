@@ -25,7 +25,7 @@
   <text x="80" y="105" text-anchor="middle" font-family="Segoe UI, Arial" font-size="22" fill="white">&#x1F9D1;</text>
   <text x="80" y="122" text-anchor="middle" font-family="Segoe UI, Arial" font-size="8" fill="#E0E7FF">Researcher</text>
   <text x="80" y="160" text-anchor="middle" font-family="Segoe UI, Arial" font-size="9" fill="#64748B" font-style="italic">"I want to measure</text>
-  <text x="80" y="172" text-anchor="middle" font-family="Segoe UI, Arial" font-size="9" fill="#64748B" font-style="italic">AHE on CoFeB/MgO"</text>
+  <text x="80" y="172" text-anchor="middle" font-family="Segoe UI, Arial" font-size="9" fill="#64748B" font-style="italic">IV on silicon wafer"</text>
 
   <!-- Arrow 1 -->
   <line x1="120" y1="110" x2="165" y2="110" stroke="#94A3B8" stroke-width="2" marker-end="url(#arrowW)"/>

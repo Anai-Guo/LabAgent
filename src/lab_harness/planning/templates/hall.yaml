@@ -1,0 +1,26 @@
+# Standard Hall effect measurement template
+# Field sweep, measure Hall voltage for carrier density and mobility
+name: "Hall Effect"
+description: "Sweep magnetic field and measure Hall voltage for carrier density and mobility"
+
+x_axis:
+  label: "Magnetic Field"
+  unit: "Oe"
+  start: -10000.0
+  stop: 10000.0
+  step: 200.0
+  role: "magnet"
+
+y_channels:
+  - label: "Hall Voltage"
+    unit: "V"
+    role: "dmm"
+  - label: "Longitudinal Voltage"
+    unit: "V"
+    role: "dmm_secondary"
+
+max_current_a: 0.001       # 1 mA typical for Hall measurement
+max_voltage_v: 20.0
+max_field_oe: 15000.0
+settling_time_s: 1.0
+num_averages: 3

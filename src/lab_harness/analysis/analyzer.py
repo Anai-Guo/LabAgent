@@ -106,7 +106,7 @@ class Analyzer:
         data_preview = _read_data_preview(data_path)
 
         system_prompt = (
-            "You are a data analysis expert for condensed matter physics experiments.\n"
+            "You are a data analysis expert for materials science and physics experiments.\n"
             "Generate a COMPLETE, self-contained Python analysis script.\n\n"
             "Requirements:\n"
             "- Use numpy, matplotlib, scipy as needed\n"
@@ -172,7 +172,7 @@ class Analyzer:
         router = LLMRouter(config=settings.model)
 
         system_prompt = (
-            "You are an expert condensed matter physicist analyzing transport measurement data.\n"
+            "You are an expert experimental scientist analyzing transport measurement data.\n"
             "Given the analysis results, provide a concise interpretation including:\n"
             "1. What the extracted values tell us about the sample\n"
             "2. Whether the results look physically reasonable\n"

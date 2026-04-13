@@ -1,0 +1,20 @@
+# Potentiometry (Open Circuit Potential) measurement template
+name: "Potentiometry"
+description: "Measure open circuit potential vs time for corrosion or battery studies"
+
+x_axis:
+  label: "Time"
+  unit: "s"
+  start: 0.0
+  stop: 3600.0
+  step: 1.0
+  role: "electrometer"
+
+y_channels:
+  - label: "Open Circuit Potential"
+    unit: "V"
+    role: "electrometer"
+
+max_voltage_v: 10.0
+settling_time_s: 0.5
+num_averages: 1

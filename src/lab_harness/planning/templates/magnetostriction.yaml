@@ -1,0 +1,23 @@
+# Magnetostriction measurement template
+name: "Magnetostriction"
+description: "Magnetic field sweep, measure strain or length change"
+
+x_axis:
+  label: "Magnetic Field"
+  unit: "Oe"
+  start: -5000.0
+  stop: 5000.0
+  step: 50.0
+  role: "magnet"
+
+y_channels:
+  - label: "Strain"
+    unit: "ustrain"
+    role: "strain_gauge"
+  - label: "Field"
+    unit: "Oe"
+    role: "gaussmeter"
+
+max_field_oe: 10000.0
+settling_time_s: 1.0
+num_averages: 1

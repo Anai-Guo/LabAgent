@@ -1,0 +1,24 @@
+# Generic custom sweep measurement template
+# User-defined X-Y sweep with minimal defaults
+name: "Custom Sweep"
+description: "Generic X-Y sweep measurement with user-defined axes and channels"
+
+x_axis:
+  label: "X Parameter"
+  unit: "arb."
+  start: 0.0
+  stop: 100.0
+  step: 1.0
+  role: "source_meter"
+
+y_channels:
+  - label: "Y Channel 1"
+    unit: "arb."
+    role: "dmm"
+
+max_current_a: 0.01
+max_voltage_v: 20.0
+max_field_oe: 10000.0
+max_temperature_k: 400.0
+settling_time_s: 0.5
+num_averages: 1

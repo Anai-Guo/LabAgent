@@ -136,7 +136,7 @@ async def search_literature(
 
     Args:
         measurement_type: Type of measurement (e.g., "AHE", "MR", "SOT", "IV", "RT", "CV").
-        sample_description: Optional sample details (e.g., "CoFeB/MgO bilayer").
+        sample_description: Optional sample details (e.g., "silicon wafer").
     """
     from lab_harness.literature.paper_pilot_client import PaperPilotClient
 
@@ -208,7 +208,7 @@ async def generate_skill(
         measurement_type: Type of measurement to generate a skill for
             (e.g., "MR", "AHE", "SOT", "FMR").
         sample_description: Optional sample context to tailor the protocol
-            (e.g., "Fe/MgO bilayer", "CoFeB thin film").
+            (e.g., "NiFe thin film", "GaAs wafer").
     """
     from lab_harness.skills.generator import generate_skill as _generate
     from lab_harness.skills.generator import save_skill

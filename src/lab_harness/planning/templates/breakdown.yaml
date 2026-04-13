@@ -1,0 +1,22 @@
+# Dielectric breakdown voltage test template
+# Voltage ramp to failure, monitor leakage current
+name: "Breakdown Voltage Test"
+description: "Ramp voltage until dielectric breakdown, monitoring leakage current"
+
+x_axis:
+  label: "Applied Voltage"
+  unit: "V"
+  start: 0.0
+  stop: 500.0
+  step: 1.0
+  role: "electrometer"
+
+y_channels:
+  - label: "Leakage Current"
+    unit: "nA"
+    role: "electrometer"
+
+max_voltage_v: 500.0       # High voltage for breakdown testing
+max_current_a: 0.001       # 1 mA compliance to protect sample
+settling_time_s: 0.5
+num_averages: 1

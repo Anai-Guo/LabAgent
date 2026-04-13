@@ -7,7 +7,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 SYSTEM_SAFETY = """\
-You are a laboratory safety advisor for condensed matter physics experiments.
+You are a laboratory safety advisor for materials science and physics experiments.
 When measurement parameters trigger safety warnings, provide:
 1. WHY this limit exists (specific damage mechanism)
 2. What could happen if exceeded (sample damage, instrument damage)

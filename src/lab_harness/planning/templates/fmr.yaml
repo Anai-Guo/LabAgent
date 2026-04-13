@@ -1,0 +1,25 @@
+# Ferromagnetic resonance (FMR) measurement template
+# Sweep magnetic field at fixed microwave frequency, measure absorption
+name: "Ferromagnetic Resonance"
+description: "Sweep magnetic field and measure microwave absorption for FMR spectroscopy"
+
+x_axis:
+  label: "Magnetic Field"
+  unit: "Oe"
+  start: 0.0
+  stop: 5000.0
+  step: 5.0
+  role: "magnet"
+
+y_channels:
+  - label: "Absorption Signal"
+    unit: "V"
+    role: "lock_in"
+  - label: "Dispersion Signal"
+    unit: "V"
+    role: "lock_in"
+
+max_field_oe: 10000.0
+max_voltage_v: 10.0
+settling_time_s: 0.3
+num_averages: 1

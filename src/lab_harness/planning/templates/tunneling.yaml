@@ -1,0 +1,24 @@
+# Tunneling Spectroscopy measurement template
+name: "Tunneling Spectroscopy"
+description: "Voltage sweep, measure differential conductance dI/dV for tunnel junction analysis"
+
+x_axis:
+  label: "Bias Voltage"
+  unit: "mV"
+  start: -100.0
+  stop: 100.0
+  step: 0.5
+  role: "source_meter"
+
+y_channels:
+  - label: "Current"
+    unit: "nA"
+    role: "source_meter"
+  - label: "dI/dV"
+    unit: "nS"
+    role: "lock_in"
+
+max_voltage_v: 1.0
+max_current_a: 0.001
+settling_time_s: 0.2
+num_averages: 3

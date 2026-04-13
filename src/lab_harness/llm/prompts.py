@@ -1,7 +1,7 @@
 """System prompts for each phase of the Lab Harness workflow."""
 
 SYSTEM_CLASSIFY = """\
-You are an expert laboratory instrument classifier for condensed matter physics.
+You are an expert laboratory instrument classifier for materials science and physics.
 Given a list of discovered instruments (vendor, model, resource address) and a
 set of unassigned measurement roles, assign each instrument to the most
 appropriate role.
@@ -36,7 +36,7 @@ You MUST respond with valid JSON matching this exact schema (no extra text):
 """
 
 SYSTEM_PLAN = """\
-You are a measurement planning assistant for condensed matter physics experiments.
+You are a measurement planning assistant for materials science and physics experiments.
 Given a measurement type and assigned instrument roles, propose a measurement plan
 with appropriate parameter ranges.
 
@@ -56,7 +56,7 @@ Output a structured measurement plan as JSON.
 """
 
 SYSTEM_ANALYZE = """\
-You are a data analysis assistant for condensed matter physics transport measurements.
+You are a data analysis assistant for materials science and physics transport measurements.
 Given measurement data files and the measurement type, generate appropriate analysis:
 
 - AHE: Extract anomalous Hall resistance (R_AHE), coercive field (H_c), plot R_xy vs H.

@@ -63,6 +63,78 @@ E4980A_CV_SEQUENCE = [
     ":FETC?",  # Fetch result
 ]
 
+# Keithley 6517B Electrometer (High Resistance)
+K6517B_INIT = [
+    "*RST",
+    ":SENS:FUNC 'CURR'",  # Measure current
+    ":SENS:CURR:RANG:AUTO ON",  # Auto-range
+    ":SOUR:VOLT:RANG {voltage_range}",  # Source voltage range
+    ":SOUR:VOLT {voltage}",  # Source voltage
+    ":FORM:ELEM READ",  # Return reading only
+]
+
+K6517B_MEASURE = [
+    ":OUTP ON",  # Enable voltage source
+    # ... wait settling_time ...
+    ":READ?",  # Trigger and read
+]
+
+K6517B_SHUTDOWN = [
+    ":SOUR:VOLT 0",  # Zero voltage
+    ":OUTP OFF",  # Disable output
+]
+
+# Keithley 2182A Nanovoltmeter
+K2182A_INIT = [
+    "*RST",
+    ":SENS:FUNC 'VOLT'",  # Measure voltage
+    ":SENS:VOLT:CHAN1:RANG:AUTO ON",  # Auto-range
+    ":SENS:VOLT:NPLC 5",  # 5 power line cycles for low noise
+    ":SYST:FAZ ON",  # Front autozero
+]
+
+K2182A_MEASURE = [
+    ":INIT",  # Initialize measurement
+    ":FETC?",  # Fetch reading
+]
+
+# Keithley 2000 Multimeter
+K2000_INIT = [
+    "*RST",
+    ":SENS:FUNC 'VOLT:DC'",  # DC voltage mode
+    ":SENS:VOLT:DC:RANG:AUTO ON",  # Auto-range
+    ":SENS:VOLT:DC:NPLC 10",  # 10 NPLC for high accuracy
+]
+
+K2000_MEASURE = [
+    ":INIT",  # Initialize measurement
+    ":FETC?",  # Fetch reading
+]
+
+# Stanford Research SR830 Lock-In Amplifier
+SR830_INIT = [
+    "OUTX 1",  # GPIB output
+    "SENS {sensitivity}",  # Sensitivity
+    "OFLT {time_constant}",  # Time constant
+    "RMOD 1",  # R, theta output
+]
+
+SR830_MEASURE = [
+    "SNAP? 3,4",  # Read R, theta simultaneously
+]
+
+# Agilent 34401A / Keysight 34461A Multimeter
+A34401_INIT = [
+    "*RST",
+    "CONF:VOLT:DC {range}",  # Configure DC voltage
+    "VOLT:DC:NPLC {nplc}",  # Integration time
+    "TRIG:SOUR IMM",  # Immediate trigger
+]
+
+A34401_MEASURE = [
+    "READ?",  # Trigger and read
+]
+
 # Measurement procedure templates
 PROCEDURES = {
     "IV_K2400": {
@@ -106,6 +178,51 @@ PROCEDURES = {
             "frequency": "1E3",
             "ac_voltage": "0.5",
             "dc_bias": "0",
+        },
+    },
+    "HIGH_R_K6517B": {
+        "description": "High resistance measurement with Keithley 6517B electrometer",
+        "init": K6517B_INIT,
+        "measure": K6517B_MEASURE,
+        "shutdown": K6517B_SHUTDOWN,
+        "parameters": {
+            "voltage_range": "100",  # V
+            "voltage": "10",  # V
+            "settling_time": "2.0",  # s (high-R needs longer settling)
+        },
+    },
+    "NANOVOLT_K2182A": {
+        "description": "Low-noise nanovoltage measurement with Keithley 2182A",
+        "init": K2182A_INIT,
+        "measure": K2182A_MEASURE,
+        "parameters": {
+            "nplc": "5",  # power line cycles
+        },
+    },
+    "DMM_K2000": {
+        "description": "General-purpose DC voltage/resistance with Keithley 2000",
+        "init": K2000_INIT,
+        "measure": K2000_MEASURE,
+        "parameters": {
+            "nplc": "10",  # power line cycles
+        },
+    },
+    "LOCKIN_SR830": {
+        "description": "AC measurement with Stanford Research SR830 lock-in amplifier",
+        "init": SR830_INIT,
+        "measure": SR830_MEASURE,
+        "parameters": {
+            "sensitivity": "10",  # index: 10 = 50 mV
+            "time_constant": "8",  # index: 8 = 100 ms
+        },
+    },
+    "DMM_A34401": {
+        "description": "General-purpose DMM with Agilent 34401A / Keysight 34461A",
+        "init": A34401_INIT,
+        "measure": A34401_MEASURE,
+        "parameters": {
+            "range": "10",  # V
+            "nplc": "10",  # power line cycles
         },
     },
 }

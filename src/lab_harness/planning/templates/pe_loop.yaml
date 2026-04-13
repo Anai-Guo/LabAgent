@@ -1,0 +1,24 @@
+# P-E hysteresis loop measurement template
+# Electric field sweep, measure polarization for ferroelectric characterization
+name: "P-E Hysteresis Loop"
+description: "Sweep electric field and measure polarization for ferroelectric P-E loop"
+
+x_axis:
+  label: "Electric Field"
+  unit: "kV/cm"
+  start: -200.0
+  stop: 200.0
+  step: 2.0
+  role: "hv_amplifier"
+
+y_channels:
+  - label: "Polarization"
+    unit: "uC/cm2"
+    role: "ferroelectric_tester"
+  - label: "Current"
+    unit: "uA"
+    role: "ferroelectric_tester"
+
+max_voltage_v: 1000.0      # High voltage for ferroelectric switching
+settling_time_s: 0.01       # Fast cycling for P-E measurement
+num_averages: 3

@@ -1,0 +1,21 @@
+# Cell Counting (Coulter counter style) measurement template
+name: "Cell Counting"
+description: "Voltage pulse detection and event counting for particle/cell sizing"
+
+x_axis:
+  label: "Time"
+  unit: "s"
+  start: 0.0
+  stop: 60.0
+  step: 0.001
+  role: "source_meter"
+
+y_channels:
+  - label: "Pulse Voltage"
+    unit: "mV"
+    role: "source_meter"
+
+max_voltage_v: 1.0
+max_current_a: 0.001
+settling_time_s: 0.0
+num_averages: 1

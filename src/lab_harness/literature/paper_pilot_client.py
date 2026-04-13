@@ -21,15 +21,15 @@ class LiteratureContext(BaseModel):
 RESEARCH_QUESTIONS: dict[str, str] = {
     "AHE": (
         "What instruments, field ranges, current levels, and protocols are used "
-        "for anomalous Hall effect measurement in magnetic thin films?"
+        "for anomalous Hall effect measurement in metallic films?"
     ),
     "MR": (
         "What field sweep ranges, current bias levels, and configurations are used "
-        "for magnetoresistance measurements in thin film heterostructures?"
+        "for magnetoresistance measurements in multilayer samples?"
     ),
     "SOT": (
         "What pulse current amplitudes, field ranges, and measurement sequences "
-        "are used for spin-orbit torque characterization via loop shift?"
+        "are used for spin-orbit torque characterization?"
     ),
     "IV": (
         "What current ranges, voltage compliance, and measurement procedures are "

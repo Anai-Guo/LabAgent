@@ -1,0 +1,20 @@
+# Chronoamperometry measurement template
+name: "Chronoamperometry"
+description: "Step voltage and measure current vs time for diffusion studies"
+
+x_axis:
+  label: "Time"
+  unit: "s"
+  start: 0.0
+  stop: 60.0
+  step: 0.1
+  role: "potentiostat"
+
+y_channels:
+  - label: "Current"
+    unit: "uA"
+    role: "potentiostat"
+
+max_voltage_v: 2.0
+settling_time_s: 0.01
+num_averages: 1

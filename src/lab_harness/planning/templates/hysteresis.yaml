@@ -1,0 +1,21 @@
+# Magnetic hysteresis loop measurement template
+# Field sweep, measure magnetization via VSM or SQUID
+name: "Magnetic Hysteresis Loop"
+description: "Sweep magnetic field and measure magnetization (M-H loop via VSM/SQUID)"
+
+x_axis:
+  label: "Magnetic Field"
+  unit: "Oe"
+  start: -20000.0
+  stop: 20000.0
+  step: 100.0
+  role: "magnet"
+
+y_channels:
+  - label: "Magnetization"
+    unit: "emu"
+    role: "magnetometer"
+
+max_field_oe: 30000.0      # VSM/SQUID can go to high fields
+settling_time_s: 0.5
+num_averages: 1

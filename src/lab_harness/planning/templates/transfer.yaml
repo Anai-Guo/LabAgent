@@ -1,0 +1,25 @@
+# FET transfer curve measurement template
+# Gate voltage sweep at fixed drain voltage, measure drain current
+name: "FET Transfer Curve"
+description: "Sweep gate voltage and measure drain current for transistor characterization"
+
+x_axis:
+  label: "Gate Voltage"
+  unit: "V"
+  start: -5.0
+  stop: 5.0
+  step: 0.05
+  role: "source_meter_gate"
+
+y_channels:
+  - label: "Drain Current"
+    unit: "uA"
+    role: "source_meter_drain"
+  - label: "Gate Leakage"
+    unit: "nA"
+    role: "source_meter_gate"
+
+max_voltage_v: 40.0        # Gate voltage limit
+max_current_a: 0.01        # 10 mA drain current limit
+settling_time_s: 0.2
+num_averages: 1

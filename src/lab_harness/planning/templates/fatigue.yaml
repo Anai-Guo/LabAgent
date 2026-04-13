@@ -1,0 +1,24 @@
+# Fatigue / Cyclic Stress Degradation measurement template
+name: "Fatigue Test"
+description: "Cyclic stress loading, measure resistance degradation over cycles"
+
+x_axis:
+  label: "Cycle Number"
+  unit: "cycles"
+  start: 1.0
+  stop: 10000.0
+  step: 1.0
+  role: "strain_controller"
+
+y_channels:
+  - label: "Resistance"
+    unit: "Ohm"
+    role: "dmm"
+  - label: "Stress"
+    unit: "MPa"
+    role: "load_cell"
+
+max_voltage_v: 10.0
+max_current_a: 0.01
+settling_time_s: 0.1
+num_averages: 1
