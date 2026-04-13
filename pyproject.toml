@@ -36,6 +36,10 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
+tui = [
+    "textual>=3.0.0",
+    "rich>=13.0.0",
+]
 web = [
     "fastapi>=0.115.0",
     "uvicorn>=0.30.0",

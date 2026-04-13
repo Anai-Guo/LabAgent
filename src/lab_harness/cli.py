@@ -163,6 +163,18 @@ def cmd_web(args: argparse.Namespace, settings: Settings) -> None:
     run_web(host=args.host, port=args.port)
 
 
+def cmd_panel(args: argparse.Namespace, settings: Settings) -> None:
+    """Launch the Claude Code-style terminal panel."""
+    try:
+        from lab_harness.harness.tui.app import run_panel
+    except ImportError:
+        print("Error: textual is required for the terminal panel.")
+        print("Install it with:  pip install ai-harness-for-lab[tui]")
+        sys.exit(1)
+
+    run_panel(model=args.model)
+
+
 def cmd_serve(args: argparse.Namespace, settings: Settings) -> None:
     """Start the MCP server."""
     from lab_harness.server import run_server
@@ -226,6 +238,10 @@ def main() -> None:
     p_web.add_argument("--host", default="127.0.0.1", help="Bind address (default: 127.0.0.1)")
     p_web.add_argument("--port", type=int, default=8080, help="Port (default: 8080)")
 
+    # panel
+    p_panel = sub.add_parser("panel", help="Launch the terminal panel (TUI)")
+    p_panel.add_argument("--model", help="Override model name (e.g. claude-sonnet-4-20250514)")
+
     # serve
     sub.add_parser("serve", help="Start MCP server")
 
@@ -244,6 +260,7 @@ def main() -> None:
         "analyze": cmd_analyze,
         "procedures": cmd_procedures,
         "chat": cmd_chat,
+        "panel": cmd_panel,
         "web": cmd_web,
         "serve": cmd_serve,
     }
