@@ -77,20 +77,27 @@ def cmd_analyze(args: argparse.Namespace, settings: Settings) -> None:
 
     output_dir = Path(args.output) if args.output else Path("./data/analysis")
     analyzer = Analyzer(output_dir=output_dir)
+    use_ai = getattr(args, "ai", False)
+    interpret = getattr(args, "interpret", False)
+    instructions = getattr(args, "instructions", "") or ""
 
-    script = analyzer.generate_script(data_path, args.type)
-    script_path = analyzer.save_script(script, args.type.lower())
-    print(f"Generated analysis script: {script_path}")
+    result = analyzer.analyze(
+        data_path,
+        args.type,
+        use_ai=use_ai,
+        custom_instructions=instructions,
+        interpret=interpret,
+    )
 
-    if not args.no_run:
-        print("Running analysis...")
-        result = analyzer.run_script(script_path)
-        print(f"\nMeasurement type: {result.measurement_type}")
-        if result.figures:
-            print(f"Figures: {', '.join(result.figures)}")
-    else:
-        print("Skipped execution (--no-run). Run manually with:")
-        print(f"  python {script_path}")
+    print(f"Script: {result.script_path}")
+    if result.stdout:
+        print(f"\n{result.stdout}")
+    if result.figures:
+        print(f"Figures: {', '.join(result.figures)}")
+    if result.extracted_values:
+        print(f"Extracted: {json.dumps(result.extracted_values, indent=2)}")
+    if result.ai_interpretation:
+        print(f"\nAI Interpretation:\n{result.ai_interpretation}")
 
 
 def cmd_chat(args: argparse.Namespace, settings: Settings) -> None:
@@ -163,7 +170,9 @@ def main() -> None:
     p_analyze.add_argument("data_file", help="Path to measurement data CSV file")
     p_analyze.add_argument("--type", required=True, help="Measurement type (AHE, MR, IV, RT)")
     p_analyze.add_argument("--output", help="Output directory (default: ./data/analysis)")
-    p_analyze.add_argument("--no-run", action="store_true", help="Generate script only, don't execute")
+    p_analyze.add_argument("--ai", action="store_true", help="Use AI to generate analysis script")
+    p_analyze.add_argument("--interpret", action="store_true", help="Add AI interpretation of results")
+    p_analyze.add_argument("--instructions", help="Custom analysis instructions for AI")
 
     # chat
     sub.add_parser("chat", help="Interactive chat with the agent")

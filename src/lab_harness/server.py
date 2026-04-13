@@ -155,16 +155,26 @@ async def analyze_data(
     data_path: str,
     measurement_type: str,
     output_dir: str = "./data/analysis",
+    use_ai: bool = False,
+    custom_instructions: str = "",
+    interpret: bool = False,
 ) -> dict:
-    """Analyze measurement data using built-in templates.
+    """Analyze measurement data with template or AI-generated scripts.
 
-    Generates an analysis script from a template, executes it,
-    and returns extracted values and figure paths.
+    Three analysis tiers:
+    1. Template-based (default): built-in scripts for AHE, MR, IV, RT
+    2. AI-generated (use_ai=True): LLM creates custom analysis script
+    3. AI-interpreted (interpret=True): LLM explains results with physics insights
+
+    If no template exists for the measurement type, automatically falls back to AI.
 
     Args:
         data_path: Path to the measurement data CSV file.
-        measurement_type: Type of measurement (AHE, MR, IV, RT).
+        measurement_type: Type of measurement (AHE, MR, IV, RT, SOT, CV, or custom).
         output_dir: Directory for output scripts and figures.
+        use_ai: Force AI script generation instead of template.
+        custom_instructions: Extra instructions for AI analysis (e.g. "focus on coercivity").
+        interpret: Add AI interpretation of results with physics insights.
     """
     from pathlib import Path as _Path
 
@@ -176,13 +186,15 @@ async def analyze_data(
         return {"error": f"Data file not found: {data_path}"}
 
     try:
-        script = analyzer.generate_script(dp, measurement_type)
-        script_path = analyzer.save_script(script, measurement_type.lower())
-        result = analyzer.run_script(script_path)
+        result = analyzer.analyze(
+            dp,
+            measurement_type,
+            use_ai=use_ai,
+            custom_instructions=custom_instructions,
+            interpret=interpret,
+        )
         return result.model_dump()
-    except FileNotFoundError as exc:
-        return {"error": str(exc)}
-    except RuntimeError as exc:
+    except (FileNotFoundError, RuntimeError) as exc:
         return {"error": str(exc)}
 
 
