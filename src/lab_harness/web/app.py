@@ -11,11 +11,16 @@ HTML templates are in web/templates/:
 
 from __future__ import annotations
 
+import asyncio
 import logging
+import math
+import random
+import time
 from pathlib import Path
 
-from fastapi import FastAPI
+from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from fastapi.responses import HTMLResponse
+from pydantic import BaseModel
 
 logger = logging.getLogger(__name__)
 
@@ -119,6 +124,71 @@ async def create_plan(measurement_type: str, overrides: dict | None = None):
         "plan": plan.model_dump(),
         "validation": validation.model_dump(),
     }
+
+
+class MeasurementRequest(BaseModel):
+    measurement_type: str
+    x_start: float | None = None
+    x_stop: float | None = None
+    x_step: float | None = None
+    settling_time_s: float | None = None
+    num_averages: int | None = None
+    sample_description: str = ""
+
+
+@app.post("/api/configure")
+async def configure_measurement(request: MeasurementRequest):
+    """Accept measurement configuration from dashboard form, return validated plan."""
+    overrides = {}
+    if request.x_start is not None:
+        overrides["x_axis"] = {
+            "start": request.x_start,
+            "stop": request.x_stop,
+            "step": request.x_step,
+        }
+    if request.settling_time_s is not None:
+        overrides["settling_time_s"] = request.settling_time_s
+    if request.num_averages is not None:
+        overrides["num_averages"] = request.num_averages
+
+    from lab_harness.planning.boundary_checker import check_boundaries
+    from lab_harness.planning.plan_builder import build_plan_from_template
+
+    plan = build_plan_from_template(
+        request.measurement_type,
+        overrides=overrides,
+        sample_description=request.sample_description,
+    )
+    validation = check_boundaries(plan)
+
+    return {
+        "plan": plan.model_dump(),
+        "validation": validation.model_dump(),
+        "total_points": plan.total_points,
+    }
+
+
+@app.websocket("/ws/stream")
+async def ws_stream(websocket: WebSocket):
+    """WebSocket endpoint for real-time measurement data streaming."""
+    await websocket.accept()
+    t0 = time.time()
+    try:
+        while True:
+            t = time.time() - t0
+            # Simulated data (replace with real instrument reads later)
+            data = {
+                "timestamp": t,
+                "voltage": 0.5 * (1 + 0.8 * math.sin(t * 0.3)) + random.gauss(0, 0.01),
+                "current": 1e-4 * (1 + 0.5 * math.sin(t * 0.3)) + random.gauss(0, 1e-6),
+                "resistance": 5000 + 200 * math.sin(t * 0.1) + random.gauss(0, 5),
+                "temperature": 300 + 0.5 * math.sin(t * 0.05) + random.gauss(0, 0.1),
+                "field": 2000 * math.sin(t * 0.2),
+            }
+            await websocket.send_json(data)
+            await asyncio.sleep(0.5)
+    except (WebSocketDisconnect, Exception):
+        pass
 
 
 @app.get("/api/health")

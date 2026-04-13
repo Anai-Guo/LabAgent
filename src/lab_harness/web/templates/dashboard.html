@@ -178,19 +178,19 @@ function renderForm(t) {
 
 async function validatePlan() {
   if (!currentTemplate) return;
-  const overrides = {
-    x_axis: {
-      start: parseFloat(document.getElementById("x_start").value),
-      stop: parseFloat(document.getElementById("x_stop").value),
-      step: parseFloat(document.getElementById("x_step").value),
-    },
+  const payload = {
+    measurement_type: currentTemplate._key,
+    x_start: parseFloat(document.getElementById("x_start").value),
+    x_stop: parseFloat(document.getElementById("x_stop").value),
+    x_step: parseFloat(document.getElementById("x_step").value),
     settling_time_s: parseFloat(document.getElementById("settling").value),
     num_averages: parseInt(document.getElementById("averages").value),
+    sample_description: "",
   };
-  const res = await fetch("/api/plan?measurement_type=" + currentTemplate._key, {
+  const res = await fetch("/api/configure", {
     method: "POST",
     headers: {"Content-Type": "application/json"},
-    body: JSON.stringify(overrides),
+    body: JSON.stringify(payload),
   });
   const data = await res.json();
   const el = document.getElementById("result");
@@ -200,7 +200,7 @@ async function validatePlan() {
   el.innerHTML = `<span style="color:${color};font-weight:bold;">${v.decision.toUpperCase()}</span>\\n`;
   if (v.warnings?.length) el.innerHTML += "Warnings:\\n" + v.warnings.map(w=>"  - "+w).join("\\n") + "\\n";
   if (v.violations?.length) el.innerHTML += "Violations:\\n" + v.violations.map(v=>"  - "+v.message).join("\\n") + "\\n";
-  el.innerHTML += "\\nTotal points: " + data.plan.x_axis.num_points;
+  el.innerHTML += "\\nTotal points: " + (data.total_points || data.plan.x_axis.num_points);
   if (v.ai_advice) el.innerHTML += "\\n\\nAI Advice: " + v.ai_advice;
 }
 

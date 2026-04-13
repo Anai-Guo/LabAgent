@@ -28,27 +28,27 @@ classifiers = [
     "Topic :: Scientific/Engineering :: Physics",
 ]
 dependencies = [
-    "mcp>=1.12.0",
-    "litellm>=1.50.0",
-    "pyvisa>=1.14.0",
-    "pyyaml>=6.0",
-    "pydantic>=2.0",
+    "mcp>=1.12.0,<2",
+    "litellm>=1.50.0,<2",
+    "pyvisa>=1.14.0,<2",
+    "pyyaml>=6.0,<7",
+    "pydantic>=2.0,<3",
 ]
 
 [project.optional-dependencies]
 tui = [
-    "textual>=3.0.0",
-    "rich>=13.0.0",
+    "textual>=3.0.0,<4",
+    "rich>=13.0.0,<14",
 ]
 web = [
-    "fastapi>=0.115.0",
-    "uvicorn>=0.30.0",
+    "fastapi>=0.115.0,<1",
+    "uvicorn>=0.30.0,<1",
 ]
 execution = [
-    "pymeasure>=0.14.0",
+    "pymeasure>=0.14.0,<1",
     "nidaqmx>=1.0.0",
     "pyqtgraph>=0.13.0",
-    "MultiPyVu>=3.0.0",
+    "MultiPyVu>=3.0.0,<4",
 ]
 dev = [
     "pytest>=8.0",

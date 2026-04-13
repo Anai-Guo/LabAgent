@@ -1,11 +1,15 @@
-"""Client for paper-pilot MCP server."""
+"""Client for paper-pilot MCP server with LLM-based fallback."""
 
 from __future__ import annotations
 
+import json
+import logging
 from dataclasses import dataclass
 from typing import Any
 
 from pydantic import BaseModel
+
+logger = logging.getLogger(__name__)
 
 
 class LiteratureContext(BaseModel):
@@ -42,10 +46,33 @@ RESEARCH_QUESTIONS: dict[str, str] = {
     "CV": ("What DC bias ranges, frequencies, and procedures are used for capacitance-voltage measurements?"),
 }
 
+# System prompt for the LLM-based protocol suggestion fallback
+_PROTOCOL_SYSTEM_PROMPT = """\
+You are an expert in condensed matter physics transport measurements.
+Given a measurement type and optional sample description, suggest a concrete
+measurement protocol with instrument parameters.
+
+Respond ONLY with valid JSON in this exact schema (no markdown fences):
+{
+  "suggested_parameters": {
+    "<parameter_name>": "<value with units>"
+  },
+  "evidence_chunks": [
+    "<brief justification sentence>"
+  ],
+  "instruments": [
+    "<instrument role: typical model>"
+  ]
+}
+
+Include typical numeric ranges, units, and common instrument models.
+Be specific and practical -- these parameters will seed a measurement plan.\
+"""
+
 
 @dataclass
 class PaperPilotClient:
-    """Client that calls paper-pilot MCP tools for literature context."""
+    """Client that queries paper-pilot MCP or falls back to LLM-based suggestions."""
 
     enabled: bool = True
 
@@ -54,22 +81,176 @@ class PaperPilotClient:
         measurement_type: str,
         sample_description: str = "",
     ) -> LiteratureContext:
-        """Query paper-pilot for measurement protocol information.
+        """Query for measurement protocol information.
 
-        Currently returns a stub context. Full MCP client integration
-        will connect to paper-pilot's deep_read_topic tool.
+        Strategy:
+        1. Try paper-pilot MCP server (if available and enabled).
+        2. Fall back to LLM-based protocol suggestion via litellm.
+
+        Returns a LiteratureContext with suggested parameters that can
+        seed the measurement planning pipeline.
         """
         mt = measurement_type.upper()
-        question = RESEARCH_QUESTIONS.get(mt, f"What measurement protocol is used for {mt}?")
 
-        if sample_description:
-            question = f"{question} Specifically for {sample_description}."
+        # Try 1: paper-pilot MCP
+        if self.enabled:
+            try:
+                result = await self._try_paper_pilot(mt, sample_description)
+                if result is not None:
+                    return result
+            except Exception:
+                logger.debug("paper-pilot MCP unavailable, falling back to LLM")
 
-        # TODO: Connect to paper-pilot MCP server via mcp.client
-        # For now, return empty context indicating no literature available
+        # Try 2: LLM-based protocol suggestion
+        return await self._llm_fallback(mt, sample_description)
+
+    # ------------------------------------------------------------------
+    # paper-pilot MCP path
+    # ------------------------------------------------------------------
+
+    async def _try_paper_pilot(
+        self,
+        measurement_type: str,
+        sample_description: str,
+    ) -> LiteratureContext | None:
+        """Attempt to connect to paper-pilot MCP and query for protocols.
+
+        Returns None if paper-pilot is not reachable so the caller can
+        fall back to the LLM path.
+        """
+        try:
+            from mcp import ClientSession, StdioServerParameters
+            from mcp.client.stdio import stdio_client
+        except ImportError:
+            logger.debug("mcp package not installed; skipping paper-pilot")
+            return None
+
+        server_params = StdioServerParameters(
+            command="npx",
+            args=["-y", "@anthropic-ai/paper-pilot"],
+        )
+
+        try:
+            async with stdio_client(server_params) as (read_stream, write_stream):
+                async with ClientSession(read_stream, write_stream) as session:
+                    await session.initialize()
+
+                    question = RESEARCH_QUESTIONS.get(
+                        measurement_type,
+                        f"What measurement protocol is used for {measurement_type}?",
+                    )
+                    if sample_description:
+                        question = f"{question} Specifically for {sample_description}."
+
+                    result = await session.call_tool(
+                        "deep_read_topic",
+                        arguments={"topic": question},
+                    )
+
+                    return self._parse_mcp_result(measurement_type, result)
+        except Exception as exc:
+            logger.debug("paper-pilot MCP call failed: %s", exc)
+            return None
+
+    @staticmethod
+    def _parse_mcp_result(
+        measurement_type: str,
+        mcp_result: Any,
+    ) -> LiteratureContext:
+        """Parse an MCP tool result into LiteratureContext."""
+        text = ""
+        if hasattr(mcp_result, "content"):
+            for block in mcp_result.content:
+                if hasattr(block, "text"):
+                    text += block.text
+        else:
+            text = str(mcp_result)
+
         return LiteratureContext(
-            measurement_type=mt,
+            measurement_type=measurement_type,
             suggested_parameters={},
-            evidence_chunks=[],
+            evidence_chunks=[text[:500]] if text else [],
             source_papers=[],
+        )
+
+    # ------------------------------------------------------------------
+    # LLM fallback path
+    # ------------------------------------------------------------------
+
+    async def _llm_fallback(
+        self,
+        measurement_type: str,
+        sample_description: str,
+    ) -> LiteratureContext:
+        """Use litellm to generate protocol suggestions from LLM knowledge."""
+        from lab_harness.config import Settings
+        from lab_harness.llm.router import LLMRouter
+
+        question = RESEARCH_QUESTIONS.get(
+            measurement_type,
+            f"What measurement protocol is used for {measurement_type}?",
+        )
+        if sample_description:
+            question = f"{question} Specifically for sample: {sample_description}."
+
+        settings = Settings.load()
+        router = LLMRouter(config=settings.model)
+
+        messages = [
+            {"role": "system", "content": _PROTOCOL_SYSTEM_PROMPT},
+            {"role": "user", "content": question},
+        ]
+
+        try:
+            response = await router.acomplete(messages)
+            content = response["choices"][0]["message"].get("content", "")
+            return self._parse_llm_response(measurement_type, content)
+        except Exception as exc:
+            logger.warning("LLM fallback failed: %s", exc)
+            return LiteratureContext(
+                measurement_type=measurement_type,
+                suggested_parameters={},
+                evidence_chunks=[f"LLM fallback error: {exc}"],
+                source_papers=[],
+            )
+
+    @staticmethod
+    def _parse_llm_response(
+        measurement_type: str,
+        content: str,
+    ) -> LiteratureContext:
+        """Parse the LLM JSON response into LiteratureContext."""
+        # Strip markdown fences if the LLM included them despite instructions
+        text = content.strip()
+        if text.startswith("```"):
+            # Remove opening fence (```json or ```)
+            first_newline = text.index("\n")
+            text = text[first_newline + 1 :]
+        if text.endswith("```"):
+            text = text[: -len("```")]
+        text = text.strip()
+
+        try:
+            data = json.loads(text)
+        except json.JSONDecodeError:
+            logger.warning("Could not parse LLM response as JSON")
+            return LiteratureContext(
+                measurement_type=measurement_type,
+                suggested_parameters={},
+                evidence_chunks=[content[:500]],
+                source_papers=[],
+            )
+
+        suggested = data.get("suggested_parameters", {})
+        evidence = data.get("evidence_chunks", [])
+        instruments = data.get("instruments", [])
+
+        # Fold instrument suggestions into source_papers as pseudo-references
+        source_papers = [{"source": "LLM knowledge", "instruments": instruments}] if instruments else []
+
+        return LiteratureContext(
+            measurement_type=measurement_type,
+            suggested_parameters=suggested,
+            evidence_chunks=evidence if isinstance(evidence, list) else [str(evidence)],
+            source_papers=source_papers,
         )

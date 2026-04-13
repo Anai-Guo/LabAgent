@@ -1315,13 +1315,146 @@ updatePresetList();
 // Initial log entries
 addLog("Monitor initialized", "ok");
 addLog("Channels configured: " + (CHANNELS.length - 1), "");
-addLog("Demo mode active -- simulated data", "warn");
 
-// Main loop
+/* ═══════════════════════════════════════════
+   WebSocket Real Data
+   ═══════════════════════════════════════════ */
+let ws = null;
+let wsConnected = false;
+
+function pushRealData(data) {
+  if (paused) return;
+
+  const maxPts = parseInt(document.getElementById("maxPoints").value) || 200;
+  const t = data.timestamp || ((Date.now() - startTime) / 1000);
+
+  sweepCurrent++;
+  if (sweepCurrent > sweepTotal) sweepCurrent = 1;
+
+  simTime.push(t);
+  if (simTime.length > maxPts) simTime.shift();
+
+  // Map WebSocket fields into simData channels
+  const vals = { time: t };
+  CHANNELS.forEach(ch => {
+    if (ch.id === "time") return;
+    if (data[ch.id] !== undefined) {
+      vals[ch.id] = data[ch.id];
+    } else {
+      // Keep last known value or zero
+      const arr = simData[ch.id];
+      vals[ch.id] = (arr && arr.length > 0) ? arr[arr.length - 1] : 0;
+    }
+    if (!simData[ch.id]) simData[ch.id] = [];
+    simData[ch.id].push(vals[ch.id]);
+    if (simData[ch.id].length > maxPts) simData[ch.id].shift();
+  });
+
+  // Update sidebar channel values
+  CHANNELS.forEach(ch => {
+    if (ch.id === "time") return;
+    const el = document.getElementById("side_" + ch.id);
+    if (el) el.textContent = formatValue(vals[ch.id], ch.id) + " " + ch.unit;
+  });
+
+  // Update metric cards
+  METRIC_DEFS.forEach(m => {
+    const el = document.getElementById("metric_" + m.ch);
+    const ch = CHANNELS.find(c => c.id === m.ch);
+    if (el && ch) {
+      el.innerHTML = formatValue(vals[m.ch], m.ch) + '<span class="metric-card-unit">' + ch.unit + '</span>';
+    }
+    const dEl = document.getElementById("metricDelta_" + m.ch);
+    if (dEl && simData[m.ch] && simData[m.ch].length > 2) {
+      const prev = simData[m.ch][simData[m.ch].length - 2];
+      const delta = vals[m.ch] - prev;
+      const sign = delta >= 0 ? "+" : "";
+      dEl.textContent = sign + delta.toExponential(2) + " /step";
+    }
+  });
+
+  // Sweep progress
+  sweepProgress = (sweepCurrent / sweepTotal) * 100;
+  document.getElementById("sweepFill").style.width = sweepProgress.toFixed(1) + "%";
+  document.getElementById("sweepPct").textContent = sweepProgress.toFixed(1) + "%";
+  document.getElementById("sweepStep").textContent = sweepCurrent + " / " + sweepTotal;
+
+  const elapsedSec = Math.floor((Date.now() - startTime) / 1000);
+  document.getElementById("sweepElapsed").textContent = formatTime(elapsedSec);
+  if (sweepCurrent > 0) {
+    const etaSec = Math.floor(elapsedSec / sweepCurrent * (sweepTotal - sweepCurrent));
+    document.getElementById("sweepEta").textContent = formatTime(etaSec);
+  }
+
+  // Update charts
+  const timeLabels = simTime.map(t => t.toFixed(1));
+  const maxChartIdx = Math.max(3, 3 + customPanelCount);
+  for (let idx = 0; idx <= maxChartIdx; idx++) {
+    if (!charts[idx]) continue;
+    const cx = document.getElementById("chart" + idx + "_x")?.value || "time";
+    const cy = document.getElementById("chart" + idx + "_y")?.value || "voltage";
+    if (cx === "time") {
+      charts[idx].config.type = "line";
+      charts[idx].data.labels = timeLabels;
+      charts[idx].data.datasets[0].data = simData[cy]?.slice() || [];
+      charts[idx].data.datasets[0].showLine = undefined;
+    } else {
+      const cxd = simData[cx] || [];
+      const cyd = simData[cy] || [];
+      charts[idx].config.type = "scatter";
+      charts[idx].data.labels = [];
+      charts[idx].data.datasets[0].data = cxd.map((xv, i) => ({ x: xv, y: cyd[i] || 0 }));
+      charts[idx].data.datasets[0].showLine = true;
+    }
+    charts[idx].update("none");
+  }
+
+  updateStatusTab();
+}
+
+function connectWebSocket() {
+  const protocol = location.protocol === "https:" ? "wss:" : "ws:";
+  ws = new WebSocket(protocol + "//" + location.host + "/ws/stream");
+  ws.onopen = () => {
+    wsConnected = true;
+    addLog("WebSocket connected -- live data streaming", "ok");
+    // Stop simulation loop when WebSocket is active
+    clearInterval(simInterval);
+  };
+  ws.onmessage = (event) => {
+    const data = JSON.parse(event.data);
+    pushRealData(data);
+  };
+  ws.onclose = () => {
+    if (wsConnected) {
+      addLog("WebSocket closed, falling back to simulation", "warn");
+    }
+    wsConnected = false;
+    ws = null;
+    // Restart simulation fallback
+    simInterval = setInterval(updateAll, parseInt(document.getElementById("refreshRate").value));
+    addLog("Demo mode active -- simulated data", "warn");
+  };
+  ws.onerror = () => {
+    // onclose will fire after onerror, so fallback is handled there
+  };
+}
+
+// Try WebSocket first, fall back to simulation
+addLog("Attempting WebSocket connection...", "");
+try { connectWebSocket(); } catch(e) {
+  addLog("WebSocket unavailable, using simulation", "warn");
+}
+
+// Main simulation loop (used as fallback when WebSocket is not available)
+addLog("Demo mode active -- simulated data", "warn");
 let simInterval = setInterval(updateAll, 1000);
 document.getElementById("refreshRate").addEventListener("change", function() {
   clearInterval(simInterval);
-  simInterval = setInterval(updateAll, parseInt(this.value));
+  const rate = parseInt(this.value);
+  if (!wsConnected) {
+    simInterval = setInterval(updateAll, rate);
+  }
   addLog("Refresh rate changed to " + this.value + " ms", "");
 });
 

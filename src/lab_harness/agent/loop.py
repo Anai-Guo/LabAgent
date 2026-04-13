@@ -9,90 +9,12 @@ from dataclasses import dataclass, field
 
 from lab_harness.agent.budget import Budget
 from lab_harness.config import Settings
+from lab_harness.harness.tools.base import ToolContext, ToolRegistry, create_default_registry
 from lab_harness.memory.snapshot import MemorySnapshot
 from lab_harness.memory.store import MemoryStore
 from lab_harness.skills.registry import SkillRegistry
 
 logger = logging.getLogger(__name__)
-
-# Tool definitions for the LLM (OpenAI function-calling format)
-AGENT_TOOLS = [
-    {
-        "type": "function",
-        "function": {
-            "name": "scan_instruments",
-            "description": "Scan lab for connected GPIB/USB/serial instruments",
-            "parameters": {"type": "object", "properties": {}, "required": []},
-        },
-    },
-    {
-        "type": "function",
-        "function": {
-            "name": "classify_instruments",
-            "description": "Classify discovered instruments into measurement roles",
-            "parameters": {
-                "type": "object",
-                "properties": {
-                    "measurement_type": {
-                        "type": "string",
-                        "description": "AHE, MR, IV, RT, SOT, CV",
-                    },
-                },
-                "required": ["measurement_type"],
-            },
-        },
-    },
-    {
-        "type": "function",
-        "function": {
-            "name": "propose_measurement",
-            "description": "Generate a measurement plan with safety validation",
-            "parameters": {
-                "type": "object",
-                "properties": {
-                    "measurement_type": {"type": "string"},
-                    "sample_description": {
-                        "type": "string",
-                        "description": "Sample info for parameter optimization",
-                    },
-                },
-                "required": ["measurement_type"],
-            },
-        },
-    },
-    {
-        "type": "function",
-        "function": {
-            "name": "search_literature",
-            "description": "Search scientific literature for measurement protocols",
-            "parameters": {
-                "type": "object",
-                "properties": {
-                    "measurement_type": {"type": "string"},
-                    "sample_description": {"type": "string"},
-                },
-                "required": ["measurement_type"],
-            },
-        },
-    },
-    {
-        "type": "function",
-        "function": {
-            "name": "recall_experiments",
-            "description": "Search experiment history for similar past measurements",
-            "parameters": {
-                "type": "object",
-                "properties": {
-                    "query": {
-                        "type": "string",
-                        "description": "Search query for experiment history",
-                    },
-                },
-                "required": ["query"],
-            },
-        },
-    },
-]
 
 
 @dataclass
@@ -104,6 +26,7 @@ class LabAgent:
     skill_registry: SkillRegistry = field(default_factory=SkillRegistry)
     history: list[dict[str, str]] = field(default_factory=list)
     memory_store: MemoryStore = field(default_factory=MemoryStore)
+    tool_registry: ToolRegistry = field(default_factory=create_default_registry)
     _snapshot: MemorySnapshot | None = field(default=None, init=False, repr=False)
 
     def __post_init__(self):
@@ -117,7 +40,7 @@ class LabAgent:
         1. Load skill registry (progressive disclosure)
         2. Build system prompt with available tools
         3. Call LLM via litellm router with tool definitions
-        4. If tool_calls → execute tools → append results → call LLM again
+        4. If tool_calls -> execute tools -> append results -> call LLM again
         5. Repeat until LLM returns text (no tool_calls) or budget exhausted
         """
         if self.budget.exhausted:
@@ -147,6 +70,9 @@ measurement plans, search literature, and recall past experiments."""
 
         router = LLMRouter(config=self.settings.model)
 
+        # Get tool definitions from the registry
+        tool_schemas = self.tool_registry.to_api_schema()
+
         messages = [
             {"role": "system", "content": system_prompt},
             *self.history,
@@ -154,7 +80,7 @@ measurement plans, search literature, and recall past experiments."""
 
         # Agentic tool-calling loop
         while not self.budget.exhausted:
-            response = await router.acomplete(messages, tools=AGENT_TOOLS)
+            response = await router.acomplete(messages, tools=tool_schemas)
             choice = response["choices"][0]
             msg = choice["message"]
 
@@ -170,7 +96,7 @@ measurement plans, search literature, and recall past experiments."""
             # Append the assistant message (with tool_calls) to context
             messages.append(msg)
 
-            # Execute each tool call and append results
+            # Execute each tool call via the registry
             for tc in tool_calls:
                 fn = tc["function"]
                 tool_name = fn["name"]
@@ -196,67 +122,16 @@ measurement plans, search literature, and recall past experiments."""
         return "Budget exhausted. Please start a new session."
 
     async def _execute_tool(self, name: str, arguments: dict) -> str:
-        """Execute a tool and return the result as a JSON string."""
-        try:
-            if name == "scan_instruments":
-                from lab_harness.discovery.visa_scanner import scan_visa_instruments
-
-                instruments = scan_visa_instruments()
-                return json.dumps([i.model_dump() for i in instruments])
-
-            elif name == "classify_instruments":
-                from lab_harness.discovery.classifier import classify_instruments
-                from lab_harness.discovery.visa_scanner import scan_visa_instruments
-                from lab_harness.models.instrument import LabInventory
-
-                instruments = scan_visa_instruments()
-                inventory = LabInventory(instruments=instruments)
-                assignments = classify_instruments(
-                    inventory,
-                    arguments["measurement_type"],
-                )
-                return json.dumps(
-                    {r: i.model_dump() for r, i in assignments.items()},
-                )
-
-            elif name == "propose_measurement":
-                from lab_harness.planning.boundary_checker import check_boundaries
-                from lab_harness.planning.plan_builder import build_plan_from_template
-
-                plan = build_plan_from_template(arguments["measurement_type"])
-                validation = check_boundaries(plan)
-                return json.dumps(
-                    {
-                        "plan": plan.model_dump(),
-                        "validation": validation.model_dump(),
-                    }
-                )
-
-            elif name == "search_literature":
-                from lab_harness.literature.paper_pilot_client import PaperPilotClient
-
-                client = PaperPilotClient()
-                ctx = await client.search_for_protocol(
-                    arguments["measurement_type"],
-                    arguments.get("sample_description", ""),
-                )
-                return json.dumps(ctx.model_dump())
-
-            elif name == "recall_experiments":
-                results = self.memory_store.search(arguments["query"], limit=5)
-                return json.dumps(
-                    [
-                        {
-                            "timestamp": r.timestamp,
-                            "sample": r.sample,
-                            "measurement_type": r.measurement_type,
-                            "notes": r.notes,
-                        }
-                        for r in results
-                    ]
-                )
-
+        """Execute a tool via the ToolRegistry and return the result string."""
+        tool = self.tool_registry.get(name)
+        if tool is None:
             return json.dumps({"error": f"Unknown tool: {name}"})
+
+        try:
+            parsed_input = tool.input_model.model_validate(arguments)
+            context = ToolContext()
+            result = await tool.execute(parsed_input, context)
+            return result.output
         except Exception as exc:
             logger.exception("Tool %s failed", name)
             return json.dumps({"error": f"{name} failed: {exc}"})
