@@ -1,0 +1,22 @@
+# Magnetoresistance (MR) measurement template
+name: "MR Measurement"
+description: "Sweep magnetic field and measure longitudinal resistance"
+
+x_axis:
+  label: "Magnetic Field"
+  unit: "Oe"
+  start: -10000.0
+  stop: 10000.0
+  step: 100.0
+  role: "magnet"
+
+y_channels:
+  - label: "V_xx"
+    unit: "V"
+    role: "dmm"
+
+max_current_a: 0.0001
+max_voltage_v: 20.0
+max_field_oe: 15000.0
+settling_time_s: 0.5
+num_averages: 1

@@ -1,0 +1,25 @@
+# Lab Harness - Model Configuration
+# Choose your AI backend by uncommenting the desired provider.
+
+model:
+  # --- Cloud Models ---
+  provider: "anthropic"
+  model: "claude-sonnet-4-20250514"
+  # api_key: "sk-..."  # Or set LABHARNESS_API_KEY env var
+
+  # --- OpenAI ---
+  # provider: "openai"
+  # model: "gpt-4o"
+
+  # --- Local Models (Ollama) ---
+  # provider: "ollama"
+  # model: "qwen3:32b"
+  # base_url: "http://localhost:11434"
+
+  # --- Local Models (vLLM) ---
+  # provider: "openai"  # vLLM uses OpenAI-compatible API
+  # model: "Qwen/Qwen2.5-32B-Instruct"
+  # base_url: "http://localhost:8000/v1"
+
+  temperature: 0.0
+  max_tokens: 4096

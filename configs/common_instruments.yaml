@@ -1,0 +1,74 @@
+# Lab Harness - Common Instrument Database
+# Maps instrument models to their capabilities and typical roles.
+
+instruments:
+  # --- Keithley Source Meters ---
+  keithley_2400:
+    models: ["2400", "2410", "2420", "2440"]
+    vendor: "keithley"
+    roles: ["source_meter"]
+    capabilities: ["source_i", "source_v", "measure_i", "measure_v"]
+    typical_limits:
+      max_current_a: 1.05
+      max_voltage_v: 210.0
+
+  # --- Keithley Digital Multimeters ---
+  keithley_2000:
+    models: ["2000", "2001", "2002"]
+    vendor: "keithley"
+    roles: ["dmm"]
+    capabilities: ["measure_v", "measure_r", "measure_i"]
+
+  # --- Keithley Nanovoltmeters ---
+  keithley_2182:
+    models: ["2182", "2182A"]
+    vendor: "keithley"
+    roles: ["nanovoltmeter"]
+    capabilities: ["measure_v_low_noise"]
+    notes: "Often paired with 6221 for delta mode measurements"
+
+  # --- Keithley Current Sources ---
+  keithley_6221:
+    models: ["6221"]
+    vendor: "keithley"
+    roles: ["ac_current_source"]
+    capabilities: ["source_i_dc", "source_i_pulse", "source_i_ac"]
+    typical_limits:
+      max_current_a: 0.105
+
+  # --- Keithley Electrometers ---
+  keithley_6517:
+    models: ["6517", "6517A", "6517B"]
+    vendor: "keithley"
+    roles: ["electrometer"]
+    capabilities: ["measure_r_high", "measure_i_low", "source_v"]
+
+  # --- Lakeshore Gaussmeters ---
+  lakeshore_425:
+    models: ["425", "455", "475"]
+    vendor: "lakeshore"
+    roles: ["gaussmeter"]
+    capabilities: ["measure_field"]
+
+  # --- Lakeshore Temperature Controllers ---
+  lakeshore_335:
+    models: ["335", "336", "340", "350"]
+    vendor: "lakeshore"
+    roles: ["temperature_controller"]
+    capabilities: ["measure_temp", "control_temp", "control_heater"]
+
+  # --- Keysight LCR Meters ---
+  keysight_e4980:
+    models: ["E4980", "E4980A", "E4980AL"]
+    vendor: "keysight"
+    roles: ["lcr_meter"]
+    capabilities: ["measure_c", "measure_z", "measure_r"]
+    frequency_range: "20 Hz - 2 MHz"
+
+  # --- NI DAQ ---
+  ni_usb6351:
+    models: ["USB-6351", "USB-6001", "USB-6009"]
+    vendor: "ni"
+    roles: ["daq"]
+    capabilities: ["analog_out", "analog_in", "digital_io"]
+    notes: "Used for magnet power supply control via analog output"

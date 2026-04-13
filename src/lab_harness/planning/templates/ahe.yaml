@@ -1,0 +1,25 @@
+# Anomalous Hall Effect (AHE) measurement template
+name: "AHE Measurement"
+description: "Sweep magnetic field and measure transverse Hall resistance"
+
+x_axis:
+  label: "Magnetic Field"
+  unit: "Oe"
+  start: -5000.0
+  stop: 5000.0
+  step: 50.0
+  role: "magnet"
+
+y_channels:
+  - label: "V_xy"
+    unit: "V"
+    role: "dmm"
+  - label: "V_xx"
+    unit: "V"
+    role: "dmm_secondary"
+
+max_current_a: 0.0001    # 100 uA typical for thin films
+max_voltage_v: 20.0
+max_field_oe: 10000.0
+settling_time_s: 0.5
+num_averages: 3

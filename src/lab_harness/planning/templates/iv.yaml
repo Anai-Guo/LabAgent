@@ -1,0 +1,21 @@
+# Current-Voltage (IV) characteristic measurement template
+name: "IV Measurement"
+description: "Sweep source current and measure voltage"
+
+x_axis:
+  label: "Source Current"
+  unit: "mA"
+  start: -1.0
+  stop: 1.0
+  step: 0.01
+  role: "source_meter"
+
+y_channels:
+  - label: "Voltage"
+    unit: "V"
+    role: "source_meter"
+
+max_current_a: 0.01
+max_voltage_v: 20.0
+settling_time_s: 0.1
+num_averages: 1

@@ -1,0 +1,65 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "labharness"
+version = "0.1.0"
+description = "AI-guided laboratory automation framework for physics transport measurements"
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.10"
+authors = [
+    { name = "Anai Guo" },
+]
+keywords = [
+    "laboratory-automation",
+    "transport-measurement",
+    "instrument-control",
+    "AI",
+    "MCP",
+    "physics",
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Topic :: Scientific/Engineering :: Physics",
+]
+dependencies = [
+    "mcp>=1.12.0",
+    "litellm>=1.50.0",
+    "pyvisa>=1.14.0",
+    "pyyaml>=6.0",
+    "pydantic>=2.0",
+]
+
+[project.optional-dependencies]
+execution = [
+    "pymeasure>=0.14.0",
+    "nidaqmx>=1.0.0",
+    "pyqtgraph>=0.13.0",
+]
+dev = [
+    "pytest>=8.0",
+    "pytest-asyncio>=0.24.0",
+    "ruff>=0.8.0",
+]
+
+[project.scripts]
+labharness = "lab_harness.cli:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/lab_harness"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "W"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"

@@ -1,0 +1,22 @@
+# Resistance vs Temperature (RT) measurement template
+name: "RT Measurement"
+description: "Measure resistance as a function of temperature"
+
+x_axis:
+  label: "Temperature"
+  unit: "K"
+  start: 10.0
+  stop: 300.0
+  step: 2.0
+  role: "temperature_controller"
+
+y_channels:
+  - label: "V_xx"
+    unit: "V"
+    role: "dmm"
+
+max_current_a: 0.00001    # 10 uA for RT
+max_voltage_v: 20.0
+max_temperature_k: 350.0
+settling_time_s: 2.0       # Temperature needs time to stabilize
+num_averages: 3

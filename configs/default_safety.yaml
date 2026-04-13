@@ -1,0 +1,16 @@
+# Lab Harness - Default Safety Policy
+# Absolute limits that can NEVER be exceeded.
+# Warning thresholds that require operator confirmation.
+
+# --- Absolute limits (hard block) ---
+abs_max_current_a: 10.0       # 10 A
+abs_max_voltage_v: 1000.0     # 1 kV
+abs_max_field_oe: 50000.0     # 50 kOe
+abs_max_temperature_k: 500.0  # 500 K
+abs_max_pulse_width_s: 10.0   # 10 s
+
+# --- Warning thresholds (require confirmation) ---
+warn_current_a: 0.1           # 100 mA
+warn_voltage_v: 50.0          # 50 V
+warn_field_oe: 20000.0        # 20 kOe
+warn_temperature_k: 350.0     # 350 K
