@@ -18,6 +18,7 @@ def _make_ahe_plan(**overrides) -> MeasurementPlan:
         "y_channels": [DataChannel(label="V_xy", unit="V", role="dmm")],
         "max_current_a": 0.0001,
         "max_field_oe": 10000.0,
+        "max_temperature_k": 300.0,
     }
     defaults.update(overrides)
     return MeasurementPlan(**defaults)

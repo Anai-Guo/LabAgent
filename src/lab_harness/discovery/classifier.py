@@ -38,6 +38,7 @@ MEASUREMENT_ROLES: dict[str, list[str]] = {
     "RT": ["source_meter", "temperature_controller"],
     "SOT": ["source_meter", "ac_current_source", "dmm", "gaussmeter"],
     "CV": ["lcr_meter", "temperature_controller"],
+    "SOT": ["source_meter", "ac_current_source", "dmm", "gaussmeter"],
 }
 
 

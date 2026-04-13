@@ -1,0 +1,30 @@
+# Spin-Orbit Torque (SOT) loop shift measurement template
+name: "SOT Loop Shift"
+description: "Sweep field at each pulse current to measure current-induced switching"
+
+x_axis:
+  label: "Magnetic Field"
+  unit: "Oe"
+  start: -2000.0
+  stop: 2000.0
+  step: 20.0
+  role: "magnet"
+
+y_channels:
+  - label: "V_xy"
+    unit: "V"
+    role: "dmm"
+
+outer_sweep:
+  label: "Pulse Current"
+  unit: "mA"
+  start: 0.1
+  stop: 5.0
+  step: 0.1
+  role: "ac_current_source"
+
+max_current_a: 0.005
+max_voltage_v: 20.0
+max_field_oe: 5000.0
+settling_time_s: 0.3
+num_averages: 3
