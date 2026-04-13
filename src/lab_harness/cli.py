@@ -93,6 +93,33 @@ def cmd_analyze(args: argparse.Namespace, settings: Settings) -> None:
         print(f"  python {script_path}")
 
 
+def cmd_chat(args: argparse.Namespace, settings: Settings) -> None:
+    """Interactive chat with the Lab Harness agent."""
+    import asyncio
+
+    from lab_harness.agent.loop import LabAgent
+
+    agent = LabAgent(settings=settings)
+    print("Lab Harness interactive chat (type 'exit' or 'quit' to leave)")
+
+    try:
+        while True:
+            try:
+                user_input = input("> ")
+            except EOFError:
+                break
+            if user_input.strip().lower() in ("exit", "quit"):
+                break
+            if not user_input.strip():
+                continue
+            response = asyncio.run(agent.run_conversation(user_input))
+            print(response)
+    except KeyboardInterrupt:
+        pass
+
+    print("Goodbye")
+
+
 def cmd_serve(args: argparse.Namespace, settings: Settings) -> None:
     """Start the MCP server."""
     from lab_harness.server import run_server
@@ -138,6 +165,9 @@ def main() -> None:
     p_analyze.add_argument("--output", help="Output directory (default: ./data/analysis)")
     p_analyze.add_argument("--no-run", action="store_true", help="Generate script only, don't execute")
 
+    # chat
+    sub.add_parser("chat", help="Interactive chat with the agent")
+
     # serve
     sub.add_parser("serve", help="Start MCP server")
 
@@ -153,6 +183,7 @@ def main() -> None:
         "propose": cmd_propose,
         "literature": cmd_literature,
         "analyze": cmd_analyze,
+        "chat": cmd_chat,
         "serve": cmd_serve,
     }
     cmd_map[args.command](args, settings)
