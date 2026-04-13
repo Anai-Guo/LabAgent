@@ -169,7 +169,7 @@ def cmd_panel(args: argparse.Namespace, settings: Settings) -> None:
         from lab_harness.harness.tui.app import run_panel
     except ImportError:
         print("Error: textual is required for the terminal panel.")
-        print("Install it with:  pip install ai-harness-for-lab[tui]")
+        print("Install it with:  pip install lab-agent[tui]")
         sys.exit(1)
 
     run_panel(model=args.model)

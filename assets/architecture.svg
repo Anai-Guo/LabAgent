@@ -19,7 +19,7 @@
 
   <!-- Background -->
   <rect width="800" height="520" rx="12" fill="#F8FAFC"/>
-  <text x="400" y="35" text-anchor="middle" font-family="Segoe UI, Arial" font-size="20" font-weight="700" fill="#1E293B">AI Harness for Lab - Architecture</text>
+  <text x="400" y="35" text-anchor="middle" font-family="Segoe UI, Arial" font-size="20" font-weight="700" fill="#1E293B">LabAgent - Architecture</text>
 
   <!-- Phase boxes -->
   <!-- Phase -1: Model Router -->

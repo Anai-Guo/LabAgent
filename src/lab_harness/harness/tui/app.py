@@ -1,4 +1,4 @@
-"""Terminal UI for AI Harness for Lab.
+"""Terminal UI for LabAgent for Lab.
 
 A Claude Code-style terminal interface for AI-guided lab automation.
 """
@@ -54,9 +54,9 @@ class ConversationLog(RichLog):
 
 
 class LabHarnessApp(App):
-    """AI Harness for Lab -- Terminal Panel."""
+    """LabAgent for Lab -- Terminal Panel."""
 
-    TITLE = "AI Harness for Lab"
+    TITLE = "LabAgent for Lab"
     SUB_TITLE = "Fully Automated Lab Assistant"
     CSS = """
     Screen {
@@ -147,7 +147,7 @@ class LabHarnessApp(App):
         log.write(
             "[bold #c8a96e]\u2554\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2557[/]"
         )
-        log.write("[bold #c8a96e]\u2551   AI Harness for Lab -- Terminal     \u2551[/]")
+        log.write("[bold #c8a96e]\u2551   LabAgent for Lab -- Terminal     \u2551[/]")
         log.write("[bold #c8a96e]\u2551   Fully Automated Lab Assistant     \u2551[/]")
         log.write(
             "[bold #c8a96e]\u255a\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u255d[/]"

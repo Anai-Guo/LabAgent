@@ -80,7 +80,7 @@
 
   <!-- Main Title — Genshin-style serif with gold accent -->
   <text x="450" y="110" text-anchor="middle" font-family="'Palatino Linotype', 'Book Antiqua', Palatino, Georgia, serif" font-size="68" font-weight="700" fill="url(#gold)" letter-spacing="2">
-    AI Harness
+    LabAgent
   </text>
   <text x="450" y="148" text-anchor="middle" font-family="'Palatino Linotype', 'Book Antiqua', Palatino, Georgia, serif" font-size="28" font-weight="400" fill="#8B8FAE" letter-spacing="10">
     FOR LAB

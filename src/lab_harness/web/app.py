@@ -1,4 +1,4 @@
-"""Web GUI for AI Harness for Lab.
+"""Web GUI for LabAgent.
 
 Adaptive interface that dynamically generates measurement forms
 from YAML templates — supports 46+ measurement types without
@@ -20,7 +20,7 @@ from fastapi.responses import HTMLResponse
 logger = logging.getLogger(__name__)
 
 app = FastAPI(
-    title="AI Harness for Lab",
+    title="LabAgent",
     description="Adaptive measurement interface",
     version="0.1.0",
 )
@@ -157,7 +157,7 @@ def run_web(host: str = "127.0.0.1", port: int = 8080):
     """Start the web GUI server."""
     import uvicorn
 
-    print(f"Starting AI Harness for Lab at http://{host}:{port}")
+    print(f"Starting LabAgent at http://{host}:{port}")
     print(f"  Dashboard: http://{host}:{port}/")
     print(f"  Monitor:   http://{host}:{port}/monitor")
     uvicorn.run(app, host=host, port=port)

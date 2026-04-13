@@ -1,8 +1,8 @@
 # Hacker News Post Draft
 
-**Title:** Show HN: AI Harness for Lab – Open-source AI assistant for automating lab measurements
+**Title:** Show HN: LabAgent – Open-source AI assistant for automating lab measurements
 
-**URL:** https://github.com/Anai-Guo/AIharnessforlab
+**URL:** https://github.com/Anai-Guo/LabAgent
 
 **Text (for comment):**
 
@@ -10,7 +10,7 @@ I built an open-source Python framework that connects LLMs to lab instruments fo
 
 The problem: researchers worldwide waste enormous time writing one-off measurement scripts (often in LabVIEW), with no safety checks and no institutional memory of what parameters worked before.
 
-AI Harness for Lab solves this by putting AI at every step of the measurement workflow:
+LabAgent solves this by putting AI at every step of the measurement workflow:
 
 1. Describe what you want to measure in natural language
 2. AI scans your instruments via PyVISA (GPIB/USB/serial)
@@ -31,4 +31,4 @@ Supports 46 measurement types across 9 disciplines — from basic IV curves to P
 
 MIT licensed. Looking for contributors who want to add templates for their measurement types.
 
-https://github.com/Anai-Guo/AIharnessforlab
+https://github.com/Anai-Guo/LabAgent

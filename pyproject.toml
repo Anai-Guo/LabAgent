@@ -3,7 +3,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "ai-harness-for-lab"
+name = "lab-agent"
 version = "0.1.0"
 description = "AI Harness for Lab - Connect AI to your lab instruments. From research question to publication-ready data."
 readme = "README.md"

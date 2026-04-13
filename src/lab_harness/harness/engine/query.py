@@ -26,7 +26,7 @@ from lab_harness.harness.tools.base import ToolContext, ToolResult
 logger = logging.getLogger(__name__)
 
 SYSTEM_PROMPT = """\
-You are AI Harness for Lab — a fully automated lab assistant.
+You are LabAgent — a fully automated lab assistant.
 You help researchers plan, execute, and analyze scientific measurements.
 
 You have access to tools for:

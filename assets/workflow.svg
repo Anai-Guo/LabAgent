@@ -15,7 +15,7 @@
   </defs>
 
   <rect width="800" height="545" rx="12" fill="#F8FAFC"/>
-  <text x="400" y="32" text-anchor="middle" font-family="Segoe UI, Arial" font-size="18" font-weight="700" fill="#1E293B">How AI Harness for Lab Works</text>
+  <text x="400" y="32" text-anchor="middle" font-family="Segoe UI, Arial" font-size="18" font-weight="700" fill="#1E293B">How LabAgent Works</text>
 
   <!-- Step 1: User -->
   <circle cx="80" cy="110" r="35" fill="url(#wg1)"/>

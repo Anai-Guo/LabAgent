@@ -1,4 +1,4 @@
-# AI Harness for Lab
+# LabAgent
 
 Connect AI to your lab instruments. From research question to publication-ready data.
 

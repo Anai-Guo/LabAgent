@@ -1,9 +1,9 @@
 <p align="center">
-  <img src="assets/hero.svg" alt="AI Harness for Lab — Fully Automated Lab Assistant" width="700">
+  <img src="assets/hero.svg" alt="LabAgent — Fully Automated Lab Assistant" width="700">
 </p>
 
 <p align="center">
-  <a href="https://github.com/Anai-Guo/AIharnessforlab/actions/workflows/ci.yml"><img src="https://github.com/Anai-Guo/AIharnessforlab/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
+  <a href="https://github.com/Anai-Guo/LabAgent/actions/workflows/ci.yml"><img src="https://github.com/Anai-Guo/LabAgent/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
   <img src="https://img.shields.io/badge/python-3.10%2B-blue.svg" alt="Python">
   <img src="https://img.shields.io/badge/tests-94%20passed-brightgreen.svg" alt="Tests">
   <img src="https://img.shields.io/badge/templates-46-orange.svg" alt="Templates">
@@ -19,7 +19,7 @@ Most research labs have powerful instruments but terrible automation software. R
 
 ## The Solution
 
-**AI Harness for Lab** is an open-source framework that connects AI to your lab instruments. Tell it what you want to measure, and it handles the rest:
+**LabAgent** is an open-source framework that connects AI to your lab instruments. Tell it what you want to measure, and it handles the rest:
 
 - **Searches the literature** for proven measurement protocols before you start
 - **Scans your lab** and identifies every connected instrument automatically
@@ -30,7 +30,7 @@ Most research labs have powerful instruments but terrible automation software. R
 ## Quick Start
 
 ```bash
-pip install git+https://github.com/Anai-Guo/AIharnessforlab.git
+pip install git+https://github.com/Anai-Guo/LabAgent.git
 
 # Scan your lab instruments
 labharness scan
@@ -185,7 +185,7 @@ labharness serve
 
 ## Compared to Alternatives
 
-| | AI Harness for Lab | LabVIEW | PyMeasure | PICA | Custom Scripts |
+| | LabAgent | LabVIEW | PyMeasure | PICA | Custom Scripts |
 |---|---|---|---|---|---|
 | **AI-guided** | Yes (6 providers) | No | No | No | No |
 | **Setup time** | Minutes | Weeks | Hours | Hours | Days |

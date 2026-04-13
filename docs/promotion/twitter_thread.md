@@ -4,7 +4,7 @@
 
 **Tweet 1 (Hook):**
 
-🧪 I just open-sourced AI Harness for Lab — the first framework that connects AI directly to your lab instruments.
+🧪 I just open-sourced LabAgent — the first framework that connects AI directly to your lab instruments.
 
 46 measurement templates. 9 disciplines. Works with Claude, GPT, or local models.
 
@@ -27,7 +27,7 @@ The problem every lab researcher knows:
 
 **Tweet 3 (Solution):**
 
-AI Harness for Lab fixes this:
+LabAgent fixes this:
 
 ✅ Tell AI what to measure → it plans everything
 ✅ 3-tier safety boundaries (block/confirm/allow)
@@ -80,9 +80,9 @@ Switch with one config line. Your data stays private.
 
 **Tweet 7 (CTA):**
 
-⭐ Star on GitHub: https://github.com/Anai-Guo/AIharnessforlab
+⭐ Star on GitHub: https://github.com/Anai-Guo/LabAgent
 
-Install: pip install git+https://github.com/Anai-Guo/AIharnessforlab.git
+Install: pip install git+https://github.com/Anai-Guo/LabAgent.git
 
 MIT licensed. Contributions welcome — add your measurement template in 5 minutes.
 

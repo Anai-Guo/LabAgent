@@ -1,4 +1,4 @@
-# AI Harness for Lab - Catalog
+# LabAgent - Catalog
 
 ## Measurement Templates
 

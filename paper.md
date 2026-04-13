@@ -1,5 +1,5 @@
 ---
-title: 'AI Harness for Lab: An Open-Source AI-Guided Framework for Automated Scientific Measurements'
+title: 'LabAgent: An Open-Source AI-Guided Framework for Automated Scientific Measurements'
 tags:
   - Python
   - laboratory automation
@@ -19,7 +19,7 @@ bibliography: paper.bib
 
 # Summary
 
-AI Harness for Lab is an open-source Python framework that connects large language models (LLMs) to laboratory instruments for automated scientific measurements. The framework provides AI-guided measurement planning, instrument discovery and classification, safety boundary validation, data analysis with physics interpretation, and experiment memory — covering 46 measurement types across 9 scientific disciplines.
+LabAgent is an open-source Python framework that connects large language models (LLMs) to laboratory instruments for automated scientific measurements. The framework provides AI-guided measurement planning, instrument discovery and classification, safety boundary validation, data analysis with physics interpretation, and experiment memory — covering 46 measurement types across 9 scientific disciplines.
 
 # Statement of Need
 
@@ -27,7 +27,7 @@ High-precision laboratory measurements in physics, chemistry, biology, and mater
 
 While instrument control libraries such as PyVISA [@pyvisa] and PyMeasure [@pymeasure] provide foundational drivers, and measurement suites like PICA [@pica] offer hardcoded GUIs for specific instruments, no existing tool combines AI reasoning with instrument control in a unified, extensible framework.
 
-AI Harness for Lab addresses this gap by placing AI at every step of the measurement workflow: from literature-informed protocol discovery to adaptive measurement planning with three-tier safety validation, to AI-generated data analysis with physics interpretation.
+LabAgent addresses this gap by placing AI at every step of the measurement workflow: from literature-informed protocol discovery to adaptive measurement planning with three-tier safety validation, to AI-generated data analysis with physics interpretation.
 
 # Architecture
 

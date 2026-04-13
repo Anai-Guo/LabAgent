@@ -1,14 +1,14 @@
-# AI Guide: How to Use AI Harness for Lab
+# AI Guide: How to Use LabAgent
 
 > This document is written for AI assistants (Claude, GPT, Gemini, Copilot, etc.).
 > After reading this file, you should be able to fully guide a researcher through
-> setting up, configuring, and using AI Harness for Lab for any measurement type.
+> setting up, configuring, and using LabAgent for any measurement type.
 
 ---
 
 ## 1. What This System Does
 
-AI Harness for Lab is a Python framework that connects AI to laboratory instruments.
+LabAgent is a Python framework that connects AI to laboratory instruments.
 It automates the full measurement workflow:
 
 ```
@@ -27,13 +27,13 @@ dielectric, environmental/sensors) and supports **any GPIB/USB/serial instrument
 
 ```bash
 # Basic install
-pip install git+https://github.com/Anai-Guo/AIharnessforlab.git
+pip install git+https://github.com/Anai-Guo/LabAgent.git
 
 # With instrument drivers
-pip install "ai-harness-for-lab[execution]"
+pip install "lab-agent[execution]"
 
 # With web GUI
-pip install "ai-harness-for-lab[web]"
+pip install "lab-agent[web]"
 
 # For development
 pip install -e ".[dev]"
@@ -225,7 +225,7 @@ Available MCP tools:
 ## 8. Web GUI
 
 ```bash
-pip install "ai-harness-for-lab[web]"
+pip install "lab-agent[web]"
 labharness web
 ```
 

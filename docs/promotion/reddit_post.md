@@ -10,7 +10,7 @@
 
 Hey everyone,
 
-I got tired of writing measurement scripts from scratch every time I needed a new IV curve, Hall effect measurement, or cyclic voltammetry run. So I built **AI Harness for Lab** — an open-source framework that uses AI to guide you through the entire measurement workflow.
+I got tired of writing measurement scripts from scratch every time I needed a new IV curve, Hall effect measurement, or cyclic voltammetry run. So I built **LabAgent** — an open-source framework that uses AI to guide you through the entire measurement workflow.
 
 **What it does:**
 - You tell it what you want to measure in plain English
@@ -30,14 +30,14 @@ I got tired of writing measurement scripts from scratch every time I needed a ne
 
 **Install:**
 ```
-pip install git+https://github.com/Anai-Guo/AIharnessforlab.git
+pip install git+https://github.com/Anai-Guo/LabAgent.git
 labharness scan          # discover your instruments
 labharness propose hall  # generate a Hall effect plan
 labharness web           # launch the web GUI
 labharness panel         # Claude Code-style terminal
 ```
 
-GitHub: https://github.com/Anai-Guo/AIharnessforlab
+GitHub: https://github.com/Anai-Guo/LabAgent
 
 It's MIT licensed and we're actively looking for contributors — especially people who can add templates for their specific measurement types. If you use instruments that aren't covered yet, open an issue and we'll add support.
 

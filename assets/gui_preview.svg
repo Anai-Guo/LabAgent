@@ -16,7 +16,7 @@
   <circle cx="18" cy="16" r="6" fill="#ff5f57"/>
   <circle cx="38" cy="16" r="6" fill="#febc2e"/>
   <circle cx="58" cy="16" r="6" fill="#28c840"/>
-  <text x="450" y="20" text-anchor="middle" font-family="Segoe UI, Arial" font-size="12" fill="#64748b">AI Harness for Lab — Monitor</text>
+  <text x="450" y="20" text-anchor="middle" font-family="Segoe UI, Arial" font-size="12" fill="#64748b">LabAgent — Monitor</text>
 
   <!-- Header bar -->
   <rect x="0" y="32" width="900" height="36" fill="url(#gBg)"/>
