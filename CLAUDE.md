@@ -1,6 +1,6 @@
-# Lab Harness
+# AI Harness for Lab
 
-AI-guided laboratory automation framework for physics transport measurements.
+Connect AI to your lab instruments. From research question to publication-ready data.
 
 ## Project Structure
 

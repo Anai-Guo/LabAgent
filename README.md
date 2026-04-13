@@ -1,118 +1,149 @@
-# Lab Harness
+<p align="center">
+  <img src="assets/logo.svg" alt="AI Harness for Lab" width="500">
+</p>
 
-[![CI](https://github.com/Anai-Guo/labharness/actions/workflows/ci.yml/badge.svg)](https://github.com/Anai-Guo/labharness/actions/workflows/ci.yml)
-[![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/downloads/)
-[![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
+<p align="center">
+  <a href="https://github.com/Anai-Guo/AIharnessforlab/actions/workflows/ci.yml"><img src="https://github.com/Anai-Guo/AIharnessforlab/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
+  <img src="https://img.shields.io/badge/python-3.10%2B-blue.svg" alt="Python">
+  <img src="https://img.shields.io/badge/tests-88%20passed-brightgreen.svg" alt="Tests">
+  <img src="https://img.shields.io/badge/AI%20models-6%20providers-purple.svg" alt="Models">
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-green.svg" alt="License"></a>
+</p>
 
-AI-guided laboratory automation framework for physics transport measurements.
+<p align="center">
+  <b>Connect AI to your lab instruments.<br>From research question to publication-ready data.</b>
+</p>
 
-> The first tool that uses AI to guide physicists from research question through literature search, measurement planning, execution, and data analysis -- with built-in safety guarantees at every step.
+---
 
-## Features
+Most physics labs have powerful instruments but terrible software. Researchers waste weeks writing LabVIEW scripts or Python wrappers from scratch for every new measurement. When something goes wrong, there's no safety net.
 
-- **Model-agnostic AI** -- Switch between Claude, GPT, Ollama, vLLM with one config line (via litellm)
-- **Dual interface** -- MCP server (Claude Code, Cursor) + standalone CLI
-- **Instrument discovery** -- Auto-scan GPIB/USB/serial instruments via PyVISA and pyserial
-- **Smart classification** -- AI maps instruments to measurement roles with rule-based fallback
-- **Template-based planning** -- AHE, MR, IV, RT, SOT, CV measurement templates with parameter filling
-- **Safety boundaries** -- Three-tier validation (block / confirm / allow) prevents instrument damage
-- **Literature integration** -- Query paper-pilot for published protocols and instrument settings
-- **Data analysis** -- Template-based analysis scripts for AHE, MR, IV, RT with auto-execution
-- **Agent loop** -- Conversational agent with budget management and progressive skill disclosure
-- **Skill registry** -- Markdown-based measurement protocol skills with YAML frontmatter
-- **Experiment memory** -- SQLite + FTS5 experiment history with frozen snapshots for agent context
+**AI Harness for Lab** changes this. Tell it what you want to measure, and it:
+
+1. Searches the literature for proven measurement protocols
+2. Scans your lab and identifies every connected instrument
+3. Maps instruments to measurement roles using AI
+4. Generates a measurement plan with safety boundaries
+5. Analyzes your data and explains the physics
+
+All with built-in safety guarantees that prevent you from frying your samples.
+
+<p align="center">
+  <img src="assets/workflow.svg" alt="How it works" width="750">
+</p>
 
 ## Quick Start
 
 ```bash
-pip install labharness
+pip install git+https://github.com/Anai-Guo/AIharnessforlab.git
 
-# Scan connected instruments
+# Scan your lab instruments
 labharness scan
 
-# Classify instruments for a measurement type
+# "What do I need for an AHE measurement?"
 labharness classify AHE
 
-# Generate a measurement plan
+# Generate a measurement plan with safety checks
 labharness propose AHE
 
 # Search literature for measurement protocols
 labharness literature AHE --sample "CoFeB/MgO"
 
-# Analyze measurement data
-labharness analyze data.csv --type AHE
+# Analyze data with AI interpretation
+labharness analyze data.csv --type AHE --interpret
+
+# Interactive AI chat for guided measurements
+labharness chat
 
 # Start MCP server (for Claude Code / Cursor)
 labharness serve
 ```
 
+## Why AI Harness for Lab?
+
+| Problem | Our Solution |
+|---------|-------------|
+| "I don't know what parameters to use" | AI suggests optimal parameters based on your sample and literature |
+| "Will this damage my sample?" | 3-tier safety boundaries block dangerous configurations |
+| "I have 5 instruments, which does what?" | AI auto-classifies instruments into measurement roles |
+| "How do I analyze this data?" | AI generates analysis scripts and explains the physics |
+| "I forgot what worked last time" | Experiment memory remembers your successful parameters |
+| "I need a new measurement type" | AI generates protocol skills from existing examples |
+
 ## Architecture
 
-```
-Phase -1: Model Router ────────── litellm: choose AI backend (Claude/GPT/Ollama/vLLM)
-Phase  0: Research Planning ───── literature search via paper-pilot MCP
-Phase  1: Equipment Discovery ─── PyVISA scan + serial scan + *IDN?
-Phase  2: Role Classification ─── AI maps instruments to roles (with rule fallback)
-Phase  3: Measurement Design ──── YAML template + safety boundary check
-Phase  4: Measurement Execution ─ (future: PyMeasure / NI-DAQmx drivers)
-Phase  5: Data Analysis ───────── template-based scripts + auto-execution
-```
+<p align="center">
+  <img src="assets/architecture.svg" alt="Architecture" width="750">
+</p>
 
-### Modules
+## Supported Instruments
 
-| Module | Purpose |
-|---|---|
-| `agent/` | Conversational agent loop with iteration budget |
-| `analysis/` | Data analysis orchestrator + per-type templates (AHE, MR, IV, RT) |
-| `discovery/` | VISA scanner, serial scanner, AI instrument classifier |
-| `literature/` | Paper-pilot MCP client for protocol literature search |
-| `llm/` | litellm router, system prompt templates per phase |
-| `memory/` | SQLite+FTS5 experiment store, frozen snapshots for agent context |
-| `models/` | Pydantic data models (instrument, measurement plan, safety policy) |
-| `planning/` | Plan builder from YAML templates, safety boundary checker |
-| `skills/` | Markdown skill registry with progressive disclosure |
+Works out of the box with standard physics lab equipment:
 
-### Hermes-inspired patterns
+| Instrument | Role | Interface |
+|-----------|------|-----------|
+| Keithley 2400/2410 | Source Meter | GPIB |
+| Keithley 2000/2001 | Digital Multimeter | GPIB |
+| Keithley 2182/2182A | Nanovoltmeter | GPIB |
+| Keithley 6221 | AC/Pulse Current Source | GPIB |
+| Keithley 6517B | Electrometer | GPIB |
+| Lakeshore 425/455 | Gaussmeter | Serial |
+| Lakeshore 335/340/350 | Temperature Controller | GPIB |
+| Keysight E4980A | LCR Meter | GPIB |
+| NI USB-6351 | DAQ (Magnet Control) | USB |
 
-- **Skill registry with progressive disclosure** -- Level 0 (metadata only) shown to LLM by default; full skill body loaded on demand
-- **Agent loop with budget** -- Iteration counter with 70%/90% warnings; prevents runaway conversations
-- **Memory snapshots** -- Frozen experiment history injected into system prompt at session start
+Don't see your instrument? The AI classifier handles unknown instruments too.
 
-## Configuration
+## AI at Every Step
 
-Edit `configs/models.yaml` to choose your AI backend:
+| Feature | How AI Helps |
+|---------|-------------|
+| **Instrument Classification** | LLM identifies unknown instruments from *IDN? responses |
+| **Parameter Optimization** | Suggests optimal sweep ranges based on sample + literature |
+| **Safety Advisory** | Explains *why* a limit exists and suggests safer alternatives |
+| **Script Generation** | Creates custom analysis scripts for any measurement type |
+| **Result Interpretation** | Explains extracted values with physics context |
+| **Skill Generation** | Creates new measurement protocols from examples |
+| **Agent Chat** | Multi-turn conversation with tool calling for guided workflows |
+| **Experiment Memory** | Learns from history to improve future measurements |
+
+## Choose Your AI
+
+One config line switches between cloud and local models:
 
 ```yaml
+# Best quality (cloud)
 model:
-  provider: "anthropic"          # or "openai", "ollama"
-  model: "claude-sonnet-4-20250514"  # or "gpt-4o", "qwen3:32b"
-  # base_url: "http://localhost:11434"  # for local models
+  provider: "anthropic"
+  model: "claude-sonnet-4-20250514"
+
+# Free & private (local)
+model:
+  provider: "ollama"
+  model: "qwen3:32b"
+  base_url: "http://localhost:11434"
 ```
 
-Environment variable overrides: `LABHARNESS_API_KEY`, `LABHARNESS_MODEL`, `LABHARNESS_PROVIDER`, `LABHARNESS_BASE_URL`.
+Supported: **Claude** | **GPT-4o** | **Gemini** | **Ollama** | **vLLM** | **DeepSeek**
 
-## MCP Server Tools
+## MCP Server
 
-When running as an MCP server (`labharness serve`), the following tools are exposed:
+Run as an MCP server for integration with Claude Code, Cursor, or any MCP client:
 
-| Tool | Description |
-|---|---|
-| `scan_instruments` | Discover instruments on VISA bus |
-| `classify_lab_instruments` | Map instruments to measurement roles |
-| `propose_measurement` | Generate and validate a measurement plan |
-| `validate_plan` | Check a plan against safety boundaries |
-| `search_literature` | Query paper-pilot for protocol references |
-| `analyze_data` | Generate and run analysis scripts |
-| `healthcheck` | System status (VISA, templates, LLM config) |
+```bash
+labharness serve
+```
 
-## Project Stats
+Exposes 8 tools: `scan_instruments`, `classify_lab_instruments`, `propose_measurement`, `validate_plan`, `search_literature`, `analyze_data`, `generate_skill`, `healthcheck`
 
-- **9 modules** in `src/lab_harness/`
-- **6 measurement templates** (AHE, MR, IV, RT, SOT, CV)
-- **4 analysis templates** (AHE, MR, IV, RT)
-- **2 skill files** (AHE, SOT)
-- **11 test files** in `tests/`
-- **CI**: lint (ruff) + format check + pytest on Python 3.10/3.11/3.12
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for development setup and guidelines.
+
+## Acknowledgments
+
+- Measurement procedures adapted from [PICA](https://github.com/prathameshnium/PICA-Python-Instrument-Control-and-Automation) (MIT License, UGC-DAE CSR Mumbai)
+- Agent architecture inspired by [Hermes Agent](https://github.com/nousresearch/hermes-agent) patterns
 
 ## License
 

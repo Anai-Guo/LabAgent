@@ -3,9 +3,9 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "labharness"
+name = "aiharnessforlab"
 version = "0.1.0"
-description = "AI-guided laboratory automation framework for physics transport measurements"
+description = "AI Harness for Lab - Connect AI to your lab instruments. From research question to publication-ready data."
 readme = "README.md"
 license = "MIT"
 requires-python = ">=3.10"

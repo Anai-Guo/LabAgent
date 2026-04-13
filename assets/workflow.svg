@@ -1,0 +1,111 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400">
+  <defs>
+    <linearGradient id="wg1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#4F46E5"/><stop offset="100%" style="stop-color:#7C3AED"/>
+    </linearGradient>
+    <linearGradient id="wg2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#059669"/><stop offset="100%" style="stop-color:#10B981"/>
+    </linearGradient>
+    <linearGradient id="wg3" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#D97706"/><stop offset="100%" style="stop-color:#F59E0B"/>
+    </linearGradient>
+    <linearGradient id="wg4" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#DC2626"/><stop offset="100%" style="stop-color:#F87171"/>
+    </linearGradient>
+    <marker id="arrowW" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6" fill="#94A3B8"/>
+    </marker>
+  </defs>
+
+  <rect width="800" height="400" rx="12" fill="#F8FAFC"/>
+  <text x="400" y="32" text-anchor="middle" font-family="Segoe UI, Arial" font-size="18" font-weight="700" fill="#1E293B">How AI Harness for Lab Works</text>
+
+  <!-- Step 1: User -->
+  <circle cx="80" cy="110" r="35" fill="url(#wg1)"/>
+  <text x="80" y="105" text-anchor="middle" font-family="Segoe UI, Arial" font-size="22" fill="white">&#x1F9D1;</text>
+  <text x="80" y="122" text-anchor="middle" font-family="Segoe UI, Arial" font-size="8" fill="#E0E7FF">Researcher</text>
+  <text x="80" y="160" text-anchor="middle" font-family="Segoe UI, Arial" font-size="9" fill="#64748B" font-style="italic">"I want to measure</text>
+  <text x="80" y="172" text-anchor="middle" font-family="Segoe UI, Arial" font-size="9" fill="#64748B" font-style="italic">AHE on CoFeB/MgO"</text>
+
+  <!-- Arrow 1 -->
+  <line x1="120" y1="110" x2="165" y2="110" stroke="#94A3B8" stroke-width="2" marker-end="url(#arrowW)"/>
+
+  <!-- Step 2: Literature -->
+  <rect x="175" y="75" width="110" height="70" rx="12" fill="url(#wg1)"/>
+  <text x="230" y="100" text-anchor="middle" font-family="Segoe UI, Arial" font-size="18" fill="white">&#x1F4DA;</text>
+  <text x="230" y="118" text-anchor="middle" font-family="Segoe UI, Arial" font-size="10" font-weight="600" fill="white">Literature</text>
+  <text x="230" y="133" text-anchor="middle" font-family="Segoe UI, Arial" font-size="8" fill="#C7D2FE">Search protocols</text>
+  <text x="230" y="160" text-anchor="middle" font-family="Segoe UI, Arial" font-size="8" fill="#94A3B8">AI finds optimal</text>
+  <text x="230" y="172" text-anchor="middle" font-family="Segoe UI, Arial" font-size="8" fill="#94A3B8">measurement params</text>
+
+  <!-- Arrow 2 -->
+  <line x1="290" y1="110" x2="335" y2="110" stroke="#94A3B8" stroke-width="2" marker-end="url(#arrowW)"/>
+
+  <!-- Step 3: Discover -->
+  <rect x="345" y="75" width="110" height="70" rx="12" fill="url(#wg2)"/>
+  <text x="400" y="100" text-anchor="middle" font-family="Segoe UI, Arial" font-size="18" fill="white">&#x1F50D;</text>
+  <text x="400" y="118" text-anchor="middle" font-family="Segoe UI, Arial" font-size="10" font-weight="600" fill="white">Discover</text>
+  <text x="400" y="133" text-anchor="middle" font-family="Segoe UI, Arial" font-size="8" fill="#A7F3D0">Scan instruments</text>
+  <text x="400" y="160" text-anchor="middle" font-family="Segoe UI, Arial" font-size="8" fill="#94A3B8">Auto-detect K2400,</text>
+  <text x="400" y="172" text-anchor="middle" font-family="Segoe UI, Arial" font-size="8" fill="#94A3B8">K2000, LS425...</text>
+
+  <!-- Arrow 3 -->
+  <line x1="460" y1="110" x2="505" y2="110" stroke="#94A3B8" stroke-width="2" marker-end="url(#arrowW)"/>
+
+  <!-- Step 4: Plan -->
+  <rect x="515" y="75" width="110" height="70" rx="12" fill="url(#wg1)"/>
+  <text x="570" y="100" text-anchor="middle" font-family="Segoe UI, Arial" font-size="18" fill="white">&#x1F4CB;</text>
+  <text x="570" y="118" text-anchor="middle" font-family="Segoe UI, Arial" font-size="10" font-weight="600" fill="white">Plan + Validate</text>
+  <text x="570" y="133" text-anchor="middle" font-family="Segoe UI, Arial" font-size="8" fill="#C7D2FE">Safety boundaries</text>
+  <text x="570" y="160" text-anchor="middle" font-family="Segoe UI, Arial" font-size="8" fill="#94A3B8">AI checks limits,</text>
+  <text x="570" y="172" text-anchor="middle" font-family="Segoe UI, Arial" font-size="8" fill="#94A3B8">warns about risks</text>
+
+  <!-- Arrow 4 -->
+  <line x1="630" y1="110" x2="675" y2="110" stroke="#94A3B8" stroke-width="2" marker-end="url(#arrowW)"/>
+
+  <!-- Step 5: Analyze -->
+  <rect x="685" y="75" width="95" height="70" rx="12" fill="url(#wg3)"/>
+  <text x="732" y="100" text-anchor="middle" font-family="Segoe UI, Arial" font-size="18" fill="white">&#x1F4CA;</text>
+  <text x="732" y="118" text-anchor="middle" font-family="Segoe UI, Arial" font-size="10" font-weight="600" fill="white">Analyze</text>
+  <text x="732" y="133" text-anchor="middle" font-family="Segoe UI, Arial" font-size="8" fill="#FDE68A">AI interprets data</text>
+
+  <!-- Bottom section: Features -->
+  <rect x="30" y="210" width="740" height="170" rx="12" fill="white" stroke="#E2E8F0" stroke-width="1"/>
+
+  <!-- Feature 1 -->
+  <rect x="50" y="225" width="160" height="65" rx="8" fill="#EEF2FF"/>
+  <text x="130" y="248" text-anchor="middle" font-family="Segoe UI, Arial" font-size="11" font-weight="600" fill="#4338CA">Model Agnostic</text>
+  <text x="130" y="265" text-anchor="middle" font-family="Segoe UI, Arial" font-size="9" fill="#6366F1">Claude, GPT, Ollama, vLLM</text>
+  <text x="130" y="280" text-anchor="middle" font-family="Segoe UI, Arial" font-size="9" fill="#6366F1">Switch with one config line</text>
+
+  <!-- Feature 2 -->
+  <rect x="230" y="225" width="160" height="65" rx="8" fill="#ECFDF5"/>
+  <text x="310" y="248" text-anchor="middle" font-family="Segoe UI, Arial" font-size="11" font-weight="600" fill="#065F46">Safety First</text>
+  <text x="310" y="265" text-anchor="middle" font-family="Segoe UI, Arial" font-size="9" fill="#059669">3-tier boundary validation</text>
+  <text x="310" y="280" text-anchor="middle" font-family="Segoe UI, Arial" font-size="9" fill="#059669">AI never exceeds limits</text>
+
+  <!-- Feature 3 -->
+  <rect x="410" y="225" width="160" height="65" rx="8" fill="#FFF7ED"/>
+  <text x="490" y="248" text-anchor="middle" font-family="Segoe UI, Arial" font-size="11" font-weight="600" fill="#92400E">Learn from History</text>
+  <text x="490" y="265" text-anchor="middle" font-family="Segoe UI, Arial" font-size="9" fill="#D97706">SQLite experiment memory</text>
+  <text x="490" y="280" text-anchor="middle" font-family="Segoe UI, Arial" font-size="9" fill="#D97706">Remembers what worked</text>
+
+  <!-- Feature 4 -->
+  <rect x="590" y="225" width="160" height="65" rx="8" fill="#FEF2F2"/>
+  <text x="670" y="248" text-anchor="middle" font-family="Segoe UI, Arial" font-size="11" font-weight="600" fill="#991B1B">Extensible</text>
+  <text x="670" y="265" text-anchor="middle" font-family="Segoe UI, Arial" font-size="9" fill="#DC2626">Add new instruments</text>
+  <text x="670" y="280" text-anchor="middle" font-family="Segoe UI, Arial" font-size="9" fill="#DC2626">AI generates protocols</text>
+
+  <!-- Measurement types -->
+  <text x="400" y="320" text-anchor="middle" font-family="Segoe UI, Arial" font-size="12" font-weight="600" fill="#1E293B">Supported Measurements</text>
+  <rect x="80" y="335" width="60" height="28" rx="14" fill="#4F46E5"/><text x="110" y="354" text-anchor="middle" font-family="Segoe UI, Arial" font-size="11" font-weight="500" fill="white">AHE</text>
+  <rect x="155" y="335" width="50" height="28" rx="14" fill="#7C3AED"/><text x="180" y="354" text-anchor="middle" font-family="Segoe UI, Arial" font-size="11" font-weight="500" fill="white">MR</text>
+  <rect x="220" y="335" width="50" height="28" rx="14" fill="#059669"/><text x="245" y="354" text-anchor="middle" font-family="Segoe UI, Arial" font-size="11" font-weight="500" fill="white">SOT</text>
+  <rect x="285" y="335" width="45" height="28" rx="14" fill="#0891B2"/><text x="307" y="354" text-anchor="middle" font-family="Segoe UI, Arial" font-size="11" font-weight="500" fill="white">IV</text>
+  <rect x="345" y="335" width="45" height="28" rx="14" fill="#D97706"/><text x="367" y="354" text-anchor="middle" font-family="Segoe UI, Arial" font-size="11" font-weight="500" fill="white">RT</text>
+  <rect x="405" y="335" width="45" height="28" rx="14" fill="#DC2626"/><text x="427" y="354" text-anchor="middle" font-family="Segoe UI, Arial" font-size="11" font-weight="500" fill="white">CV</text>
+  <rect x="465" y="335" width="80" height="28" rx="14" fill="#475569"/><text x="505" y="354" text-anchor="middle" font-family="Segoe UI, Arial" font-size="11" font-weight="500" fill="white">Custom...</text>
+
+  <!-- Tagline -->
+  <text x="400" y="390" text-anchor="middle" font-family="Segoe UI, Arial" font-size="11" fill="#94A3B8">From research question to publication-ready data — guided by AI at every step</text>
+</svg>
