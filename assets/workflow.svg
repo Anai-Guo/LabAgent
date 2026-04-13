@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 480">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 545">
   <defs>
     <linearGradient id="wg1" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" style="stop-color:#4F46E5"/><stop offset="100%" style="stop-color:#7C3AED"/>
@@ -14,7 +14,7 @@
     </linearGradient>
   </defs>
 
-  <rect width="800" height="480" rx="12" fill="#F8FAFC"/>
+  <rect width="800" height="545" rx="12" fill="#F8FAFC"/>
   <text x="400" y="32" text-anchor="middle" font-family="Segoe UI, Arial" font-size="18" font-weight="700" fill="#1E293B">How AI Harness for Lab Works</text>
 
   <!-- Step 1: User -->
@@ -80,50 +80,56 @@
   <text x="670" y="244" text-anchor="middle" font-family="Segoe UI, Arial" font-size="9" fill="#DC2626">AI generates new protocols</text>
 
   <!-- Disciplines section -->
-  <text x="400" y="305" text-anchor="middle" font-family="Segoe UI, Arial" font-size="14" font-weight="700" fill="#1E293B">40+ Templates Across 8 Disciplines</text>
+  <text x="400" y="305" text-anchor="middle" font-family="Segoe UI, Arial" font-size="14" font-weight="700" fill="#1E293B">46 Templates Across 9 Disciplines</text>
 
   <!-- Discipline cards - Row 1 -->
-  <rect x="30" y="318" width="170" height="56" rx="8" fill="#EEF2FF" stroke="#C7D2FE" stroke-width="0.8"/>
-  <text x="40" y="338" font-family="Segoe UI, Arial" font-size="11" font-weight="600" fill="#4338CA">&#x26A1; Physics</text>
-  <text x="40" y="354" font-family="Segoe UI, Arial" font-size="8" fill="#6366F1">IV, R-T, Hall, MR, Tunneling,</text>
-  <text x="40" y="366" font-family="Segoe UI, Arial" font-size="8" fill="#6366F1">Nernst, FMR, Hysteresis</text>
+  <rect x="30" y="318" width="240" height="56" rx="8" fill="#EEF2FF" stroke="#C7D2FE" stroke-width="0.8"/>
+  <text x="40" y="338" font-family="Segoe UI, Arial" font-size="11" font-weight="600" fill="#4338CA">&#x26A1; Electrical (7)</text>
+  <text x="40" y="354" font-family="Segoe UI, Arial" font-size="8" fill="#6366F1">IV, R-T, Delta Mode, High R,</text>
+  <text x="40" y="366" font-family="Segoe UI, Arial" font-size="8" fill="#6366F1">FET Transfer/Output, Breakdown</text>
 
-  <rect x="215" y="318" width="170" height="56" rx="8" fill="#ECFDF5" stroke="#A7F3D0" stroke-width="0.8"/>
-  <text x="225" y="338" font-family="Segoe UI, Arial" font-size="11" font-weight="600" fill="#065F46">&#x1F9EA; Chemistry</text>
-  <text x="225" y="354" font-family="Segoe UI, Arial" font-size="8" fill="#059669">Cyclic Voltammetry, EIS,</text>
-  <text x="225" y="366" font-family="Segoe UI, Arial" font-size="8" fill="#059669">Chronoamperometry, OCP</text>
+  <rect x="280" y="318" width="240" height="56" rx="8" fill="#F5F3FF" stroke="#DDD6FE" stroke-width="0.8"/>
+  <text x="290" y="338" font-family="Segoe UI, Arial" font-size="11" font-weight="600" fill="#5B21B6">&#x1F9F2; Magnetic (8)</text>
+  <text x="290" y="354" font-family="Segoe UI, Arial" font-size="8" fill="#7C3AED">AHE, MR, SOT, Hall, FMR,</text>
+  <text x="290" y="366" font-family="Segoe UI, Arial" font-size="8" fill="#7C3AED">Hysteresis, Magnetostriction, Nernst</text>
 
-  <rect x="400" y="318" width="170" height="56" rx="8" fill="#FFF7ED" stroke="#FDE68A" stroke-width="0.8"/>
-  <text x="410" y="338" font-family="Segoe UI, Arial" font-size="11" font-weight="600" fill="#92400E">&#x1F4A1; Semiconductor</text>
-  <text x="410" y="354" font-family="Segoe UI, Arial" font-size="8" fill="#D97706">Solar Cell IV, DLTS, C-f,</text>
-  <text x="410" y="366" font-family="Segoe UI, Arial" font-size="8" fill="#D97706">FET Transfer, Breakdown</text>
-
-  <rect x="585" y="318" width="185" height="56" rx="8" fill="#FEF2F2" stroke="#FECACA" stroke-width="0.8"/>
-  <text x="595" y="338" font-family="Segoe UI, Arial" font-size="11" font-weight="600" fill="#991B1B">&#x2744; Superconductivity</text>
-  <text x="595" y="354" font-family="Segoe UI, Arial" font-size="8" fill="#DC2626">Tc Transition, Critical</text>
-  <text x="595" y="366" font-family="Segoe UI, Arial" font-size="8" fill="#DC2626">Current Density (Jc)</text>
+  <rect x="530" y="318" width="240" height="56" rx="8" fill="#FFF7ED" stroke="#FDE68A" stroke-width="0.8"/>
+  <text x="540" y="338" font-family="Segoe UI, Arial" font-size="11" font-weight="600" fill="#92400E">&#x1F4A1; Semiconductor (5)</text>
+  <text x="540" y="354" font-family="Segoe UI, Arial" font-size="8" fill="#D97706">Solar Cell IV, DLTS, Photocurrent,</text>
+  <text x="540" y="366" font-family="Segoe UI, Arial" font-size="8" fill="#D97706">Photoresponse, Tunneling</text>
 
   <!-- Discipline cards - Row 2 -->
-  <rect x="30" y="382" width="170" height="56" rx="8" fill="#F0FDF4" stroke="#BBF7D0" stroke-width="0.8"/>
-  <text x="40" y="402" font-family="Segoe UI, Arial" font-size="11" font-weight="600" fill="#166534">&#x1F9EC; Biology</text>
-  <text x="40" y="418" font-family="Segoe UI, Arial" font-size="8" fill="#16A34A">Impedance Biosensor,</text>
-  <text x="40" y="430" font-family="Segoe UI, Arial" font-size="8" fill="#16A34A">Cell Counting</text>
+  <rect x="30" y="382" width="240" height="56" rx="8" fill="#ECFDF5" stroke="#A7F3D0" stroke-width="0.8"/>
+  <text x="40" y="402" font-family="Segoe UI, Arial" font-size="11" font-weight="600" fill="#065F46">&#x1F9EA; Electrochemistry (4)</text>
+  <text x="40" y="418" font-family="Segoe UI, Arial" font-size="8" fill="#059669">Cyclic Voltammetry, EIS,</text>
+  <text x="40" y="430" font-family="Segoe UI, Arial" font-size="8" fill="#059669">Chronoamperometry, Potentiometry</text>
 
-  <rect x="215" y="382" width="170" height="56" rx="8" fill="#FFFBEB" stroke="#FDE68A" stroke-width="0.8"/>
-  <text x="225" y="402" font-family="Segoe UI, Arial" font-size="11" font-weight="600" fill="#854D0E">&#x1F321; Thermoelectric</text>
-  <text x="225" y="418" font-family="Segoe UI, Arial" font-size="8" fill="#CA8A04">Seebeck Coefficient,</text>
-  <text x="225" y="430" font-family="Segoe UI, Arial" font-size="8" fill="#CA8A04">Thermal Conductivity</text>
+  <rect x="280" y="382" width="240" height="56" rx="8" fill="#FDF2F8" stroke="#FBCFE8" stroke-width="0.8"/>
+  <text x="290" y="402" font-family="Segoe UI, Arial" font-size="11" font-weight="600" fill="#9D174D">&#x1F50B; Dielectric (4)</text>
+  <text x="290" y="418" font-family="Segoe UI, Arial" font-size="8" fill="#DB2777">C-V, P-E Loop, Pyroelectric,</text>
+  <text x="290" y="430" font-family="Segoe UI, Arial" font-size="8" fill="#DB2777">Capacitance-Frequency</text>
 
-  <rect x="400" y="382" width="170" height="56" rx="8" fill="#F5F3FF" stroke="#DDD6FE" stroke-width="0.8"/>
-  <text x="410" y="402" font-family="Segoe UI, Arial" font-size="11" font-weight="600" fill="#5B21B6">&#x1F527; Materials</text>
-  <text x="410" y="418" font-family="Segoe UI, Arial" font-size="8" fill="#7C3AED">Strain Gauge, Fatigue,</text>
-  <text x="410" y="430" font-family="Segoe UI, Arial" font-size="8" fill="#7C3AED">Humidity, Gas Sensor</text>
+  <rect x="530" y="382" width="240" height="56" rx="8" fill="#FEF2F2" stroke="#FECACA" stroke-width="0.8"/>
+  <text x="540" y="402" font-family="Segoe UI, Arial" font-size="11" font-weight="600" fill="#991B1B">&#x2744; Superconductivity (2)</text>
+  <text x="540" y="418" font-family="Segoe UI, Arial" font-size="8" fill="#DC2626">Tc Transition, Critical</text>
+  <text x="540" y="430" font-family="Segoe UI, Arial" font-size="8" fill="#DC2626">Current Density (Jc)</text>
 
-  <rect x="585" y="382" width="185" height="56" rx="8" fill="#FDF2F8" stroke="#FBCFE8" stroke-width="0.8"/>
-  <text x="595" y="402" font-family="Segoe UI, Arial" font-size="11" font-weight="600" fill="#9D174D">&#x1F50B; Dielectric</text>
-  <text x="595" y="418" font-family="Segoe UI, Arial" font-size="8" fill="#DB2777">P-E Loop, Pyroelectric,</text>
-  <text x="595" y="430" font-family="Segoe UI, Arial" font-size="8" fill="#DB2777">Ferroelectric Switching</text>
+  <!-- Discipline cards - Row 3 -->
+  <rect x="30" y="446" width="240" height="56" rx="8" fill="#FFFBEB" stroke="#FDE68A" stroke-width="0.8"/>
+  <text x="40" y="466" font-family="Segoe UI, Arial" font-size="11" font-weight="600" fill="#854D0E">&#x1F321; Thermoelectric (2)</text>
+  <text x="40" y="482" font-family="Segoe UI, Arial" font-size="8" fill="#CA8A04">Seebeck Coefficient,</text>
+  <text x="40" y="494" font-family="Segoe UI, Arial" font-size="8" fill="#CA8A04">Thermal Conductivity</text>
+
+  <rect x="280" y="446" width="240" height="56" rx="8" fill="#F0FDF4" stroke="#BBF7D0" stroke-width="0.8"/>
+  <text x="290" y="466" font-family="Segoe UI, Arial" font-size="11" font-weight="600" fill="#166534">&#x1F9EC; Sensors &amp; Materials (7)</text>
+  <text x="290" y="482" font-family="Segoe UI, Arial" font-size="8" fill="#16A34A">Gas, Humidity, Biosensor, pH,</text>
+  <text x="290" y="494" font-family="Segoe UI, Arial" font-size="8" fill="#16A34A">Cell Counting, Strain, Fatigue</text>
+
+  <rect x="530" y="446" width="240" height="56" rx="8" fill="#EFF6FF" stroke="#BFDBFE" stroke-width="0.8"/>
+  <text x="540" y="466" font-family="Segoe UI, Arial" font-size="11" font-weight="600" fill="#1E40AF">&#x1F527; Quantum Design (6)</text>
+  <text x="540" y="482" font-family="Segoe UI, Arial" font-size="8" fill="#3B82F6">PPMS R-T/MR/Hall/Hc,</text>
+  <text x="540" y="494" font-family="Segoe UI, Arial" font-size="8" fill="#3B82F6">MPMS M-H, MPMS M-T ZFC/FC</text>
 
   <!-- Tagline -->
-  <text x="400" y="466" text-anchor="middle" font-family="Segoe UI, Arial" font-size="11" fill="#94A3B8">From research question to publication-ready data — guided by AI at every step</text>
+  <text x="400" y="532" text-anchor="middle" font-family="Segoe UI, Arial" font-size="11" fill="#94A3B8">From research question to publication-ready data — guided by AI at every step</text>
 </svg>

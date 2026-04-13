@@ -106,35 +106,35 @@
 
   <!-- Element-style feature badges -->
   <g transform="translate(0, 250)">
-    <!-- Electro - AI Analysis -->
-    <g transform="translate(130, 0)">
+    <!-- Electro - 46 Templates -->
+    <g transform="translate(70, 0)">
       <circle cx="20" cy="15" r="15" fill="rgba(181,101,224,0.15)" stroke="#B565E0" stroke-width="0.8"/>
       <text x="20" y="20" text-anchor="middle" font-family="Georgia, serif" font-size="12" fill="#D4A0F5">&#x26A1;</text>
-      <text x="50" y="20" font-family="'Segoe UI', Arial" font-size="12" fill="#C4B5FD">AI Analysis</text>
+      <text x="50" y="20" font-family="'Segoe UI', Arial" font-size="12" fill="#C4B5FD">46 Templates</text>
     </g>
-    <!-- Dendro - Discovery -->
-    <g transform="translate(270, 0)">
+    <!-- Dendro - 9 Disciplines -->
+    <g transform="translate(220, 0)">
       <circle cx="20" cy="15" r="15" fill="rgba(95,189,67,0.12)" stroke="#5FBD43" stroke-width="0.8"/>
       <text x="20" y="20" text-anchor="middle" font-family="Georgia, serif" font-size="12" fill="#86E065">&#x25C9;</text>
-      <text x="50" y="20" font-family="'Segoe UI', Arial" font-size="12" fill="#86EFAC">Auto Discovery</text>
+      <text x="50" y="20" font-family="'Segoe UI', Arial" font-size="12" fill="#86EFAC">9 Disciplines</text>
     </g>
-    <!-- Pyro - Safety -->
-    <g transform="translate(420, 0)">
+    <!-- Pyro - Adaptive GUI -->
+    <g transform="translate(370, 0)">
       <circle cx="20" cy="15" r="15" fill="rgba(239,121,56,0.12)" stroke="#EF7938" stroke-width="0.8"/>
       <text x="20" y="20" text-anchor="middle" font-family="Georgia, serif" font-size="12" fill="#FBA56A">&#x25B2;</text>
-      <text x="50" y="20" font-family="'Segoe UI', Arial" font-size="12" fill="#FDBA74">Safety First</text>
+      <text x="50" y="20" font-family="'Segoe UI', Arial" font-size="12" fill="#FDBA74">Adaptive GUI</text>
     </g>
-    <!-- Cryo - Models -->
-    <g transform="translate(555, 0)">
+    <!-- Cryo - 6 AI Models -->
+    <g transform="translate(520, 0)">
       <circle cx="20" cy="15" r="15" fill="rgba(114,213,242,0.1)" stroke="#72D5F2" stroke-width="0.8"/>
       <text x="20" y="20" text-anchor="middle" font-family="Georgia, serif" font-size="12" fill="#72D5F2">&#x2736;</text>
       <text x="50" y="20" font-family="'Segoe UI', Arial" font-size="12" fill="#7DD3FC">6 AI Models</text>
     </g>
-    <!-- Geo - Memory -->
-    <g transform="translate(690, 0)">
+    <!-- Geo - Safety First -->
+    <g transform="translate(670, 0)">
       <circle cx="20" cy="15" r="15" fill="rgba(242,208,107,0.1)" stroke="#F2D06B" stroke-width="0.8"/>
       <text x="20" y="20" text-anchor="middle" font-family="Georgia, serif" font-size="12" fill="#F2D06B">&#x25C6;</text>
-      <text x="50" y="20" font-family="'Segoe UI', Arial" font-size="12" fill="#FDE68A">Lab Memory</text>
+      <text x="50" y="20" font-family="'Segoe UI', Arial" font-size="12" fill="#FDE68A">Safety First</text>
     </g>
   </g>
 
