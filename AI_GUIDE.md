@@ -275,4 +275,14 @@ forms from YAML templates — one adaptive interface for all 46+ measurement typ
 1. Create `src/lab_harness/analysis/templates/<type>.py`
 2. Use `{{DATA_PATH}}` and `{{OUTPUT_DIR}}` placeholders
 
+### Modifying the Web GUI
+See `docs/GUI_DEVELOPMENT.md` for the complete GUI modification guide.
+Key points:
+- GUI is a single embedded HTML in `src/lab_harness/web/app.py`
+- Two pages: `_embedded_dashboard()` (template config) and `_embedded_monitor()` (real-time charts)
+- Adding a channel: add to `CHANNELS` array in JavaScript
+- Template-driven: metric cards auto-configure from YAML templates
+- Presets: saved to localStorage, restored on next session
+- Charts: all use Chart.js, all have selectable X/Y axes
+
 See `CATALOG.md` for the full catalog and contributor guide.
