@@ -5,13 +5,27 @@
 <p align="center">
   <a href="https://github.com/Anai-Guo/LabAgent/actions/workflows/ci.yml"><img src="https://github.com/Anai-Guo/LabAgent/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
   <img src="https://img.shields.io/badge/python-3.10%2B-blue.svg" alt="Python">
-  <img src="https://img.shields.io/badge/tests-164%20passed-brightgreen.svg" alt="Tests">
+  <img src="https://img.shields.io/badge/tests-176%20passed-brightgreen.svg" alt="Tests">
   <img src="https://img.shields.io/badge/templates-46-orange.svg" alt="Templates">
   <img src="https://img.shields.io/badge/AI%20models-6%20providers-purple.svg" alt="Models">
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-green.svg" alt="License"></a>
 </p>
 
 ---
+
+## How It Works
+
+Open `labharness web` and navigate to `/experiment`. Enter your research direction and material. LabAgent does the rest:
+
+1. **Parallel** searches literature and scans your instrument bus
+2. **AI** decides the measurement type from your instruments + literature
+3. **You confirm** the data folder name
+4. **Simulated** physics-based measurement runs (real driver integration coming)
+5. **AI analyzes** results with literature context — interpretation cites papers by `[N]`
+6. **Suggestions** for follow-up experiments
+7. **One-click** open data folder with organized output
+
+All 46 measurement templates, 9 disciplines. Swap AI model with one config line.
 
 ## The Problem
 

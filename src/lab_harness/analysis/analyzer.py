@@ -71,9 +71,14 @@ class Analyzer:
                 f"Available: {[p.stem for p in TEMPLATES_DIR.glob('*.py')]}"
             )
 
-        template = template_path.read_text()
-        script = template.replace("{{DATA_PATH}}", str(data_path))
-        script = script.replace("{{OUTPUT_DIR}}", str(self.output_dir))
+        template = template_path.read_text(encoding="utf-8")
+        # Use POSIX-style paths so the substituted strings are valid Python
+        # literals on all platforms (Windows backslashes would otherwise
+        # trigger \U, \A, \R... escape errors when the script is executed).
+        data_str = Path(data_path).as_posix()
+        out_str = Path(self.output_dir).as_posix()
+        script = template.replace("{{DATA_PATH}}", data_str)
+        script = script.replace("{{OUTPUT_DIR}}", out_str)
         return script
 
     # --- Tier 2: AI-generated analysis ---
@@ -238,7 +243,10 @@ class Analyzer:
         """Save generated script to output directory."""
         self.output_dir.mkdir(parents=True, exist_ok=True)
         script_path = self.output_dir / f"{name}_analysis.py"
-        script_path.write_text(script)
+        # Write as UTF-8 so templates with non-ASCII comments round-trip
+        # correctly regardless of the system's default encoding (e.g. GBK on
+        # Chinese Windows).
+        script_path.write_text(script, encoding="utf-8")
         logger.info("Saved analysis script to %s", script_path)
         return script_path
 

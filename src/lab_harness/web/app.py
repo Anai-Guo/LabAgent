@@ -35,6 +35,25 @@ app = FastAPI(
 TEMPLATES_HTML_DIR = Path(__file__).parent / "templates"
 
 
+@app.on_event("startup")
+async def start_cleanup():
+    """Periodic session cleanup every 5 minutes."""
+
+    async def cleanup_loop():
+        from lab_harness.web.session_registry import get_registry
+
+        while True:
+            try:
+                await asyncio.sleep(300)  # 5 min
+                removed = get_registry().cleanup()
+                if removed > 0:
+                    logging.getLogger(__name__).info("Cleaned up %d done sessions", removed)
+            except Exception:
+                pass
+
+    asyncio.create_task(cleanup_loop())
+
+
 # ---------------------------------------------------------------------------
 # HTML page routes
 # ---------------------------------------------------------------------------
@@ -215,6 +234,7 @@ async def experiment_status(session_id: str):
         "folder_name": s.folder_name,
         "parent_dir": s.parent_dir,
         "folder_confirmed": s.folder_confirmed,
+        "simulated": s.simulated,
         "done": live.done,
     }
 

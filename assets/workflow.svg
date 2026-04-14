@@ -15,50 +15,65 @@
   </defs>
 
   <rect width="800" height="545" rx="12" fill="#F8FAFC"/>
-  <text x="400" y="32" text-anchor="middle" font-family="Segoe UI, Arial" font-size="18" font-weight="700" fill="#1E293B">How LabAgent Works</text>
+  <text x="400" y="28" text-anchor="middle" font-family="Segoe UI, Arial" font-size="18" font-weight="700" fill="#1E293B">How LabAgent Works</text>
+  <text x="400" y="46" text-anchor="middle" font-family="Segoe UI, Arial" font-size="10" fill="#64748B"><tspan font-family="monospace" fill="#4338CA">labharness web</tspan> → <tspan font-family="monospace" fill="#4338CA">/experiment</tspan> — fully automated 5-step flow</text>
 
-  <!-- Step 1: User -->
-  <circle cx="80" cy="110" r="35" fill="url(#wg1)"/>
-  <text x="80" y="105" text-anchor="middle" font-family="Segoe UI, Arial" font-size="22" fill="white">&#x1F9D1;</text>
-  <text x="80" y="122" text-anchor="middle" font-family="Segoe UI, Arial" font-size="8" fill="#E0E7FF">Researcher</text>
-  <text x="80" y="160" text-anchor="middle" font-family="Segoe UI, Arial" font-size="9" fill="#64748B" font-style="italic">"I want to measure</text>
-  <text x="80" y="172" text-anchor="middle" font-family="Segoe UI, Arial" font-size="9" fill="#64748B" font-style="italic">IV on my sample"</text>
+  <!-- Step 1: Input -->
+  <rect x="20" y="75" width="115" height="78" rx="12" fill="url(#wg1)"/>
+  <text x="77" y="100" text-anchor="middle" font-family="Segoe UI, Arial" font-size="20" fill="white">&#x270D;</text>
+  <text x="77" y="120" text-anchor="middle" font-family="Segoe UI, Arial" font-size="10" font-weight="600" fill="white">1. Input</text>
+  <text x="77" y="136" text-anchor="middle" font-family="Segoe UI, Arial" font-size="8" fill="#C7D2FE">Direction + material</text>
 
   <!-- Arrow 1 -->
-  <line x1="120" y1="110" x2="165" y2="110" stroke="#94A3B8" stroke-width="2"/>
+  <line x1="140" y1="114" x2="172" y2="114" stroke="#94A3B8" stroke-width="2" marker-end="url(#arr)"/>
 
-  <!-- Step 2: Literature -->
-  <rect x="175" y="75" width="110" height="70" rx="12" fill="url(#wg1)"/>
-  <text x="230" y="100" text-anchor="middle" font-family="Segoe UI, Arial" font-size="18" fill="white">&#x1F4DA;</text>
-  <text x="230" y="118" text-anchor="middle" font-family="Segoe UI, Arial" font-size="10" font-weight="600" fill="white">Literature</text>
-  <text x="230" y="133" text-anchor="middle" font-family="Segoe UI, Arial" font-size="8" fill="#C7D2FE">Search protocols</text>
+  <!-- Step 2: Parallel (dual stacked box) -->
+  <g>
+    <rect x="175" y="75" width="135" height="36" rx="8" fill="url(#wg1)"/>
+    <text x="192" y="98" font-family="Segoe UI, Arial" font-size="14" fill="white">&#x1F4DA;</text>
+    <text x="217" y="93" font-family="Segoe UI, Arial" font-size="9" font-weight="600" fill="white">Literature search</text>
+    <text x="217" y="104" font-family="Segoe UI, Arial" font-size="7" fill="#C7D2FE">paper-pilot MCP</text>
+
+    <rect x="175" y="117" width="135" height="36" rx="8" fill="url(#wg2)"/>
+    <text x="192" y="140" font-family="Segoe UI, Arial" font-size="14" fill="white">&#x1F50D;</text>
+    <text x="217" y="135" font-family="Segoe UI, Arial" font-size="9" font-weight="600" fill="white">Instrument scan</text>
+    <text x="217" y="146" font-family="Segoe UI, Arial" font-size="7" fill="#A7F3D0">VISA + serial</text>
+  </g>
+  <text x="242" y="167" text-anchor="middle" font-family="Segoe UI, Arial" font-size="8" font-style="italic" fill="#64748B">2. in parallel</text>
 
   <!-- Arrow 2 -->
-  <line x1="290" y1="110" x2="335" y2="110" stroke="#94A3B8" stroke-width="2"/>
+  <line x1="315" y1="114" x2="347" y2="114" stroke="#94A3B8" stroke-width="2" marker-end="url(#arr)"/>
 
-  <!-- Step 3: Discover -->
-  <rect x="345" y="75" width="110" height="70" rx="12" fill="url(#wg2)"/>
-  <text x="400" y="100" text-anchor="middle" font-family="Segoe UI, Arial" font-size="18" fill="white">&#x1F50D;</text>
-  <text x="400" y="118" text-anchor="middle" font-family="Segoe UI, Arial" font-size="10" font-weight="600" fill="white">Discover</text>
-  <text x="400" y="133" text-anchor="middle" font-family="Segoe UI, Arial" font-size="8" fill="#A7F3D0">Scan instruments</text>
+  <!-- Step 3: AI decides -->
+  <rect x="350" y="75" width="115" height="78" rx="12" fill="url(#wg4)"/>
+  <text x="407" y="100" text-anchor="middle" font-family="Segoe UI, Arial" font-size="20" fill="white">&#x1F9E0;</text>
+  <text x="407" y="120" text-anchor="middle" font-family="Segoe UI, Arial" font-size="10" font-weight="600" fill="white">3. AI decides</text>
+  <text x="407" y="136" text-anchor="middle" font-family="Segoe UI, Arial" font-size="8" fill="#FECACA">Measurement type</text>
 
   <!-- Arrow 3 -->
-  <line x1="460" y1="110" x2="505" y2="110" stroke="#94A3B8" stroke-width="2"/>
+  <line x1="470" y1="114" x2="502" y2="114" stroke="#94A3B8" stroke-width="2" marker-end="url(#arr)"/>
 
-  <!-- Step 4: Plan -->
-  <rect x="515" y="75" width="110" height="70" rx="12" fill="url(#wg1)"/>
-  <text x="570" y="100" text-anchor="middle" font-family="Segoe UI, Arial" font-size="18" fill="white">&#x1F4CB;</text>
-  <text x="570" y="118" text-anchor="middle" font-family="Segoe UI, Arial" font-size="10" font-weight="600" fill="white">Plan + Validate</text>
-  <text x="570" y="133" text-anchor="middle" font-family="Segoe UI, Arial" font-size="8" fill="#C7D2FE">Safety boundaries</text>
+  <!-- Step 4: Folder confirm -->
+  <rect x="505" y="75" width="115" height="78" rx="12" fill="url(#wg3)"/>
+  <text x="562" y="100" text-anchor="middle" font-family="Segoe UI, Arial" font-size="20" fill="white">&#x1F4C1;</text>
+  <text x="562" y="120" text-anchor="middle" font-family="Segoe UI, Arial" font-size="10" font-weight="600" fill="white">4. Confirm folder</text>
+  <text x="562" y="136" text-anchor="middle" font-family="Segoe UI, Arial" font-size="8" fill="#FDE68A">User-named run</text>
 
   <!-- Arrow 4 -->
-  <line x1="630" y1="110" x2="675" y2="110" stroke="#94A3B8" stroke-width="2"/>
+  <line x1="625" y1="114" x2="657" y2="114" stroke="#94A3B8" stroke-width="2" marker-end="url(#arr)"/>
 
-  <!-- Step 5: Analyze -->
-  <rect x="685" y="75" width="95" height="70" rx="12" fill="url(#wg3)"/>
-  <text x="732" y="100" text-anchor="middle" font-family="Segoe UI, Arial" font-size="18" fill="white">&#x1F4CA;</text>
-  <text x="732" y="118" text-anchor="middle" font-family="Segoe UI, Arial" font-size="10" font-weight="600" fill="white">Analyze</text>
-  <text x="732" y="133" text-anchor="middle" font-family="Segoe UI, Arial" font-size="8" fill="#FDE68A">AI interprets data</text>
+  <!-- Step 5: Measure + Analyze -->
+  <rect x="660" y="75" width="120" height="78" rx="12" fill="url(#wg2)"/>
+  <text x="720" y="100" text-anchor="middle" font-family="Segoe UI, Arial" font-size="20" fill="white">&#x1F4CA;</text>
+  <text x="720" y="120" text-anchor="middle" font-family="Segoe UI, Arial" font-size="10" font-weight="600" fill="white">5. Measure + Analyze</text>
+  <text x="720" y="136" text-anchor="middle" font-family="Segoe UI, Arial" font-size="8" fill="#A7F3D0">Cites papers [N]</text>
+
+  <!-- arrow marker -->
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#94A3B8"/>
+    </marker>
+  </defs>
 
   <!-- Features row -->
   <rect x="30" y="195" width="740" height="75" rx="12" fill="white" stroke="#E2E8F0" stroke-width="1"/>

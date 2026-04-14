@@ -18,9 +18,10 @@ class TestAnalyzer:
             data_path=data,
             measurement_type="AHE",
         )
-        # Placeholder replaced with actual path (str() uses OS separators)
+        # Placeholder replaced with actual path. Paths are substituted in
+        # POSIX form so the resulting Python literal is valid on Windows too.
         assert "{{DATA_PATH}}" not in script
-        assert str(data) in script
+        assert data.as_posix() in script
         # Template content is present
         assert "Anomalous Hall Effect" in script or "R_AHE" in script
 
@@ -33,7 +34,7 @@ class TestAnalyzer:
             measurement_type="IV",
         )
         assert "{{DATA_PATH}}" not in script
-        assert str(data) in script
+        assert data.as_posix() in script
         assert "{{OUTPUT_DIR}}" not in script
 
     def test_output_dir_substituted(self):
@@ -45,7 +46,7 @@ class TestAnalyzer:
             measurement_type="AHE",
         )
         assert "{{OUTPUT_DIR}}" not in script
-        assert str(out) in script
+        assert out.as_posix() in script
 
     def test_unknown_type_raises(self):
         """Unknown measurement type raises FileNotFoundError."""

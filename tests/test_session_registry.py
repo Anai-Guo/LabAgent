@@ -39,3 +39,29 @@ def test_delete():
 def test_get_missing():
     reg = SessionRegistry()
     assert reg.get("nonexistent") is None
+
+
+def test_cleanup_removes_old_done_sessions():
+    reg = SessionRegistry(done_ttl_seconds=0)  # expire immediately
+    live = reg.create()
+    reg.mark_done(live.session.session_id)
+    removed = reg.cleanup()
+    assert removed == 1
+    assert reg.get(live.session.session_id) is None
+
+
+def test_cleanup_keeps_running_sessions():
+    reg = SessionRegistry(done_ttl_seconds=0)
+    live = reg.create()  # not done
+    removed = reg.cleanup()
+    assert removed == 0
+    assert reg.get(live.session.session_id) is not None
+
+
+def test_cleanup_keeps_recent_done_sessions():
+    reg = SessionRegistry(done_ttl_seconds=3600)  # 1 hour
+    live = reg.create()
+    reg.mark_done(live.session.session_id)
+    # Just marked done — should not be removed
+    removed = reg.cleanup()
+    assert removed == 0

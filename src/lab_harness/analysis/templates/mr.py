@@ -2,6 +2,7 @@
 
 import matplotlib
 import numpy as np
+import pandas as pd
 
 matplotlib.use("Agg")
 from pathlib import Path
@@ -12,9 +13,12 @@ data_path = Path("{{DATA_PATH}}")
 output_dir = Path("{{OUTPUT_DIR}}")
 output_dir.mkdir(parents=True, exist_ok=True)
 
-data = np.genfromtxt(data_path, delimiter=",", skip_header=1, names=True)
-field = data[data.dtype.names[0]]
-v_xx = data[data.dtype.names[1]]
+# comment='#' skips the SIMULATED-data metadata header written by flow.py.
+df = pd.read_csv(data_path, comment="#")
+x_col = "Magnetic Field" if "Magnetic Field" in df.columns else df.columns[0]
+y_col = "V_xx" if "V_xx" in df.columns else df.columns[1]
+field = df[x_col].to_numpy()
+v_xx = df[y_col].to_numpy()
 I_source = 1e-4
 R_xx = v_xx / I_source
 
@@ -37,6 +41,20 @@ ax.text(
 )
 ax.grid(True, alpha=0.3)
 fig.tight_layout()
+# Diagonal watermark so nobody confuses simulated output for real data.
+fig.text(
+    0.5,
+    0.5,
+    "SIMULATED DATA\n(LabAgent)",
+    fontsize=40,
+    color="red",
+    alpha=0.15,
+    ha="center",
+    va="center",
+    rotation=30,
+    transform=fig.transFigure,
+    zorder=0,
+)
 fig.savefig(output_dir / "mr_plot.png", dpi=300)
 fig.savefig(output_dir / "mr_plot.pdf")
 plt.close()

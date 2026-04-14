@@ -45,6 +45,11 @@ class ExperimentSession:
     folder_confirmed: bool = False
     parent_dir: str = "./data"
 
+    # Simulation flag — True means data came from the physics simulator rather
+    # than real instruments. Default True reflects current reality; real driver
+    # integration will flip this to False.
+    simulated: bool = True
+
     @property
     def folder_name(self) -> str:
         """Generate organized folder name: date_material_type/.
@@ -83,6 +88,7 @@ class ExperimentSession:
             "measurement_completed": self.measurement_completed,
             "ai_interpretation": self.ai_interpretation,
             "next_step_suggestions": self.next_step_suggestions,
+            "simulated": self.simulated,
         }
 
     def save_summary(self, folder: Path) -> None:
@@ -94,6 +100,15 @@ class ExperimentSession:
         readme = [
             f"# Experiment: {self.material} — {self.measurement_type}",
             "",
+        ]
+        if self.simulated:
+            readme += [
+                "> ⚠️ **SIMULATED DATA** — This experiment was run with LabAgent's",
+                "> physics simulator, NOT real instruments. For publication, re-run",
+                "> with actual instruments connected.",
+                "",
+            ]
+        readme += [
             f"**Date**: {self.started_at}",
             f"**Direction**: {self.direction}",
             f"**Material**: {self.material}",

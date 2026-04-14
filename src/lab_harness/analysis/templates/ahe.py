@@ -2,6 +2,7 @@
 
 import matplotlib
 import numpy as np
+import pandas as pd
 
 matplotlib.use("Agg")
 from pathlib import Path
@@ -12,10 +13,19 @@ data_path = Path("{{DATA_PATH}}")
 output_dir = Path("{{OUTPUT_DIR}}")
 output_dir.mkdir(parents=True, exist_ok=True)
 
-# Load data
-data = np.genfromtxt(data_path, delimiter=",", skip_header=1, names=True)
-field = data[data.dtype.names[0]]  # First column: field (Oe)
-v_xy = data[data.dtype.names[1]]  # Second column: V_xy (V)
+# Load data. AHE CSVs have at least two columns (Magnetic Field, V_xy)
+# and may also include V_xx. Read by label so extra columns don't confuse us.
+# comment='#' skips the SIMULATED-data metadata header written by flow.py.
+df = pd.read_csv(data_path, comment="#")
+x_col = "Magnetic Field" if "Magnetic Field" in df.columns else df.columns[0]
+if "V_xy" in df.columns:
+    y_col = "V_xy"
+elif "V_xx" in df.columns and len(df.columns) >= 2:
+    y_col = df.columns[1]
+else:
+    y_col = df.columns[1]
+field = df[x_col].to_numpy()
+v_xy = df[y_col].to_numpy()
 
 # Calculate Hall resistance (assuming source current from filename or default)
 I_source = 1e-4  # 100 uA default
@@ -44,6 +54,20 @@ ax.text(
 )
 ax.grid(True, alpha=0.3)
 fig.tight_layout()
+# Diagonal watermark so nobody confuses simulated output for real data.
+fig.text(
+    0.5,
+    0.5,
+    "SIMULATED DATA\n(LabAgent)",
+    fontsize=40,
+    color="red",
+    alpha=0.15,
+    ha="center",
+    va="center",
+    rotation=30,
+    transform=fig.transFigure,
+    zorder=0,
+)
 fig.savefig(output_dir / "ahe_plot.png", dpi=300)
 fig.savefig(output_dir / "ahe_plot.pdf")
 plt.close()

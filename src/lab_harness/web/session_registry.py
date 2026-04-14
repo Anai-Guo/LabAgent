@@ -21,6 +21,8 @@ class LiveSession:
     events: asyncio.Queue = field(default_factory=asyncio.Queue)
     task: asyncio.Task | None = None
     done: bool = False
+    created_at: float = field(default_factory=time.time)
+    completed_at: float | None = None
 
     async def emit(self, event_type: str, **data: Any) -> None:
         """Push an event to the queue."""
@@ -49,8 +51,9 @@ class LiveSession:
 class SessionRegistry:
     """Global registry of live experiment sessions."""
 
-    def __init__(self) -> None:
+    def __init__(self, done_ttl_seconds: int = 3600) -> None:
         self._sessions: dict[str, LiveSession] = {}
+        self._done_ttl = done_ttl_seconds  # default 1 hour
 
     def create(self) -> LiveSession:
         """Create a new live session."""
@@ -67,6 +70,25 @@ class SessionRegistry:
     def delete(self, session_id: str) -> None:
         """Remove a session (after completion)."""
         self._sessions.pop(session_id, None)
+
+    def mark_done(self, session_id: str) -> None:
+        """Mark a session as done with timestamp."""
+        live = self._sessions.get(session_id)
+        if live:
+            live.done = True
+            live.completed_at = time.time()
+
+    def cleanup(self) -> int:
+        """Remove sessions that completed > TTL ago. Returns count removed."""
+        now = time.time()
+        to_remove = [
+            sid
+            for sid, live in self._sessions.items()
+            if live.done and live.completed_at and (now - live.completed_at) > self._done_ttl
+        ]
+        for sid in to_remove:
+            del self._sessions[sid]
+        return len(to_remove)
 
 
 # Global singleton
