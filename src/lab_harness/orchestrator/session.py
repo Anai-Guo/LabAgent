@@ -45,10 +45,21 @@ class ExperimentSession:
     folder_confirmed: bool = False
     parent_dir: str = "./data"
 
-    # Simulation flag — True means data came from the physics simulator rather
-    # than real instruments. Default True reflects current reality; real driver
-    # integration will flip this to False.
+    # Execution configuration.
+    #
+    # execution_mode controls the flow.py branch:
+    #   "auto"      — try real instruments; fall back to simulator if the
+    #                 driver registry can't connect everything.
+    #   "real"      — real instruments only. If probing fails, the flow
+    #                 raises instead of silently simulating.
+    #   "simulated" — always simulate; never touch real hardware.
+    #
+    # ``simulated`` is the post-run outcome flag: True means this run's data
+    # came from the physics simulator. Downstream components (README, CSV
+    # header, web UI banner) key off of it.
+    execution_mode: str = "auto"
     simulated: bool = True
+    driver_coverage: dict = field(default_factory=dict)
 
     @property
     def folder_name(self) -> str:
@@ -88,7 +99,9 @@ class ExperimentSession:
             "measurement_completed": self.measurement_completed,
             "ai_interpretation": self.ai_interpretation,
             "next_step_suggestions": self.next_step_suggestions,
+            "execution_mode": self.execution_mode,
             "simulated": self.simulated,
+            "driver_coverage": self.driver_coverage,
         }
 
     def save_summary(self, folder: Path) -> None:

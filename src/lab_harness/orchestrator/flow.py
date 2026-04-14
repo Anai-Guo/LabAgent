@@ -21,6 +21,10 @@ class ExperimentFlow:
         self.settings = settings
         self.data_root = data_root or Path("./data")
         self.session = ExperimentSession()
+        # role_assignments is set after classification (see _classify()). It
+        # maps role name → InstrumentRecord and is consumed by
+        # _try_real_execution() when deciding whether to hit real hardware.
+        self.role_assignments: dict = {}
 
     async def run(self, direction: str = "", material: str = "") -> ExperimentSession:
         """Run the full experiment flow. Returns the completed session."""
@@ -71,6 +75,11 @@ class ExperimentFlow:
         self.session.measurement_reason = decision.get("reasoning", "")
         print(f"  → {self.session.measurement_type}")
         print(f"  Reasoning: {self.session.measurement_reason}")
+
+        # Step 4b: Classify instruments for the chosen measurement so the
+        # executor has a role → InstrumentRecord map it can hand to the
+        # driver registry.
+        self._classify()
 
         # Step 5: Generate plan
         print("\n[Step 3/6] Generating measurement plan...")
@@ -146,6 +155,39 @@ class ExperimentFlow:
         instruments = await loop.run_in_executor(None, scan_visa_instruments)
         return [i.model_dump() for i in instruments]
 
+    def _classify(self, emit=None) -> None:
+        """Populate ``self.role_assignments`` for the chosen measurement type.
+
+        Safe to call even when no instruments were found — in that case
+        ``role_assignments`` stays empty and the executor falls back to the
+        simulator.
+        """
+        from lab_harness.discovery.classifier import classify_instruments
+        from lab_harness.models.instrument import InstrumentRecord, LabInventory
+
+        if not self.session.instruments:
+            self.role_assignments = {}
+            return
+
+        records = []
+        for entry in self.session.instruments:
+            try:
+                records.append(InstrumentRecord(**entry) if isinstance(entry, dict) else entry)
+            except Exception as exc:  # noqa: BLE001
+                logger.warning("Skipping bad instrument record %r: %s", entry, exc)
+
+        inventory = LabInventory(instruments=records)
+        try:
+            self.role_assignments = classify_instruments(
+                inventory,
+                self.session.measurement_type or "IV",
+                router=None,  # LLM fallback optional — keep classification pure here
+                emit=emit,
+            )
+        except Exception as exc:  # noqa: BLE001
+            logger.warning("Classification failed, real execution disabled: %s", exc)
+            self.role_assignments = {}
+
     # ------------------------------------------------------------------
     # Phased flow for Web GUI (SSE event emission)
     # ------------------------------------------------------------------
@@ -205,6 +247,11 @@ class ExperimentFlow:
             measurement_type=self.session.measurement_type,
             reasoning=self.session.measurement_reason,
         )
+
+        # 2b. Classify instruments into roles so the executor can reach real
+        # drivers. `emit_sync` lets the classifier stream per-assignment
+        # events to the Web UI.
+        self._classify(emit=emit_sync)
 
         # 3. Build plan
         from lab_harness.planning.boundary_checker import check_boundaries
@@ -278,36 +325,147 @@ class ExperimentFlow:
 
         return self.session
 
-    async def _run_measurement_streaming(self, plan, folder: Path, emit) -> Path:
-        """Streaming version of ``_run_measurement`` that emits progress events."""
-        import csv
+    # ------------------------------------------------------------------
+    # Measurement execution
+    # ------------------------------------------------------------------
+    #
+    # Both entry points below (_run_measurement_streaming for the Web GUI,
+    # _run_measurement for the CLI) delegate the "real vs simulated" branch
+    # to _acquire_points(). That keeps the CSV-writing / progress-emitting
+    # code free of backend concerns.
 
+    def _acquire_points(
+        self,
+        plan,
+        progress=None,
+    ) -> tuple[list[dict], bool, dict]:
+        """Return ``(points, used_simulator, metadata)``.
+
+        Respects ``self.session.execution_mode``:
+          * ``"simulated"`` — always uses ``simulators.simulate``.
+          * ``"real"``      — tries real execution; raises on failure.
+          * ``"auto"``      — tries real, silently falls back to simulator.
+
+        Also populates ``self.session.driver_coverage`` so callers can tell
+        which roles went to real drivers vs. unsupported.
+        """
         from lab_harness.orchestrator.simulators import simulate
 
-        data_file = folder / "raw_data.csv"
+        mode = getattr(self.session, "execution_mode", "auto")
+
+        # Simulator-only fast path.
+        if mode == "simulated":
+            points = simulate(
+                plan,
+                self.session.measurement_type,
+                seed=42,
+                literature=self.session.literature,
+            )
+            return points, True, {"backend": "simulator", "reason": "execution_mode=simulated"}
+
+        # Try real execution.
+        real_points, real_meta = self._try_real_execution(plan, progress)
+        if real_points is not None:
+            return real_points, False, real_meta
+
+        if mode == "real":
+            raise RuntimeError(f"execution_mode='real' but real execution failed: {real_meta.get('reason', 'unknown')}")
+
+        # auto → fall back to simulator
         points = simulate(
             plan,
             self.session.measurement_type,
             seed=42,
             literature=self.session.literature,
         )
+        return points, True, real_meta
+
+    def _try_real_execution(self, plan, progress=None) -> tuple[list[dict] | None, dict]:
+        """Attempt real execution. Returns (points, meta) or (None, meta on failure)."""
+        from lab_harness.drivers.registry import DriverRegistry
+        from lab_harness.orchestrator import executor
+
+        if self.session.measurement_type.upper() not in executor.supported_types():
+            return None, {
+                "backend": "simulator",
+                "reason": (
+                    f"no real executor for {self.session.measurement_type} (supported: {executor.supported_types()})"
+                ),
+            }
+
+        role_assignments = getattr(self, "role_assignments", None)
+        if not role_assignments:
+            return None, {"backend": "simulator", "reason": "no role_assignments on flow"}
+
+        registry, coverage = DriverRegistry.from_role_assignments(role_assignments)
+        self.session.driver_coverage = dict(coverage)
+        if any(v == "none" for v in coverage.values()):
+            return None, {
+                "backend": "simulator",
+                "reason": f"incomplete driver coverage: {coverage}",
+            }
+
+        if not executor.probe_registry(registry):
+            return None, {"backend": "simulator", "reason": "driver probe failed"}
+
+        try:
+            points = executor.execute(
+                plan,
+                self.session.measurement_type,
+                registry,
+                progress=progress,
+            )
+            return points, {"backend": "real", "coverage": dict(coverage)}
+        except Exception as exc:
+            logger.warning("Real execution failed, falling back to simulator: %s", exc)
+            return None, {"backend": "simulator", "reason": f"execution error: {exc}"}
+
+    def _write_csv_header(self, f, fieldnames, used_simulator: bool, meta: dict) -> None:
+        """Write metadata comment header matched to the backend that produced the data."""
+        import csv
+        import datetime
+
+        if used_simulator:
+            f.write("# LabAgent simulated measurement data\n")
+            f.write("# WARNING: This is PHYSICS SIMULATION, not real instrument data\n")
+            f.write("# Generated by lab_harness.orchestrator.simulators\n")
+            if meta.get("reason"):
+                f.write(f"# Simulator reason: {meta['reason']}\n")
+        else:
+            f.write("# LabAgent real instrument measurement data\n")
+            f.write(f"# Driver coverage: {meta.get('coverage', {})}\n")
+            f.write("# Generated by lab_harness.orchestrator.executor\n")
+        f.write(f"# Measurement type: {self.session.measurement_type}\n")
+        f.write(f"# Sample: {self.session.material}\n")
+        f.write(f"# Timestamp: {datetime.datetime.now().isoformat()}\n")
+        f.write("#\n")
+        writer = csv.DictWriter(f, fieldnames=fieldnames)
+        writer.writeheader()
+        return writer
+
+    async def _run_measurement_streaming(self, plan, folder: Path, emit) -> Path:
+        """Streaming version of ``_run_measurement`` that emits progress events."""
+        import csv  # noqa: F401  (used indirectly via _write_csv_header)
+
+        data_file = folder / "raw_data.csv"
+
+        # Capture progress points into a queue so the SSE stream can consume
+        # them even when the real executor is synchronous (it doesn't know
+        # about asyncio).
+        progress_rows: list[tuple[int, int, dict]] = []
+
+        def on_point(i: int, n: int, row: dict) -> None:
+            progress_rows.append((i, n, row))
+
+        points, used_sim, meta = self._acquire_points(plan, progress=on_point)
+        self.session.simulated = used_sim
         if not points:
             return data_file
 
         fieldnames = list(points[0].keys())
         emit_every = max(1, len(points) // 20)
         with open(data_file, "w", newline="", encoding="utf-8") as f:
-            # Write metadata comments first so downstream tools immediately see
-            # that this CSV came from the simulator, not real instruments.
-            f.write("# LabAgent simulated measurement data\n")
-            f.write("# WARNING: This is PHYSICS SIMULATION, not real instrument data\n")
-            f.write("# Generated by lab_harness.orchestrator.simulators\n")
-            f.write(f"# Measurement type: {self.session.measurement_type}\n")
-            f.write(f"# Sample: {self.session.material}\n")
-            f.write(f"# Timestamp: {__import__('datetime').datetime.now().isoformat()}\n")
-            f.write("#\n")
-            writer = csv.DictWriter(f, fieldnames=fieldnames)
-            writer.writeheader()
+            writer = self._write_csv_header(f, fieldnames, used_sim, meta)
             for i, row in enumerate(points):
                 writer.writerow(row)
                 if i % emit_every == 0 or i == len(points) - 1:
@@ -324,38 +482,17 @@ class ExperimentFlow:
         return data_file
 
     async def _run_measurement(self, plan, folder: Path) -> Path:
-        """Run measurement using physics-based simulator for realistic data."""
-        import csv
-
-        from lab_harness.orchestrator.simulators import simulate
-
+        """Run measurement via real drivers when available, otherwise simulator."""
         data_file = folder / "raw_data.csv"
-
-        # Generate realistic data for this measurement type
-        points = simulate(
-            plan,
-            self.session.measurement_type,
-            seed=42,  # deterministic for reproducibility
-            literature=self.session.literature,
-        )
+        points, used_sim, meta = self._acquire_points(plan)
+        self.session.simulated = used_sim
 
         if not points:
             return data_file
 
-        # Write multi-column CSV matching plan.x_axis + y_channels
         fieldnames = list(points[0].keys())
         with open(data_file, "w", newline="", encoding="utf-8") as f:
-            # Metadata comment header — consistent with streaming flow so
-            # simulated CSVs are always self-describing.
-            f.write("# LabAgent simulated measurement data\n")
-            f.write("# WARNING: This is PHYSICS SIMULATION, not real instrument data\n")
-            f.write("# Generated by lab_harness.orchestrator.simulators\n")
-            f.write(f"# Measurement type: {self.session.measurement_type}\n")
-            f.write(f"# Sample: {self.session.material}\n")
-            f.write(f"# Timestamp: {__import__('datetime').datetime.now().isoformat()}\n")
-            f.write("#\n")
-            writer = csv.DictWriter(f, fieldnames=fieldnames)
-            writer.writeheader()
+            writer = self._write_csv_header(f, fieldnames, used_sim, meta)
             writer.writerows(points)
 
         return data_file

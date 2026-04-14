@@ -18,16 +18,25 @@ classifier registry.
 
 - **Planning, classification, analysis, and memory layers work.** Safety
   validation works.
-- **Execution is simulated by default.** The web GUI runs a physics simulator,
-  not real hardware. CSV/PNG output is clearly marked `SIMULATED MODE` and
-  the red banner in the web UI says the same. Real PyMeasure driver
-  integration is the next milestone.
-- **Three concrete hardware drivers shipped** (Keithley 2400, Keithley 6221,
-  Lakeshore 335) on top of a reusable `VisaDriver` base class with auto-retry.
-  Everything else is a planning/documentation target, not a closed-loop
-  driver.
+- **Execution: partially real, partially simulated.** Real execution is
+  implemented for **IV and RT** measurement types, via a pymeasure adapter
+  plus our own three VisaDriver subclasses. When real hardware isn't
+  reachable or the measurement type has no real executor (HALL, MR, AHE,
+  CV, etc.), the flow falls back to a physics simulator. CSV/PNG output
+  clearly indicates which backend produced it — real runs say
+  "real instrument measurement data" with the driver coverage map, simulated
+  runs say "PHYSICS SIMULATION".
+- **Three concrete in-tree drivers** (Keithley 2400, Keithley 6221,
+  Lakeshore 335) on top of a reusable `VisaDriver` base class with
+  auto-retry. The pymeasure adapter adds ~15 more models (Keithley
+  2000/2182/2450/6517, Agilent 34410/33500/E4980, SRS SR830/SR860, Lake
+  Shore 335/425 via pymeasure's own classes). Extending
+  `PYMEASURE_MODEL_MAP` in `drivers/pymeasure_adapter.py` adds more.
+- **`execution_mode`** on the session controls this: `"auto"` (default,
+  try real → simulator on failure), `"real"` (fail loudly if no driver),
+  or `"simulated"` (never touch hardware).
 
-Be honest with users about which layer they are actually running.
+Be honest with users about which backend produced their data.
 
 ## Mandatory rules for AI agents working on LabAgent
 
@@ -79,7 +88,7 @@ CLI subcommands:   15 (scan, classify, propose, literature, generate-skill,
                    analyze, procedures, chat, web, panel, export, campaign,
                    setup, serve, start)
 AI providers:      6 (Claude, GPT-4o, Gemini, Ollama, vLLM, DeepSeek) via litellm
-Tests:             184 passing
+Tests:             222 passing
 License:           MIT
 ```
 
