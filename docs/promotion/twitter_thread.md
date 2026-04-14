@@ -4,9 +4,9 @@
 
 **Tweet 1 (Hook):**
 
-🧪 I just open-sourced LabAgent — the first framework that connects AI directly to your lab instruments.
+🧪 I just open-sourced LabAgent — a framework that connects AI directly to your lab instruments.
 
-46 measurement templates. 9 disciplines. Works with Claude, GPT, or local models.
+46 measurement templates. ~50 instrument models. 9 disciplines — physics, chemistry, biology, materials, optics, more.
 
 No more writing scripts from scratch. No more LabVIEW.
 
@@ -19,6 +19,7 @@ No more writing scripts from scratch. No more LabVIEW.
 The problem every lab researcher knows:
 
 ❌ Write a new Python script for every measurement
+❌ AI hallucinates SCPI commands that don't exist on your model
 ❌ No safety checks (hope you don't fry the sample)
 ❌ Forget what parameters worked last time
 ❌ Hours of manual data analysis
@@ -30,38 +31,39 @@ The problem every lab researcher knows:
 LabAgent fixes this:
 
 ✅ Tell AI what to measure → it plans everything
+✅ Mandatory manual_lookup tool — AI fetches the real programming manual before writing SCPI
 ✅ 3-tier safety boundaries (block/confirm/allow)
 ✅ Experiment memory (learns what worked)
-✅ AI-generated analysis scripts + physics interpretation
+✅ AI-generated analysis + domain-specific interpretation
 
 ---
 
 **Tweet 4 (Demo):**
 
 ```
-labharness scan        → finds your instruments
-labharness propose IV  → generates measurement plan
-labharness web         → adaptive GUI
-labharness panel       → Claude Code-style terminal
+labharness scan         → finds your instruments
+labharness propose iv   → generates a plan
+labharness analyze …    → figures + interpretation
+labharness web          → adaptive GUI
+labharness panel        → Claude Code-style terminal
 ```
 
-Works with Keithley, Lakeshore, Keysight, NI-DAQ, PPMS, MPMS.
+Works with ~50 models from 15+ vendors.
 
 ---
 
-**Tweet 5 (Disciplines):**
+**Tweet 5 (Disciplines & instruments):**
 
 46 templates across 9 disciplines:
 
-⚡ Physics (IV, Hall, MR, FMR, tunneling)
-🧪 Chemistry (CV, EIS, chronoamperometry)
-💡 Semiconductor (solar cell, DLTS, FET curves)
-❄️ Superconductivity (Tc, Jc)
-🔋 Dielectric (P-E loop, pyroelectric)
-🌡️ Thermoelectric (Seebeck, thermal conductivity)
-🧬 Biology (biosensor impedance)
-🔧 Materials (strain, fatigue, humidity)
-🔬 Quantum Design (PPMS/MPMS)
+⚡ Electrical: IV, R-T, delta-mode (Keithley, NI)
+🧪 Electrochemistry: CV, EIS, CA (BioLogic, Gamry, CHI, Autolab)
+💡 Optics: power, UV-Vis, photoresponse (Thorlabs, Ocean Insight)
+🧬 Biology: plate-reader absorbance/fluorescence (BMG, Molecular Devices)
+📡 RF/signals: scopes, AWGs, lock-ins, VNAs (Tek, Keysight, R&S, Zurich, SRS)
+🌡️ Analytical: balance, pH, MFC (Mettler, Orion, Alicat)
+❄️ Cryogenic: Lakeshore, Oxford, Quantum Design PPMS/MPMS
++ semiconductor, dielectric, sensor templates
 
 ---
 
@@ -84,7 +86,7 @@ Switch with one config line. Your data stays private.
 
 Install: pip install git+https://github.com/Anai-Guo/LabAgent.git
 
-MIT licensed. Contributions welcome — add your measurement template in 5 minutes.
+MIT licensed. Contributions welcome — add your measurement template or instrument in 5 minutes.
 
 What measurement do YOU want to automate?
 

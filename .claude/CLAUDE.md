@@ -6,8 +6,8 @@ Connect AI to your lab instruments. From research question to publication-ready 
 
 ```
 src/lab_harness/
-  server.py         - MCP server entry (FastMCP, 7 tools)
-  cli.py            - Standalone CLI entry (6 subcommands)
+  server.py         - MCP server entry (FastMCP, 9 tools)
+  cli.py            - Standalone CLI entry (15 subcommands)
   config.py         - Settings + model config (env var overrides)
   agent/
     loop.py         - LabAgent: conversational agent with skill registry + memory
@@ -46,7 +46,8 @@ configs/
   default_safety.yaml     - Safety limits
   common_instruments.yaml - Known instrument database
 tests/
-  11 test files covering models, planning, discovery, memory, analysis, skills, budget
+  25+ test files covering models, planning, discovery, memory, analysis,
+  skills, budget, manual_lookup, web API, simulators — 184 tests total
 ```
 
 ## Key Design Decisions

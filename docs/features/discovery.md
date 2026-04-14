@@ -55,18 +55,41 @@ After scanning, the classifier maps instruments to measurement roles. This is a 
 
 ### Stage 1: Dictionary Lookup
 
-A built-in database of known instruments provides instant, deterministic classification. The database covers common lab equipment from Keithley, Lakeshore, and Keysight:
+A built-in database of ~68 known instruments across 26 vendors provides instant,
+deterministic classification. Selected highlights (see
+`src/lab_harness/discovery/classifier.py` for the full list):
 
-| Model | Vendor | Assigned Roles | Capabilities |
-|-------|--------|----------------|--------------|
-| 2400, 2410 | Keithley | source_meter | source/measure IV |
-| 2000 | Keithley | dmm | measure V, R |
-| 2182, 2182A | Keithley | nanovoltmeter | low-noise V measurement |
-| 6221 | Keithley | ac_current_source | pulse/AC current source |
-| 6517, 6517B | Keithley | electrometer | high-R measurement |
-| 425, 455 | Lakeshore | gaussmeter | magnetic field measurement |
-| 335, 340, 350 | Lakeshore | temperature_controller | temperature control |
-| E4980 | Keysight | lcr_meter | capacitance/impedance |
+| Models | Vendor | Assigned Roles |
+|--------|--------|----------------|
+| 2400, 2410, 2420, 2440 | Keithley | source_meter |
+| 2000, 2001, 2002 | Keithley | dmm |
+| 2182, 2182A | Keithley | nanovoltmeter |
+| 6221 | Keithley | ac_current_source |
+| 6517, 6517A, 6517B | Keithley | electrometer |
+| 425, 455, 475 | Lakeshore | gaussmeter |
+| 335, 336, 340, 350 | Lakeshore | temperature_controller |
+| Mercury iTC | Oxford Instruments | temp_controller_cryo |
+| E4980A, DSOX1204G, MSOX3054T, 33500B/33622A, E36313A, N9320B, E5071C | Keysight | lcr_meter / oscilloscope / function_generator / power_supply_dc / spectrum_analyzer / vna |
+| TDS3054C, MSO44, AFG1062/AFG3102 | Tektronix | oscilloscope / function_generator |
+| DS1054Z, MSO5354, DG1032Z, DP832A | Rigol | oscilloscope / function_generator / power_supply_dc |
+| FSV, ZNA | Rohde & Schwarz | spectrum_analyzer / vna |
+| SR830, SR860, SR865A | SRS | lockin_amplifier |
+| MFLI, HF2LI | Zurich Instruments | lockin_amplifier |
+| PM100D, LDC205C, MDT693B | Thorlabs | optical_power_meter / laser_diode_driver / piezo_controller |
+| 1830-C | Newport | optical_power_meter |
+| USB2000, QEPro, CCS100 | Ocean Insight / Thorlabs | spectrometer_compact |
+| SP-200, VSP, VMP3 | BioLogic | potentiostat |
+| Reference 600+, Interface 1010B | Gamry | potentiostat |
+| CHI760E, CHI660E | CH Instruments | potentiostat |
+| PGSTAT302N | Metrohm Autolab | potentiostat |
+| PalmSens4 | Palmsens | potentiostat |
+| CLARIOstar, SpectraMax M5 | BMG / Molecular Devices | plate_reader |
+| XS205, Adventurer | Mettler Toledo / Ohaus | balance |
+| Orion A221 | Thermo Fisher | ph_meter |
+| MC-series | Alicat | mass_flow_controller |
+| PR4000 | MKS | pressure_gauge |
+| USB-6351, USB-6001, USB-6009 | National Instruments | daq |
+| PPMS, MPMS3 | Quantum Design | ppms / mpms |
 
 ### Stage 2: LLM Fallback
 

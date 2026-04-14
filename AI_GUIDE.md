@@ -105,27 +105,29 @@ pip install -e ".[dev]"
 
 ## 5. Measurement Types
 
-When a user mentions a measurement, map it to one of these template keys:
+When a user mentions a measurement, map it to one of these template keys.
+The tables are ordered by how broadly each discipline applies — start from
+the top when the user's discipline is ambiguous.
 
-### Physics & Electrical
+### Electrical (general — works for any conductor/semiconductor)
 | User Says | Template Key | Description |
 |-----------|-------------|-------------|
 | "IV curve", "current-voltage" | `iv` | Source current sweep, measure voltage |
 | "resistance vs temperature", "R-T" | `rt` | Temperature sweep, measure resistance |
-| "Hall effect", "carrier density" | `hall` | Field sweep, measure Hall voltage |
-| "magnetoresistance", "MR" | `mr` | Field sweep, measure longitudinal R |
-| "anomalous Hall", "AHE" | `ahe` | Field sweep, measure transverse R |
-| "spin-orbit torque", "SOT" | `sot` | Field sweep at each pulse current |
-| "FMR", "ferromagnetic resonance" | `fmr` | Field sweep, lock-in absorption |
-| "hysteresis loop", "M-H" | `hysteresis` | Field sweep, measure magnetization |
-| "tunneling", "dI/dV" | `tunneling` | Voltage sweep, differential conductance |
-| "Nernst effect" | `nernst` | Field sweep, transverse thermoelectric V |
-| "magnetostriction" | `magnetostriction` | Field sweep, measure strain |
 | "delta mode", "low resistance" | `delta` | K6221+K2182A ultra-low resistance |
 | "high resistance", "electrometer" | `high_r` | K6517B, voltage sweep, picoamp |
 | "breakdown voltage" | `breakdown` | Voltage ramp to failure |
+| "tunneling", "dI/dV" | `tunneling` | Voltage sweep, differential conductance |
 
-### Semiconductor
+### Chemistry & Electrochemistry
+| User Says | Template Key |
+|-----------|-------------|
+| "cyclic voltammetry", "CV scan" | `cyclic_voltammetry` |
+| "impedance spectroscopy", "EIS" | `eis` |
+| "chronoamperometry", "CA" | `chronoamperometry` |
+| "open circuit potential", "OCP" | `potentiometry` |
+
+### Semiconductor & Optoelectronics
 | User Says | Template Key |
 |-----------|-------------|
 | "FET transfer curve", "gate sweep" | `transfer` |
@@ -136,13 +138,17 @@ When a user mentions a measurement, map it to one of these template keys:
 | "photocurrent", "spectral response" | `photocurrent` |
 | "photoresponse", "transient" | `photoresponse` |
 
-### Chemistry & Electrochemistry
-| User Says | Template Key |
-|-----------|-------------|
-| "cyclic voltammetry", "CV scan" | `cyclic_voltammetry` |
-| "impedance spectroscopy", "EIS" | `eis` |
-| "chronoamperometry", "CA" | `chronoamperometry` |
-| "open circuit potential", "OCP" | `potentiometry` |
+### Magnetic & Transport (condensed-matter specialty)
+| User Says | Template Key | Description |
+|-----------|-------------|-------------|
+| "Hall effect", "carrier density" | `hall` | Field sweep, measure Hall voltage |
+| "magnetoresistance", "MR" | `mr` | Field sweep, measure longitudinal R |
+| "anomalous Hall", "AHE" | `ahe` | Field sweep, measure transverse R |
+| "spin-orbit torque", "SOT" | `sot` | Field sweep at each pulse current |
+| "FMR", "ferromagnetic resonance" | `fmr` | Field sweep, lock-in absorption |
+| "hysteresis loop", "M-H" | `hysteresis` | Field sweep, measure magnetization |
+| "Nernst effect" | `nernst` | Field sweep, transverse thermoelectric V |
+| "magnetostriction" | `magnetostriction` | Field sweep, measure strain |
 
 ### Quantum Design Systems
 | User Says | Template Key |
@@ -184,13 +190,13 @@ This returns a list of connected instruments with VISA addresses and model numbe
 
 ### Step 2: Classify for Measurement
 ```bash
-labharness classify hall
+labharness classify iv
 ```
 Maps discovered instruments to roles (source_meter, dmm, gaussmeter, etc.).
 
 ### Step 3: Generate Plan
 ```bash
-labharness propose hall
+labharness propose iv
 ```
 Creates a measurement plan from template with default parameters.
 The AI can optimize parameters if a sample description is provided.
@@ -203,7 +209,7 @@ The plan is automatically validated against three-tier safety boundaries:
 
 ### Step 5: Analyze Data
 ```bash
-labharness analyze data.csv --type hall --interpret
+labharness analyze data.csv --type iv --interpret
 ```
 Generates analysis script, runs it, produces figures (PNG 300dpi + PDF),
 and provides AI interpretation of the physics.

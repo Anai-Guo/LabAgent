@@ -82,25 +82,84 @@ Templates define what to measure. Located in `src/lab_harness/planning/templates
 
 ## Instrument Reference Procedures
 
-SCPI command sequences for common instruments. Located in `src/lab_harness/reference/instrument_procedures.py`.
+Command sequences (SCPI, ASCII-line, or vendor-API) for common instruments. Located
+in `src/lab_harness/reference/instrument_procedures.py`. Currently 33 procedures
+spanning electrical, signals/RF, optics, electrochemistry, biology/analytical,
+gas/flow, and cryogenic instruments.
 
+### Electrical / source-measure / DMM
 | Procedure | Instruments | Use Case |
 |-----------|------------|----------|
 | `IV_K2400` | Keithley 2400 | Standard IV curve |
 | `DELTA_K6221` | K6221 + K2182A | Ultra-low resistance |
-| `RT_LS350` | Lakeshore 350 | Temperature-dependent measurements |
-| `CV_E4980A` | Keysight E4980A | Capacitance characterization |
 | `HIGH_R_K6517B` | Keithley 6517B | High impedance materials |
 | `NANOVOLT_K2182A` | Keithley 2182A | Low-noise voltage |
 | `DMM_K2000` | Keithley 2000 | General voltage/resistance |
-| `LOCKIN_SR830` | SR830 | AC measurements, FMR |
-| `DMM_A34401` | Agilent 34401A | General purpose DMM |
+| `DMM_A34401` | Agilent 34401A / Keysight 34461A | General purpose DMM |
+
+### Signals / RF / waveform
+| Procedure | Instruments | Use Case |
+|-----------|------------|----------|
+| `SCOPE_CAPTURE_TEK` | Tektronix TDS/DPO/MSO | Waveform capture |
+| `SCOPE_CAPTURE_KEYSIGHT` | Keysight DSOX/MSOX | Waveform capture |
+| `FGEN_KEYSIGHT` | Keysight 33500B/33622A | Arbitrary waveform output |
+| `PSU_KEYSIGHT_E36300` | Keysight E36313A | Programmable DC supply |
+| `LOCKIN_SR830` | SRS SR830 | AC / small-signal detection |
+| `LOCKIN_SR860` | SRS SR860/SR865A | AC / small-signal detection (SCPI) |
+| `LOCKIN_ZURICH_MFLI` | Zurich Instruments MFLI | High-end lock-in via zhinst-toolkit |
+
+### Optics / photonics / spectroscopy
+| Procedure | Instruments | Use Case |
+|-----------|------------|----------|
+| `OPTICAL_POWER_PM100D` | Thorlabs PM100D / PM400 | Optical power at wavelength |
+| `UV_VIS_OCEAN_INSIGHT` | Ocean Insight USB2000/QEPro | UV-Vis absorbance spectrum |
+
+### Electrochemistry
+| Procedure | Instruments | Use Case |
+|-----------|------------|----------|
+| `CV_E4980A` | Keysight E4980A | Capacitance characterization |
+| `CV_BIOLOGIC` | BioLogic SP-200/VSP/VMP3 | Cyclic voltammetry via easy-biologic |
+| `CV_GAMRY` | Gamry Reference 600+/Interface 1010B | CV via COM/ActiveX |
+| `CV_CHI` | CH Instruments CHI760E/CHI660E | CV via hardpotato macro driver |
+
+### Gas / flow / pressure
+| Procedure | Instruments | Use Case |
+|-----------|------------|----------|
+| `GAS_FLOW_ALICAT` | Alicat MC-series MFC | Gas flow setpoint |
+
+### Analytical / biology
+| Procedure | Instruments | Use Case |
+|-----------|------------|----------|
+| `WEIGH_METTLER` | Mettler Toledo XS/XP | Stable mass readout (MT-SICS) |
+| `WEIGH_OHAUS` | Ohaus Adventurer | Mass readout over RS-232 |
+| `PH_ORION` | Thermo Orion Star A221 | pH / ISE / mV readout |
+
+### Temperature / cryogenic
+| Procedure | Instruments | Use Case |
+|-----------|------------|----------|
+| `RT_LS350` | Lakeshore 350 | Temperature-dependent measurements |
+| `TEMP_OXFORD_ITC` | Oxford Mercury iTC | Cryostat temperature control |
+
+### DAQ
+| Procedure | Instruments | Use Case |
+|-----------|------------|----------|
+| `DAQ_NI_AO` | NI USB-6351/6001/6009 | Analog voltage output |
+| `DAQ_NI_AI` | NI USB-6351/6001/6009 | Analog voltage input |
+
+### Condensed-matter specialty (Quantum Design)
+| Procedure | Instruments | Use Case |
+|-----------|------------|----------|
 | `PPMS_RT` | QD PPMS (MultiPyVu) | R-T measurement |
 | `PPMS_MR` | QD PPMS (MultiPyVu) | Magnetoresistance |
 | `PPMS_HALL` | QD PPMS (MultiPyVu) | Hall effect |
 | `PPMS_HC` | QD PPMS (MultiPyVu) | Heat capacity |
 | `MPMS_MH` | QD MPMS (MultiPyVu) | M-H loop (SQUID) |
 | `MPMS_MT` | QD MPMS (MultiPyVu) | M-T ZFC/FC |
+
+**Can't find your instrument?** Call the `manual_lookup` MCP tool (or
+`labharness`'s AI chat) with the make and model — it will return the
+manufacturer's programming manual URL plus any open-source Python driver it
+knows about, before writing new command sequences.
 
 ---
 

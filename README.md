@@ -5,15 +5,16 @@
 <p align="center">
   <a href="https://github.com/Anai-Guo/LabAgent/actions/workflows/ci.yml"><img src="https://github.com/Anai-Guo/LabAgent/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
   <img src="https://img.shields.io/badge/python-3.10%2B-blue.svg" alt="Python">
-  <img src="https://img.shields.io/badge/tests-176%20passed-brightgreen.svg" alt="Tests">
+  <img src="https://img.shields.io/badge/tests-192%20passed-brightgreen.svg" alt="Tests">
   <img src="https://img.shields.io/badge/templates-46-orange.svg" alt="Templates">
+  <img src="https://img.shields.io/badge/instruments-~50%20models-blue.svg" alt="Instruments">
   <img src="https://img.shields.io/badge/AI%20models-6%20providers-purple.svg" alt="Models">
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-green.svg" alt="License"></a>
 </p>
 
 ---
 
-> **Type two things. Get a measurement.** Describe your research direction and sample — LabAgent searches the literature, scans your instruments, picks the measurement, runs it safely, and explains the physics with cited references.
+> **Type two things. Get a measurement.** Describe your research direction and sample — LabAgent searches the literature, scans your instruments, picks the measurement, runs it safely, and explains the science (physics, electrochemistry, spectroscopy, whatever fits) with cited references.
 
 ## See It In Action
 
@@ -21,7 +22,7 @@
   <img src="assets/demo.svg" alt="LabAgent /experiment page: live activity log, AI decision, measurement chart, extracted values, AI interpretation with citations" width="900">
 </p>
 
-Every block above is real: live SSE activity stream, AI-picked measurement type with reasoning, hysteresis loop drawn live, extracted physics values, and AI interpretation that cites papers by `[N]`. The red banner is honest: current release runs in **simulated mode** — real instrument driver integration is the next milestone.
+Every block above is real: live SSE activity stream, AI-picked measurement type with reasoning, live-drawn measurement curve, extracted quantities, and AI interpretation that cites papers by `[N]`. The example above shows a cyclic voltammetry scan on a ferrocene probe — swap in a Keithley or a Keysight scope and you'll see an IV sweep or a waveform instead. The red banner is honest: current release runs in **simulated mode** — real instrument driver integration is the next milestone.
 
 ## Quick Start
 
@@ -91,34 +92,42 @@ Key monitor features:
 | Discipline | Count | Example Measurements |
 |-----------|:-----:|---------------------|
 | Electrical Characterization | 7 | IV curve, R-T, delta mode, high resistance, FET transfer/output, breakdown |
-| Magnetic Measurements | 8 | AHE, magnetoresistance, SOT loop shift, Hall effect, FMR, hysteresis, magnetostriction, Nernst |
+| Electrochemistry | 4 | Cyclic voltammetry, EIS, chronoamperometry, potentiometry |
+| Semiconductor & Optoelectronics | 5 | Solar cell IV, DLTS, photocurrent spectroscopy, photoresponse, tunneling |
+| Sensors, Materials & Environmental | 7 | Gas sensor, humidity, impedance biosensor, cell counting, pH calibration, strain gauge, fatigue |
+| Dielectric & Ferroelectric | 4 | C-V, P-E loop, pyroelectric current, capacitance-frequency |
 | Thermoelectric | 2 | Seebeck coefficient, thermal conductivity |
 | Superconductivity | 2 | Tc transition, critical current density (Jc) |
-| Electrochemistry | 4 | Cyclic voltammetry, EIS, chronoamperometry, potentiometry |
-| Dielectric & Ferroelectric | 4 | C-V, P-E loop, pyroelectric current, capacitance-frequency |
-| Semiconductor & Optoelectronics | 5 | Solar cell IV, DLTS, photocurrent spectroscopy, photoresponse, tunneling |
-| Sensors & Materials | 7 | Gas sensor, humidity, impedance biosensor, cell counting, pH calibration, strain gauge, fatigue |
+| Magnetic Measurements (condensed-matter) | 8 | Hall effect, magnetoresistance, AHE, SOT loop shift, FMR, hysteresis, magnetostriction, Nernst |
 | Quantum Design PPMS/MPMS | 6 | PPMS R-T, PPMS MR, PPMS Hall, PPMS heat capacity, MPMS M-H, MPMS M-T ZFC/FC |
 
 Plus a universal **custom sweep** template for user-defined X-Y measurements (46 total).
 
 ## Supported Instruments
 
-Works out of the box with standard lab equipment:
+Works out of the box with ~50 models from 15+ vendors across all the disciplines above:
 
-| Instrument | Models | Role |
-|-----------|--------|------|
-| Keithley Source Meters | 2400, 2410, 2420, 2440 | Source + measure I/V |
-| Keithley DMMs | 2000, 2001, 2002 | Voltage, resistance, current |
-| Keithley Nanovoltmeters | 2182, 2182A | Ultra-low-noise voltage |
-| Keithley Current Sources | 6221 | AC/pulse/DC current |
-| Keithley Electrometers | 6517, 6517A, 6517B | High resistance, low current |
-| Lakeshore Gaussmeters | 425, 455, 475 | Magnetic field |
-| Lakeshore Temp Controllers | 335, 336, 340, 350 | Temperature control |
-| Keysight LCR Meters | E4980, E4980A, E4980AL | Impedance, capacitance |
-| NI DAQ | USB-6351, USB-6001, USB-6009 | Analog/digital I/O |
+| Category | Representative Vendors / Models |
+|----------|--------------------------------|
+| Source meters, DMMs, electrometers, nanovoltmeters | Keithley 2400, 2000, 2182A, 6221, 6517B |
+| Oscilloscopes | Tektronix TDS/MSO, Keysight DSOX/MSOX, Rigol DS/MSO |
+| Function generators | Keysight 33500B/33622A, Tektronix AFG, Rigol DG |
+| DC power supplies | Keysight E36313A, Rigol DP832A |
+| Lock-in amplifiers | SRS SR830/SR860/SR865A, Zurich MFLI/HF2LI |
+| Spectrum analyzers & VNAs | Keysight N9320B/E5071C, R&S FSV/ZNA |
+| LCR & impedance | Keysight E4980A |
+| Optics / photonics | Thorlabs PM100D, LDC205C, MDT693B, Newport 1830-C |
+| UV-Vis spectrometers | Ocean Insight USB2000/QEPro, Thorlabs CCS100 |
+| Potentiostats (electrochemistry) | BioLogic SP-200/VSP/VMP3, Gamry Reference 600+/1010B, CH Instruments CHI760E, Metrohm Autolab PGSTAT, Palmsens4 |
+| Microplate readers (biology) | BMG CLARIOstar, Molecular Devices SpectraMax |
+| Balances, pH, ISE | Mettler XS/XP (MT-SICS), Ohaus Adventurer, Thermo Orion A221 |
+| Gas / flow / pressure | Alicat MC-series MFCs, MKS PR4000 |
+| Temperature control | Lakeshore 335/336/340/350, Oxford Mercury iTC |
+| Gaussmeters | Lakeshore 425, 455, 475 |
+| DAQ | NI USB-6351/6001/6009 |
+| Quantum Design (condensed-matter specialty) | PPMS DynaCool/VersaLab, MPMS3 via MultiPyVu |
 
-Don't see your instrument? The AI classifier handles unknown instruments from their `*IDN?` response.
+Don't see your instrument? The AI calls the `manual_lookup` tool to fetch the manufacturer's programming manual, then classifies from the `*IDN?` response — so truly unknown devices are handled gracefully.
 
 ## AI at Every Step
 
