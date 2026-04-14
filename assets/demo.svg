@@ -1,0 +1,145 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 680">
+  <defs>
+    <linearGradient id="winBg" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#0f0f1e"/>
+      <stop offset="100%" style="stop-color:#151530"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#c8a96e"/>
+      <stop offset="100%" style="stop-color:#e8d5a0"/>
+    </linearGradient>
+    <filter id="dropShadow">
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-opacity="0.4"/>
+    </filter>
+  </defs>
+
+  <!-- Page background (soft grey to make the browser window stand out) -->
+  <rect width="1100" height="680" fill="#1a1a2e"/>
+
+  <!-- Browser window -->
+  <g filter="url(#dropShadow)">
+    <rect x="30" y="20" width="1040" height="640" rx="10" fill="url(#winBg)" stroke="#c8a96e" stroke-width="0.8" stroke-opacity="0.4"/>
+
+    <!-- Title bar -->
+    <rect x="30" y="20" width="1040" height="36" rx="10" fill="#0a0a15"/>
+    <rect x="30" y="40" width="1040" height="16" fill="#0a0a15"/>
+    <circle cx="50" cy="38" r="6" fill="#ff5f57"/>
+    <circle cx="70" cy="38" r="6" fill="#febc2e"/>
+    <circle cx="90" cy="38" r="6" fill="#28c840"/>
+    <rect x="300" y="28" width="500" height="20" rx="4" fill="#1a1a3a"/>
+    <text x="312" y="42" font-family="'Segoe UI', monospace" font-size="10" fill="#94a3b8">🔒 localhost:8080/experiment</text>
+
+    <!-- Page header inside browser -->
+    <text x="60" y="90" font-family="'Palatino Linotype', Georgia, serif" font-size="22" font-weight="700" fill="#c8a96e">⚗ LabAgent Guided Experiment</text>
+
+    <!-- Left column: Activity log -->
+    <rect x="60" y="110" width="310" height="520" rx="8" fill="#151530" stroke="#c8a96e" stroke-width="0.8"/>
+    <text x="78" y="135" font-family="'Palatino Linotype', Georgia, serif" font-size="14" font-weight="700" fill="#e8d5a0">⚡ Live Activity</text>
+
+    <!-- Log entries -->
+    <g font-family="'Segoe UI', Consolas, monospace" font-size="10.5">
+      <!-- Phase header -->
+      <text x="78" y="162" fill="#c8a96e" font-weight="700">━━ Searching literature + scanning instruments</text>
+
+      <!-- Literature events -->
+      <text x="78" y="184" fill="#c4b5fd">📚 Searching literature...</text>
+      <text x="78" y="202" fill="#c4b5fd">📄 Found: Anomalous Hall Effect in</text>
+      <text x="90" y="216" fill="#c4b5fd">    magnetic thin films (Nagaosa 2010)</text>
+      <text x="78" y="234" fill="#c4b5fd">📄 Found: Intrinsic spin Hall conductivity</text>
+      <text x="90" y="248" fill="#c4b5fd">    in 3d transition metals (2015)</text>
+      <text x="78" y="266" fill="#c4b5fd">✓ Literature: 7 paper(s)</text>
+
+      <!-- Instruments -->
+      <text x="78" y="294" fill="#9cf0ff">🔍 Scanning instruments...</text>
+      <text x="78" y="312" fill="#9cf0ff">🔌 KEITHLEY MODEL 2400 @ GPIB0::5</text>
+      <text x="78" y="330" fill="#9cf0ff">🔌 KEITHLEY MODEL 2000 @ GPIB0::2</text>
+      <text x="78" y="348" fill="#9cf0ff">🔌 LAKESHORE MODEL 425 @ COM3</text>
+      <text x="78" y="366" fill="#9cf0ff">✓ Scan: 3 instrument(s)</text>
+
+      <!-- Classifications -->
+      <text x="78" y="394" fill="#7bc639">✓ MODEL 2400 → source_meter</text>
+      <text x="78" y="412" fill="#7bc639">✓ MODEL 2000 → dmm</text>
+      <text x="78" y="430" fill="#7bc639">✓ MODEL 425 → gaussmeter</text>
+
+      <!-- Phase header -->
+      <text x="78" y="458" fill="#c8a96e" font-weight="700">━━ AI deciding measurement type</text>
+
+      <!-- Plan -->
+      <text x="78" y="480" fill="#fde68a">📁 Data folder:</text>
+      <text x="90" y="494" fill="#fde68a">./data/2026-04-14_CoFeB_AHE</text>
+
+      <!-- Measurement -->
+      <text x="78" y="522" fill="#c8a96e" font-weight="700">━━ Measurement running</text>
+      <text x="78" y="544" fill="#fdba74">▶ Point 147 / 201</text>
+
+      <!-- Done -->
+      <text x="78" y="572" fill="#c8a96e" font-weight="700">━━ Experiment complete!</text>
+    </g>
+
+    <!-- Right column: Cards -->
+    <!-- Decision card -->
+    <rect x="390" y="110" width="660" height="100" rx="8" fill="#151530" stroke="#c8a96e" stroke-width="0.8"/>
+    <text x="408" y="135" font-family="'Palatino Linotype', Georgia, serif" font-size="14" font-weight="700" fill="#e8d5a0">🎯 AI Decision</text>
+    <text x="408" y="158" font-family="'Segoe UI', Arial" font-size="12" fill="#e2e8f0">Measurement type: <tspan font-weight="700" fill="#c8a96e">AHE</tspan> (Anomalous Hall Effect)</text>
+
+    <!-- Reasoning block -->
+    <rect x="408" y="170" width="624" height="32" rx="4" fill="rgba(200,130,255,0.10)" stroke="none"/>
+    <rect x="408" y="170" width="3" height="32" fill="#c882ff"/>
+    <text x="420" y="185" font-family="'Segoe UI', Arial" font-size="10" fill="#c4b5fd">CoFeB is a classic spintronic material with known AHE signature.</text>
+    <text x="420" y="198" font-family="'Segoe UI', Arial" font-size="10" fill="#c4b5fd">Gaussmeter + DMM + source-meter match AHE protocol from [1] Nagaosa 2010.</text>
+
+    <!-- Measurement chart card -->
+    <rect x="390" y="220" width="320" height="220" rx="8" fill="#151530" stroke="#c8a96e" stroke-width="0.8"/>
+    <text x="408" y="245" font-family="'Palatino Linotype', Georgia, serif" font-size="13" font-weight="700" fill="#e8d5a0">📊 Measurement (live)</text>
+    <!-- Progress bar -->
+    <rect x="408" y="258" width="284" height="6" rx="3" fill="#0f0f1e" stroke="#c8a96e" stroke-width="0.6"/>
+    <rect x="408" y="258" width="207" height="6" rx="3" fill="url(#gold)"/>
+    <text x="692" y="263" text-anchor="end" font-family="'Segoe UI', Arial" font-size="9" fill="#94a3b8">73%</text>
+    <!-- Hysteresis loop sketch -->
+    <g transform="translate(408, 275)">
+      <rect x="0" y="0" width="284" height="150" rx="4" fill="#0a0a15"/>
+      <!-- Axes -->
+      <line x1="20" y1="75" x2="272" y2="75" stroke="#334155" stroke-width="0.5"/>
+      <line x1="146" y1="15" x2="146" y2="135" stroke="#334155" stroke-width="0.5"/>
+      <!-- Hysteresis curve (two branches) -->
+      <path d="M 25 110 L 70 108 L 100 102 L 130 55 L 160 28 L 200 26 L 240 26 L 270 26" fill="none" stroke="#c882ff" stroke-width="1.8"/>
+      <path d="M 270 42 L 230 42 L 200 42 L 160 118 L 130 122 L 100 122 L 70 122 L 25 122" fill="none" stroke="#9cf0ff" stroke-width="1.8"/>
+      <!-- Labels -->
+      <text x="275" y="82" font-family="monospace" font-size="8" fill="#64748b" text-anchor="end">H (Oe)</text>
+      <text x="152" y="22" font-family="monospace" font-size="8" fill="#64748b">R_xy</text>
+    </g>
+
+    <!-- Results card (right side of chart) -->
+    <rect x="720" y="220" width="310" height="220" rx="8" fill="#151530" stroke="#c8a96e" stroke-width="0.8"/>
+    <text x="738" y="245" font-family="'Palatino Linotype', Georgia, serif" font-size="13" font-weight="700" fill="#e8d5a0">✨ Extracted Values</text>
+    <g font-family="Courier, monospace" font-size="11">
+      <text x="738" y="270" fill="#94a3b8">R_AHE</text>
+      <text x="1018" y="270" text-anchor="end" fill="#7bc639">= 1.227 Ω</text>
+      <text x="738" y="290" fill="#94a3b8">H_c</text>
+      <text x="1018" y="290" text-anchor="end" fill="#7bc639">= 280 Oe</text>
+      <text x="738" y="310" fill="#94a3b8">R_xx</text>
+      <text x="1018" y="310" text-anchor="end" fill="#7bc639">= 1547 Ω</text>
+      <text x="738" y="330" fill="#94a3b8">M_sat</text>
+      <text x="1018" y="330" text-anchor="end" fill="#7bc639">= 1.00 (normalized)</text>
+    </g>
+
+    <!-- SIMULATED warning inside Results card -->
+    <rect x="738" y="350" width="280" height="32" rx="4" fill="rgba(255,107,74,0.08)" stroke="#ff6b4a" stroke-width="0.6"/>
+    <text x="748" y="370" font-family="'Segoe UI', Arial" font-size="10" fill="#ff6b4a">⚠ SIMULATED MODE — not real instrument data</text>
+
+    <!-- AI Interpretation -->
+    <rect x="390" y="450" width="640" height="140" rx="8" fill="#151530" stroke="#c8a96e" stroke-width="0.8"/>
+    <text x="408" y="475" font-family="'Palatino Linotype', Georgia, serif" font-size="13" font-weight="700" fill="#e8d5a0">🧠 AI Interpretation <tspan font-size="10" font-weight="400" fill="#64748b">(cites papers by [N])</tspan></text>
+    <g font-family="'Segoe UI', Arial" font-size="10.5">
+      <text x="408" y="498" fill="#e2e8f0">Observed hysteresis with H_c ≈ 280 Oe matches the reported value for</text>
+      <text x="408" y="514" fill="#e2e8f0">CoFeB/MgO ultra-thin films in <tspan fill="#c4b5fd" font-weight="700">[1]</tspan> Nagaosa 2010.</text>
+      <text x="408" y="534" fill="#e2e8f0">R_AHE = 1.23 Ω is consistent with expected values for 1–2 nm CoFeB <tspan fill="#c4b5fd" font-weight="700">[3]</tspan>.</text>
+      <text x="408" y="554" fill="#e2e8f0">The symmetric loop indicates good uniaxial anisotropy. Recommend:</text>
+      <text x="408" y="570" fill="#cbd5e1">  → Repeat at 4 K (PPMS) to extract intrinsic component <tspan fill="#c4b5fd" font-weight="700">[2]</tspan></text>
+    </g>
+
+    <!-- Open folder button -->
+    <rect x="888" y="604" width="140" height="32" rx="6" fill="url(#gold)"/>
+    <text x="958" y="625" text-anchor="middle" font-family="'Segoe UI', Arial" font-size="12" font-weight="700" fill="#0a0a15">📂 Open Data Folder</text>
+  </g>
+</svg>

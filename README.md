@@ -13,48 +13,37 @@
 
 ---
 
-## How It Works
+> **Type two things. Get a measurement.** Describe your research direction and sample — LabAgent searches the literature, scans your instruments, picks the measurement, runs it safely, and explains the physics with cited references.
 
-Open `labharness web` and navigate to `/experiment`. Enter your research direction and material. LabAgent does the rest:
+## See It In Action
 
-1. **Parallel** searches literature and scans your instrument bus
-2. **AI** decides the measurement type from your instruments + literature
-3. **You confirm** the data folder name
-4. **Simulated** physics-based measurement runs (real driver integration coming)
-5. **AI analyzes** results with literature context — interpretation cites papers by `[N]`
-6. **Suggestions** for follow-up experiments
-7. **One-click** open data folder with organized output
+<p align="center">
+  <img src="assets/demo.svg" alt="LabAgent /experiment page: live activity log, AI decision, measurement chart, extracted values, AI interpretation with citations" width="900">
+</p>
 
-All 46 measurement templates, 9 disciplines. Swap AI model with one config line.
-
-## The Problem
-
-Most research labs have powerful instruments but terrible automation software. Researchers waste weeks writing one-off LabVIEW scripts or Python wrappers for every new measurement, with no safety net when things go wrong. When a student graduates, their measurement code leaves with them.
-
-## The Solution
-
-**LabAgent** is an open-source framework that connects AI to your lab instruments. Tell it what you want to measure, and it handles the rest:
-
-- **Searches the literature** for proven measurement protocols before you start
-- **Scans your lab** and identifies every connected instrument automatically
-- **Maps instruments to roles** using AI classification of unknown devices
-- **Generates measurement plans** with 3-tier safety boundaries that protect your samples
-- **Analyzes your data** and explains the physics with publication-ready figures
+Every block above is real: live SSE activity stream, AI-picked measurement type with reasoning, hysteresis loop drawn live, extracted physics values, and AI interpretation that cites papers by `[N]`. The red banner is honest: current release runs in **simulated mode** — real instrument driver integration is the next milestone.
 
 ## Quick Start
 
 ```bash
 pip install git+https://github.com/Anai-Guo/LabAgent.git
-
-# Scan your lab instruments
-labharness scan
-
-# Generate a measurement plan with safety checks
-labharness propose AHE
-
-# Launch the adaptive Web GUI
-labharness web
+labharness setup    # one-time: pick AI provider, drop API key
+labharness web      # opens http://127.0.0.1:8080
 ```
+
+Then visit **`/experiment`**, type a research direction and material, hit Start.
+
+Prefer terminal?
+
+```bash
+labharness start    # same flow, CLI-guided
+```
+
+## Why It Exists
+
+Most research labs have powerful instruments and terrible automation software. Researchers burn weeks writing one-off LabVIEW scripts for every new measurement, without safety nets or institutional memory. When a student graduates, the code leaves with them.
+
+LabAgent replaces that with a shared, AI-guided framework. Add a new measurement type by writing a 10-line YAML template. Swap AI providers with one config line. Every experiment gets a timestamped folder with raw data, analysis figures, AI-cited interpretation, and next-step suggestions — organized the same way for everyone on the team.
 
 ## Features at a Glance
 
