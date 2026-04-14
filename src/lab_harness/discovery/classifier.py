@@ -9,7 +9,7 @@ from __future__ import annotations
 
 import json
 import logging
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Callable
 
 from lab_harness.models.instrument import InstrumentRecord, LabInventory
 
@@ -250,6 +250,7 @@ def classify_instruments(
     inventory: LabInventory,
     measurement_type: str,
     router: LLMRouter | None = None,
+    emit: Callable | None = None,
 ) -> dict[str, InstrumentRecord]:
     """Classify instruments into measurement roles.
 
@@ -261,6 +262,9 @@ def classify_instruments(
         inventory: Discovered lab instruments.
         measurement_type: Type of measurement (AHE, MR, IV, RT, SOT, CV).
         router: Optional LLM router for fallback classification.
+        emit: Optional sync-safe callback for progress events.  When
+            provided, fires ``instruments.classified`` for each
+            assignment with ``role`` and the full instrument dump.
 
     Returns:
         Mapping of role name -> assigned instrument.
@@ -284,6 +288,12 @@ def classify_instruments(
                 assignments[role] = inst
                 used_resources.add(inst.resource)
                 logger.info("Assigned %s -> %s (%s)", role, inst.display_name, inst.resource)
+                if emit:
+                    emit(
+                        "instruments.classified",
+                        role=role,
+                        instrument=inst.model_dump(mode="json"),
+                    )
                 break
 
     # Determine what's left after the dict-lookup pass
@@ -298,6 +308,13 @@ def classify_instruments(
         )
         llm_result = classify_with_llm(unmatched, unassigned_roles, mt, router)
         assignments.update(llm_result)
+        if emit:
+            for role, inst in llm_result.items():
+                emit(
+                    "instruments.classified",
+                    role=role,
+                    instrument=inst.model_dump(mode="json"),
+                )
         # Refresh missing set for the warning below
         unassigned_roles = [r for r in required_roles if r not in assignments]
 

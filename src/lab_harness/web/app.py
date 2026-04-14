@@ -12,14 +12,16 @@ HTML templates are in web/templates/:
 from __future__ import annotations
 
 import asyncio
+import json
 import logging
 import math
 import random
 import time
 from pathlib import Path
+from pathlib import Path as _Path
 
-from fastapi import FastAPI, WebSocket, WebSocketDisconnect
-from fastapi.responses import HTMLResponse
+from fastapi import FastAPI, HTTPException, WebSocket, WebSocketDisconnect
+from fastapi.responses import FileResponse, HTMLResponse, StreamingResponse
 from pydantic import BaseModel
 
 logger = logging.getLogger(__name__)
@@ -128,6 +130,144 @@ async def start_experiment(direction: str, material: str):
         "validation": flow.session.validation,
         "folder_name": flow.session.folder_name,
     }
+
+
+@app.post("/api/experiment/start_async")
+async def start_experiment_async(direction: str, material: str):
+    """Start an experiment flow asynchronously, return session_id immediately.
+
+    The full phased flow runs in the background and emits events via the
+    session's event queue; the UI consumes them through
+    ``/api/experiment/{session_id}/events`` (SSE).
+    """
+    from lab_harness.config import Settings
+    from lab_harness.orchestrator.flow import ExperimentFlow
+    from lab_harness.web.session_registry import get_registry
+
+    registry = get_registry()
+    live = registry.create()
+    live.session.direction = direction
+    live.session.material = material
+
+    settings = Settings.load()
+    flow = ExperimentFlow(settings, data_root=_Path("./data"))
+    flow.session = live.session  # share the registry's session
+
+    live.task = asyncio.create_task(flow.run_phased(live))
+    return {"session_id": live.session.session_id}
+
+
+@app.get("/api/experiment/{session_id}/events")
+async def experiment_events(session_id: str):
+    """Server-Sent Events stream for a live experiment session."""
+    from lab_harness.web.session_registry import get_registry
+
+    registry = get_registry()
+    live = registry.get(session_id)
+    if not live:
+        raise HTTPException(status_code=404, detail="Session not found")
+
+    async def event_gen():
+        while True:
+            try:
+                evt = await asyncio.wait_for(live.events.get(), timeout=300)
+            except asyncio.TimeoutError:
+                break
+            yield f"data: {json.dumps(evt)}\n\n"
+            if evt.get("type") == "done":
+                break
+
+    return StreamingResponse(event_gen(), media_type="text/event-stream")
+
+
+@app.get("/api/experiment/{session_id}/status")
+async def experiment_status(session_id: str):
+    """Full snapshot of the current session state."""
+    from lab_harness.web.session_registry import get_registry
+
+    registry = get_registry()
+    live = registry.get(session_id)
+    if not live:
+        raise HTTPException(status_code=404, detail="Session not found")
+
+    s = live.session
+    figures = []
+    if s.analysis_result and s.analysis_result.get("figures"):
+        figures = [_Path(f).name for f in s.analysis_result["figures"]]
+
+    return {
+        "session_id": s.session_id,
+        "direction": s.direction,
+        "material": s.material,
+        "measurement_type": s.measurement_type,
+        "reasoning": s.measurement_reason,
+        "instruments": s.instruments,
+        "literature": s.literature,
+        "plan": s.plan,
+        "validation": s.validation,
+        "data_folder": s.data_folder,
+        "data_file": s.data_file,
+        "measurement_completed": s.measurement_completed,
+        "ai_interpretation": s.ai_interpretation,
+        "next_step_suggestions": s.next_step_suggestions,
+        "figures": figures,
+        "extracted_values": (s.analysis_result or {}).get("extracted_values", {}),
+        "folder_name": s.folder_name,
+        "parent_dir": s.parent_dir,
+        "folder_confirmed": s.folder_confirmed,
+        "done": live.done,
+    }
+
+
+@app.post("/api/experiment/{session_id}/set-folder")
+async def set_folder(session_id: str, folder_name: str = "", parent_dir: str = ""):
+    """User-customized data save location prior to measurement."""
+    from lab_harness.web.session_registry import get_registry
+
+    registry = get_registry()
+    live = registry.get(session_id)
+    if not live:
+        raise HTTPException(status_code=404, detail="Session not found")
+
+    # Path validation: only allow parents under CWD or HOME
+    parent = _Path(parent_dir).resolve() if parent_dir else (_Path.cwd() / "data").resolve()
+    cwd_root = str(_Path.cwd().resolve())
+    home_root = str(_Path.home().resolve())
+    if not (str(parent).startswith(cwd_root) or str(parent).startswith(home_root)):
+        parent = (_Path.cwd() / "data").resolve()
+
+    # Sanitize folder_name — disallow path traversal / separators
+    safe_name = folder_name.strip().replace("/", "_").replace("\\", "_").replace("..", "_")
+
+    if safe_name:
+        live.session.folder_name_override = safe_name
+    live.session.parent_dir = str(parent)
+    live.session.folder_confirmed = True
+
+    return {"ok": True, "folder": str(parent / (safe_name or live.session.folder_name))}
+
+
+@app.get("/api/experiment/{session_id}/figure/{name}")
+async def experiment_figure(session_id: str, name: str):
+    """Serve a figure from the session's data folder (path-traversal safe)."""
+    from lab_harness.web.session_registry import get_registry
+
+    registry = get_registry()
+    live = registry.get(session_id)
+    if not live or not live.session.data_folder:
+        raise HTTPException(status_code=404, detail="Session or folder not found")
+
+    safe_name = name.replace("/", "_").replace("\\", "_").replace("..", "_")
+    folder = _Path(live.session.data_folder).resolve()
+    file_path = (folder / safe_name).resolve()
+
+    if not str(file_path).startswith(str(folder)):
+        raise HTTPException(status_code=403, detail="Path traversal detected")
+    if not file_path.exists():
+        raise HTTPException(status_code=404, detail="Figure not found")
+
+    media = "image/png" if safe_name.lower().endswith(".png") else "application/pdf"
+    return FileResponse(file_path, media_type=media)
 
 
 @app.post("/api/experiment/open-folder")

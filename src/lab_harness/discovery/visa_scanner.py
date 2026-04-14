@@ -6,6 +6,7 @@ Wraps PyVISA to discover instruments on GPIB, USB, and serial buses.
 from __future__ import annotations
 
 import logging
+from typing import Callable
 
 from lab_harness.models.instrument import InstrumentBus, InstrumentRecord
 
@@ -43,20 +44,30 @@ def _parse_idn(idn: str) -> dict[str, str]:
 def scan_visa_instruments(
     timeout_ms: int = 2000,
     query_idn: bool = True,
+    emit: Callable | None = None,
 ) -> list[InstrumentRecord]:
     """Scan the VISA bus and identify all connected instruments.
 
     Args:
         timeout_ms: Timeout for each instrument query in milliseconds.
         query_idn: Whether to send *IDN? to each resource.
+        emit: Optional sync-safe callback for progress events (e.g.
+            ``LiveSession.emit_sync``).  When provided, fires
+            ``instruments.scan_start``, ``instruments.resource_found``
+            per instrument, and ``instruments.complete`` at the end.
 
     Returns:
         List of discovered instruments with identity info.
     """
+    if emit:
+        emit("instruments.scan_start")
+
     try:
         import pyvisa
     except ImportError:
         logger.error("PyVISA not installed. Run: pip install pyvisa")
+        if emit:
+            emit("instruments.complete", count=0)
         return []
 
     rm = pyvisa.ResourceManager()
@@ -87,5 +98,16 @@ def scan_visa_instruments(
                 logger.warning("  %s -> query failed: %s", resource, e)
 
         instruments.append(record)
+
+        if emit:
+            emit(
+                "instruments.resource_found",
+                resource=record.resource,
+                vendor=record.vendor,
+                model=record.model,
+            )
+
+    if emit:
+        emit("instruments.complete", count=len(instruments))
 
     return instruments

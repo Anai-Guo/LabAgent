@@ -40,9 +40,21 @@ class ExperimentSession:
     ai_interpretation: str = ""
     next_step_suggestions: str = ""
 
+    # User-controlled folder placement (Web flow)
+    folder_name_override: str = ""
+    folder_confirmed: bool = False
+    parent_dir: str = "./data"
+
     @property
     def folder_name(self) -> str:
-        """Generate organized folder name: date_material_type/."""
+        """Generate organized folder name: date_material_type/.
+
+        If ``folder_name_override`` has been set (typically by the user
+        via the Web UI), it takes precedence over the auto-generated
+        name.
+        """
+        if self.folder_name_override:
+            return self.folder_name_override
         ts = datetime.now().strftime("%Y-%m-%d_%H-%M")
         mat = self._slug(self.material) or "sample"
         mtype = self.measurement_type or "measurement"

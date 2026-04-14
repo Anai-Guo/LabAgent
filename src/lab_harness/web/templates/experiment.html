@@ -3,240 +3,471 @@
 <head>
 <meta charset="UTF-8">
 <title>LabAgent — Guided Experiment</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg-primary: #0f0f1e;
-  --bg-card: #151530;
-  --border-gold: #c8a96e;
+  --bg: #0f0f1e;
+  --card: #151530;
   --gold: #c8a96e;
   --gold-bright: #e8d5a0;
-  --text-primary: #ece5d8;
-  --text-secondary: #a09a8d;
+  --text: #ece5d8;
+  --muted: #a09a8d;
   --electro: #c882ff;
   --pyro: #ff6b4a;
-  --cryo: #9cf0ff;
   --dendro: #7bc639;
+  --cryo: #9cf0ff;
 }
 * { margin: 0; padding: 0; box-sizing: border-box; }
 body {
-  font-family: 'Cinzel', 'Georgia', serif;
-  background: var(--bg-primary);
-  color: var(--text-primary);
+  font-family: Georgia, serif;
+  background: var(--bg);
+  color: var(--text);
   min-height: 100vh;
-  padding: 2rem;
+  padding: 1.5rem;
 }
-.header {
+h1 {
+  color: var(--gold);
+  font-family: 'Cinzel', Georgia, serif;
   text-align: center;
-  margin-bottom: 2rem;
-  padding: 1.5rem;
-  border: 1px solid var(--border-gold);
-  border-radius: 8px;
-  background: var(--bg-card);
-}
-.header h1 { color: var(--gold); font-size: 2rem; }
-.header p { color: var(--text-secondary); margin-top: 0.5rem; }
-
-.card {
-  background: var(--bg-card);
-  border: 1px solid var(--border-gold);
-  border-radius: 8px;
-  padding: 1.5rem;
   margin-bottom: 1rem;
+  letter-spacing: 0.05em;
 }
-.card h3 { color: var(--gold-bright); margin-bottom: 1rem; }
-
-input, button, select {
-  background: var(--bg-primary);
-  color: var(--text-primary);
-  border: 1px solid var(--border-gold);
-  padding: 0.5rem 1rem;
+h3, h4 {
+  font-family: 'Cinzel', Georgia, serif;
+}
+.card {
+  background: var(--card);
+  border: 1px solid var(--gold);
+  border-radius: 8px;
+  padding: 1.25rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 0 20px rgba(200, 169, 110, 0.1);
+}
+.card h3 {
+  color: var(--gold-bright);
+  margin-bottom: 0.75rem;
+  letter-spacing: 0.03em;
+}
+.card h4 {
+  color: var(--gold-bright);
+  margin: 1rem 0 0.5rem;
+}
+.layout {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 1rem;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+@media (max-width: 900px) {
+  .layout { grid-template-columns: 1fr; }
+}
+#activity {
+  max-height: 75vh;
+  overflow-y: auto;
+  font-family: 'Consolas', 'Courier New', monospace;
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+.log-entry {
+  padding: 0.3rem 0;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+.log-entry.lit { color: var(--electro); }
+.log-entry.inst { color: var(--cryo); }
+.log-entry.role { color: var(--dendro); }
+.log-entry.phase {
+  color: var(--gold);
+  font-weight: bold;
+  margin-top: 0.5rem;
+  font-family: 'Cinzel', Georgia, serif;
+}
+input, button {
+  background: var(--bg);
+  color: var(--text);
+  border: 1px solid var(--gold);
+  padding: 0.5rem 0.75rem;
   border-radius: 4px;
   font-family: inherit;
   font-size: 1rem;
 }
-input:focus { outline: none; border-color: var(--gold-bright); }
-
-.btn {
-  background: linear-gradient(135deg, var(--border-gold), var(--gold-bright));
-  color: var(--bg-primary);
+input:focus {
+  outline: none;
+  border-color: var(--gold-bright);
+  box-shadow: 0 0 6px rgba(200, 169, 110, 0.4);
+}
+button {
+  background: linear-gradient(135deg, var(--gold), var(--gold-bright));
+  color: var(--bg);
   cursor: pointer;
   font-weight: bold;
-  padding: 0.75rem 1.5rem;
+  letter-spacing: 0.05em;
   transition: transform 0.1s;
 }
-.btn:hover { transform: translateY(-1px); }
-.btn:disabled { opacity: 0.5; cursor: not-allowed; }
+button:hover { transform: translateY(-1px); }
+button:disabled { opacity: 0.5; cursor: not-allowed; }
 
-.form-group { margin-bottom: 1rem; }
-.form-group label { display: block; color: var(--text-secondary); margin-bottom: 0.5rem; }
+.form-group { margin-bottom: 0.75rem; }
+.form-group label {
+  display: block;
+  color: var(--muted);
+  margin-bottom: 0.25rem;
+  font-size: 0.85rem;
+  letter-spacing: 0.03em;
+}
 .form-group input { width: 100%; }
 
-#loader { text-align: center; padding: 2rem; color: var(--gold); display: none; }
-#loader .dot { animation: pulse 1.5s infinite; }
-@keyframes pulse { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; } }
-
-.instrument-item {
-  padding: 0.5rem;
-  border-left: 3px solid var(--cryo);
-  margin-bottom: 0.5rem;
-  background: rgba(156, 240, 255, 0.05);
+.progress-bar {
+  width: 100%;
+  height: 10px;
+  background: var(--bg);
+  border: 1px solid var(--gold);
+  border-radius: 4px;
+  overflow: hidden;
+}
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--gold), var(--gold-bright));
+  transition: width 0.2s;
 }
 .reasoning {
   background: rgba(200, 130, 255, 0.1);
   border-left: 3px solid var(--electro);
-  padding: 1rem;
-  margin: 1rem 0;
+  padding: 0.75rem;
   border-radius: 4px;
-  font-family: 'Segoe UI', sans-serif;
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  line-height: 1.5;
 }
+.reasoning p { margin-bottom: 0.5rem; }
+.reasoning p:last-child { margin-bottom: 0; }
 
-.folder-path {
-  font-family: monospace;
-  background: var(--bg-primary);
-  padding: 0.5rem;
+.figure-card img {
+  max-width: 100%;
+  border: 1px solid var(--muted);
   border-radius: 4px;
-  color: var(--dendro);
-  word-break: break-all;
+  margin: 0.5rem 0;
 }
-
+.citation {
+  color: var(--electro);
+  cursor: pointer;
+  text-decoration: underline;
+}
+table { width: 100%; border-collapse: collapse; }
+td {
+  padding: 0.4rem;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  font-family: 'Consolas', monospace;
+}
+td:first-child { color: var(--muted); }
+.instrument-row {
+  padding: 0.4rem;
+  border-left: 3px solid var(--cryo);
+  background: rgba(156,240,255,0.05);
+  margin-bottom: 0.3rem;
+  font-size: 0.85rem;
+}
+.paper-row {
+  padding: 0.5rem 0.75rem;
+  border-left: 3px solid var(--electro);
+  background: rgba(200,130,255,0.05);
+  margin-bottom: 0.4rem;
+  font-size: 0.9rem;
+}
 .hidden { display: none; }
+
+#start-form {
+  max-width: 600px;
+  margin: 3rem auto;
+}
 </style>
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </head>
 <body>
-  <div class="header">
-    <h1>⚗ LabAgent Guided Experiment</h1>
-    <p>Tell me what you want to study — I'll handle the rest</p>
-  </div>
+  <h1>⚗ LabAgent Guided Experiment</h1>
 
-  <div id="step1" class="card">
-    <h3>1. What are you studying?</h3>
+  <div id="start-form" class="card">
+    <h3>Tell me what you want to study</h3>
     <div class="form-group">
       <label>Research Direction</label>
       <input type="text" id="direction" placeholder="e.g. transport, photovoltaics, magnetism">
     </div>
     <div class="form-group">
       <label>Sample Material</label>
-      <input type="text" id="material" placeholder="e.g. Si wafer, Fe/MgO bilayer, GaAs">
+      <input type="text" id="material" placeholder="e.g. Si wafer, CoFeB thin film, GaAs">
     </div>
-    <button class="btn" onclick="startExperiment()">🚀 Start Experiment</button>
+    <button onclick="startExperiment()">🚀 Start Experiment</button>
   </div>
 
-  <div id="loader">
-    <p><span class="dot">●</span> Searching literature and scanning instruments...</p>
-  </div>
-
-  <div id="results" class="hidden">
+  <div id="main" class="layout hidden">
     <div class="card">
-      <h3>2. AI Decision</h3>
-      <p>Recommended measurement: <strong id="resultType" style="color: var(--gold)"></strong></p>
-      <div class="reasoning" id="resultReasoning"></div>
+      <h3>⚡ Live Activity</h3>
+      <div id="activity"></div>
     </div>
-
-    <div class="card">
-      <h3>3. Detected Instruments</h3>
-      <div id="instrumentList"></div>
-    </div>
-
-    <div class="card">
-      <h3>4. Measurement Plan</h3>
-      <div id="planSummary"></div>
-      <div style="margin-top: 1rem;">
-        <strong>Data will be saved to:</strong>
-        <div class="folder-path" id="folderPath"></div>
+    <div>
+      <div id="card-decision" class="card hidden">
+        <h3>🎯 AI Decision</h3>
+        <p>Measurement type: <strong id="mt" style="color: var(--gold)"></strong></p>
+        <div id="reasoning" class="reasoning"></div>
+      </div>
+      <div id="card-folder" class="card hidden">
+        <h3>📁 Save Data To</h3>
+        <div class="form-group">
+          <label>Folder Name</label>
+          <input type="text" id="folder-name">
+        </div>
+        <div class="form-group">
+          <label>Parent Directory</label>
+          <input type="text" id="parent-dir" value="./data">
+        </div>
+        <button onclick="confirmFolder()">Continue</button>
+      </div>
+      <div id="card-measurement" class="card hidden">
+        <h3>📊 Measurement Progress</h3>
+        <div class="progress-bar"><div class="progress-fill" id="progress" style="width: 0%"></div></div>
+        <p id="progress-text" style="margin-top: 0.5rem; color: var(--muted); font-size: 0.85rem;"></p>
+        <canvas id="sparkline" height="80"></canvas>
+      </div>
+      <div id="card-results" class="card hidden">
+        <h3>✨ Results</h3>
+        <div id="figures"></div>
+        <div id="extracted" style="margin-top: 1rem;"></div>
+        <h4>AI Interpretation</h4>
+        <div id="interpretation" class="reasoning"></div>
+      </div>
+      <div id="card-next-steps" class="card hidden">
+        <h3>🧭 Suggested Next Steps</h3>
+        <div id="next-steps" class="reasoning"></div>
+      </div>
+      <div id="card-literature" class="card hidden">
+        <h3>📚 Literature Referenced</h3>
+        <div id="papers"></div>
+      </div>
+      <div id="card-done" class="card hidden" style="text-align: center;">
+        <button onclick="openFolder()">📂 Open Data Folder</button>
       </div>
     </div>
-
-    <div class="card" style="text-align: center;">
-      <p style="margin-bottom: 1rem; color: var(--text-secondary);">Connect your instruments as listed above, then:</p>
-      <button class="btn" onclick="runMeasurement()">▶ Start Measurement</button>
-    </div>
   </div>
 
-  <div id="complete" class="hidden">
-    <div class="card" style="text-align: center; border-color: var(--dendro);">
-      <h3 style="color: var(--dendro);">✓ Experiment Complete</h3>
-      <p id="completeMessage"></p>
-      <div style="margin-top: 1rem;">
-        <button class="btn" onclick="openFolder()">📁 Open Data Folder</button>
-      </div>
-    </div>
-  </div>
-
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <script>
-let currentSession = null;
+let sessionId = null;
+let sparkChart = null;
 
 async function startExperiment() {
   const direction = document.getElementById('direction').value.trim();
   const material = document.getElementById('material').value.trim();
-
   if (!direction || !material) {
     alert('Please fill in both fields');
     return;
   }
 
-  document.getElementById('step1').style.display = 'none';
-  document.getElementById('loader').style.display = 'block';
-
   try {
-    const resp = await fetch('/api/experiment/start?direction=' + encodeURIComponent(direction) + '&material=' + encodeURIComponent(material), {
-      method: 'POST'
-    });
+    const resp = await fetch(
+      `/api/experiment/start_async?direction=${encodeURIComponent(direction)}&material=${encodeURIComponent(material)}`,
+      { method: 'POST' }
+    );
     const data = await resp.json();
-    currentSession = data;
-    renderResults(data);
+    sessionId = data.session_id;
   } catch (e) {
-    alert('Error: ' + e.message);
-    document.getElementById('step1').style.display = 'block';
-  } finally {
-    document.getElementById('loader').style.display = 'none';
+    alert('Error starting experiment: ' + e.message);
+    return;
+  }
+
+  document.getElementById('start-form').classList.add('hidden');
+  document.getElementById('main').classList.remove('hidden');
+
+  const es = new EventSource(`/api/experiment/${sessionId}/events`);
+  es.onmessage = (e) => {
+    try {
+      const evt = JSON.parse(e.data);
+      handleEvent(evt);
+      if (evt.type === 'done') es.close();
+    } catch (err) {
+      console.warn('Bad event payload', e.data, err);
+    }
+  };
+  es.onerror = () => { /* server closes on done */ };
+}
+
+function logEntry(text, cls) {
+  const a = document.getElementById('activity');
+  const div = document.createElement('div');
+  div.className = 'log-entry ' + (cls || '');
+  div.textContent = text;
+  a.appendChild(div);
+  a.scrollTop = a.scrollHeight;
+}
+
+function handleEvent(evt) {
+  const { type, data } = evt;
+  const d = data || {};
+  if (type === 'phase') logEntry('━━ ' + (d.message || d.name), 'phase');
+  else if (type === 'literature.start') logEntry('📚 Searching literature...', 'lit');
+  else if (type === 'literature.paper_found') logEntry('📄 Found: ' + (d.title || 'paper'), 'lit');
+  else if (type === 'literature.complete') logEntry('✓ Literature: ' + (d.paper_count || 0) + ' paper(s)', 'lit');
+  else if (type === 'instruments.scan_start') logEntry('🔍 Scanning instruments...', 'inst');
+  else if (type === 'instruments.resource_found') logEntry(
+    `🔌 ${d.vendor || '?'} ${d.model || '?'} @ ${d.resource || '?'}`, 'inst'
+  );
+  else if (type === 'instruments.classified') logEntry(
+    `✓ ${(d.instrument && d.instrument.model) || '?'} → ${d.role}`, 'role'
+  );
+  else if (type === 'instruments.complete') logEntry('✓ Scan: ' + (d.count || 0) + ' instrument(s)', 'inst');
+  else if (type === 'decision.complete') renderDecision(d);
+  else if (type === 'plan.complete') renderPlan(d);
+  else if (type === 'await_folder_confirm') showFolderPicker(d);
+  else if (type === 'folder.ready') logEntry('📁 Data folder: ' + d.path, 'phase');
+  else if (type === 'measurement.start') startMeasurementUI(d);
+  else if (type === 'measurement.point') updateProgress(d);
+  else if (type === 'measurement.complete') logEntry('✓ Measurement complete', 'phase');
+  else if (type === 'analysis.complete') renderResults(d);
+  else if (type === 'next_steps.ready') renderNextSteps(d);
+  else if (type === 'done') finishExperiment(d);
+}
+
+function renderDecision(d) {
+  document.getElementById('card-decision').classList.remove('hidden');
+  document.getElementById('mt').textContent = d.measurement_type || 'IV';
+  document.getElementById('reasoning').textContent = d.reasoning || '';
+}
+
+function renderPlan(d) {
+  if (d.folder_suggestion) {
+    document.getElementById('folder-name').value = d.folder_suggestion;
   }
 }
 
-function renderResults(data) {
-  document.getElementById('resultType').textContent = data.measurement_type;
-  document.getElementById('resultReasoning').textContent = data.reasoning || '(no reasoning given)';
-
-  const instList = document.getElementById('instrumentList');
-  if (data.instruments && data.instruments.length > 0) {
-    instList.innerHTML = data.instruments.map(i =>
-      `<div class="instrument-item"><strong>${i.vendor || '?'} ${i.model || '?'}</strong> <span style="color: var(--text-secondary);">at ${i.resource || '?'}</span></div>`
-    ).join('');
-  } else {
-    instList.innerHTML = '<p style="color: var(--text-secondary);">No instruments detected. Running in simulation mode.</p>';
+function showFolderPicker(d) {
+  const card = document.getElementById('card-folder');
+  card.classList.remove('hidden');
+  const input = document.getElementById('folder-name');
+  if (d.default_folder && !input.value) {
+    input.value = d.default_folder;
   }
-
-  const plan = data.plan || {};
-  const xAxis = plan.x_axis || {};
-  document.getElementById('planSummary').innerHTML =
-    `<p><strong>Type:</strong> ${plan.name || data.measurement_type}</p>` +
-    `<p><strong>Sweep:</strong> ${xAxis.label || '?'} from ${xAxis.start} to ${xAxis.stop} ${xAxis.unit || ''}</p>` +
-    `<p><strong>Points:</strong> ${Math.abs((xAxis.stop - xAxis.start) / xAxis.step) + 1}</p>`;
-
-  document.getElementById('folderPath').textContent = './data/' + data.folder_name;
-  document.getElementById('results').classList.remove('hidden');
 }
 
-async function runMeasurement() {
-  // Simulated: just show complete
-  document.getElementById('results').classList.add('hidden');
-  document.getElementById('complete').classList.remove('hidden');
-  document.getElementById('completeMessage').textContent =
-    `Your ${currentSession.measurement_type} measurement on ${document.getElementById('material').value} is complete. Check the data folder for results.`;
+async function confirmFolder() {
+  const name = document.getElementById('folder-name').value.trim();
+  const parent = document.getElementById('parent-dir').value.trim() || './data';
+  await fetch(
+    `/api/experiment/${sessionId}/set-folder?folder_name=${encodeURIComponent(name)}&parent_dir=${encodeURIComponent(parent)}`,
+    { method: 'POST' }
+  );
+  document.getElementById('card-folder').classList.add('hidden');
+}
+
+function startMeasurementUI(d) {
+  document.getElementById('card-measurement').classList.remove('hidden');
+  if (!sparkChart) initSparkline();
+  document.getElementById('progress-text').textContent = `0 / ${d.total_points || 0}`;
+}
+
+function initSparkline() {
+  const ctx = document.getElementById('sparkline').getContext('2d');
+  sparkChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: [],
+      datasets: [{
+        data: [],
+        borderColor: '#c8a96e',
+        pointRadius: 0,
+        borderWidth: 1.5,
+      }],
+    },
+    options: {
+      animation: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { display: false },
+        y: { display: true, ticks: { color: '#a09a8d' } },
+      },
+    },
+  });
+}
+
+function updateProgress(d) {
+  const pct = d.total ? (d.index + 1) / d.total * 100 : 0;
+  document.getElementById('progress').style.width = pct + '%';
+  document.getElementById('progress-text').textContent = `${d.index + 1} / ${d.total}`;
+  if (sparkChart) {
+    sparkChart.data.labels.push(d.x);
+    sparkChart.data.datasets[0].data.push(d.y);
+    sparkChart.update('none');
+  }
+}
+
+async function renderResults(d) {
+  document.getElementById('card-results').classList.remove('hidden');
+
+  // Figures
+  const figDiv = document.getElementById('figures');
+  figDiv.innerHTML = '';
+  (d.figures || []).forEach(name => {
+    if (name.endsWith('.png')) {
+      const img = document.createElement('img');
+      img.src = `/api/experiment/${sessionId}/figure/${encodeURIComponent(name)}`;
+      img.alt = name;
+      figDiv.appendChild(img);
+    }
+  });
+
+  // Extracted values
+  const ext = d.extracted_values || {};
+  if (Object.keys(ext).length > 0) {
+    let html = '<h4>Extracted Values</h4><table>';
+    for (const [k, v] of Object.entries(ext)) {
+      html += `<tr><td>${k}</td><td>${v}</td></tr>`;
+    }
+    html += '</table>';
+    document.getElementById('extracted').innerHTML = html;
+  }
+
+  // Interpretation
+  if (d.interpretation) {
+    document.getElementById('interpretation').innerHTML = marked.parse(d.interpretation);
+  }
+
+  // Fetch full status for literature
+  try {
+    const status = await (await fetch(`/api/experiment/${sessionId}/status`)).json();
+    renderLiterature(status.literature || {});
+  } catch (e) { /* ignore */ }
+}
+
+function renderLiterature(lit) {
+  const papers = lit.source_papers || [];
+  if (papers.length === 0) return;
+  document.getElementById('card-literature').classList.remove('hidden');
+  const pd = document.getElementById('papers');
+  pd.innerHTML = papers.map((p, i) => {
+    const title = p.title || p.source || 'paper';
+    const year = p.year ? ' (' + p.year + ')' : '';
+    return `<div class="paper-row" id="paper-${i+1}">[${i+1}] <strong>${title}</strong>${year}</div>`;
+  }).join('');
+}
+
+function renderNextSteps(d) {
+  if (d.text) {
+    document.getElementById('card-next-steps').classList.remove('hidden');
+    document.getElementById('next-steps').innerHTML = marked.parse(d.text);
+  }
+}
+
+function finishExperiment(d) {
+  document.getElementById('card-done').classList.remove('hidden');
+  logEntry('━━ Experiment complete!', 'phase');
 }
 
 async function openFolder() {
-  if (!currentSession) return;
-  const folderPath = './data/' + currentSession.folder_name;
-  const resp = await fetch('/api/experiment/open-folder?folder_path=' + encodeURIComponent(folderPath), {
-    method: 'POST'
-  });
-  const result = await resp.json();
-  if (!result.opened) {
-    alert('Could not open folder. Path: ' + folderPath);
+  const status = await (await fetch(`/api/experiment/${sessionId}/status`)).json();
+  if (status.data_folder) {
+    await fetch(
+      `/api/experiment/open-folder?folder_path=${encodeURIComponent(status.data_folder)}`,
+      { method: 'POST' }
+    );
   }
 }
 </script>
 </body>
 </html>
-</content>
-</invoke>

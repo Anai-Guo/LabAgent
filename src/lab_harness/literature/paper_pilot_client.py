@@ -5,7 +5,7 @@ from __future__ import annotations
 import json
 import logging
 from dataclasses import dataclass
-from typing import Any
+from typing import Any, Callable
 
 from pydantic import BaseModel
 
@@ -80,6 +80,7 @@ class PaperPilotClient:
         self,
         measurement_type: str,
         sample_description: str = "",
+        emit: Callable | None = None,
     ) -> LiteratureContext:
         """Query for measurement protocol information.
 
@@ -92,17 +93,31 @@ class PaperPilotClient:
         """
         mt = measurement_type.upper()
 
+        if emit:
+            await emit("literature.start", measurement_type=mt, sample=sample_description)
+
         # Try 1: paper-pilot MCP
         if self.enabled:
             try:
-                result = await self._try_paper_pilot(mt, sample_description)
+                result = await self._try_paper_pilot(mt, sample_description, emit=emit)
                 if result is not None:
+                    if emit:
+                        await emit(
+                            "literature.complete",
+                            paper_count=len(result.source_papers),
+                        )
                     return result
             except Exception:
                 logger.debug("paper-pilot MCP unavailable, falling back to LLM")
 
         # Try 2: LLM-based protocol suggestion
-        return await self._llm_fallback(mt, sample_description)
+        result = await self._llm_fallback(mt, sample_description, emit=emit)
+        if emit:
+            await emit(
+                "literature.complete",
+                paper_count=len(result.source_papers),
+            )
+        return result
 
     # ------------------------------------------------------------------
     # paper-pilot MCP path
@@ -112,6 +127,7 @@ class PaperPilotClient:
         self,
         measurement_type: str,
         sample_description: str,
+        emit: Callable | None = None,
     ) -> LiteratureContext | None:
         """Attempt to connect to paper-pilot MCP and query for protocols.
 
@@ -147,7 +163,12 @@ class PaperPilotClient:
                         arguments={"topic": question},
                     )
 
-                    return self._parse_mcp_result(measurement_type, result)
+                    context = self._parse_mcp_result(measurement_type, result)
+                    if emit:
+                        for paper in context.source_papers:
+                            title = paper.get("title") if isinstance(paper, dict) else str(paper)
+                            await emit("literature.paper_found", title=title)
+                    return context
         except Exception as exc:
             logger.debug("paper-pilot MCP call failed: %s", exc)
             return None
@@ -181,6 +202,7 @@ class PaperPilotClient:
         self,
         measurement_type: str,
         sample_description: str,
+        emit: Callable | None = None,
     ) -> LiteratureContext:
         """Use litellm to generate protocol suggestions from LLM knowledge."""
         from lab_harness.config import Settings
@@ -204,7 +226,14 @@ class PaperPilotClient:
         try:
             response = await router.acomplete(messages)
             content = response["choices"][0]["message"].get("content", "")
-            return self._parse_llm_response(measurement_type, content)
+            context = self._parse_llm_response(measurement_type, content)
+            if emit:
+                for paper in context.source_papers:
+                    title = paper.get("title") if isinstance(paper, dict) else str(paper)
+                    if not title and isinstance(paper, dict):
+                        title = paper.get("source") or "LLM-suggested reference"
+                    await emit("literature.paper_found", title=title)
+            return context
         except Exception as exc:
             logger.warning("LLM fallback failed: %s", exc)
             return LiteratureContext(

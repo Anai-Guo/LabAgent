@@ -152,15 +152,19 @@ class Analyzer:
         self,
         result: AnalysisResult,
         data_path: Path | None = None,
+        literature: dict | None = None,
     ) -> str:
-        """Use LLM to interpret analysis results and provide physics insights.
+        """Use LLM to interpret analysis results with optional literature context.
 
         Args:
             result: The analysis result to interpret.
             data_path: Optional path to original data for context.
+            literature: Optional literature context (source_papers, evidence_chunks)
+                to ground the interpretation in cited references.
 
         Returns:
-            AI-generated interpretation with physics insights.
+            AI-generated interpretation with physics insights and, when literature
+            is provided, [N]-style citations to supplied papers.
         """
         from lab_harness.config import Settings
         from lab_harness.llm.router import LLMRouter
@@ -179,7 +183,10 @@ class Analyzer:
             "3. Comparison with typical values in literature\n"
             "4. Any anomalies or concerns\n"
             "5. Suggested follow-up measurements if applicable\n\n"
-            "Keep the response under 200 words. Be specific and quantitative."
+            "If literature references are provided below, CITE them using [N] notation "
+            "(e.g., 'this matches the value reported in [1]'). "
+            "If no literature is provided, say 'without literature context' before making comparisons.\n"
+            "Keep the response under 250 words. Be specific and quantitative."
         )
 
         context = f"Measurement type: {result.measurement_type}\n"
@@ -190,6 +197,32 @@ class Analyzer:
         if data_path:
             preview = _read_data_preview(data_path, max_rows=5)
             context += f"\nData preview:\n{preview}\n"
+
+        # Inject literature context
+        if literature:
+            papers = literature.get("source_papers", [])
+            evidence = literature.get("evidence_chunks", [])
+            if papers or evidence:
+                context += "\n--- Literature context ---\n"
+                for i, p in enumerate(papers[:10], 1):
+                    title = p.get("title") or p.get("source") or f"paper {i}"
+                    year = p.get("year", "")
+                    authors = p.get("authors", [])
+                    first_author = authors[0] if isinstance(authors, list) and authors else ""
+                    cite = f"[{i}] {title}"
+                    if first_author:
+                        cite += f" ({first_author}"
+                        if year:
+                            cite += f", {year}"
+                        cite += ")"
+                    elif year:
+                        cite += f" ({year})"
+                    context += cite + "\n"
+                if evidence:
+                    context += "\nKey excerpts from literature:\n"
+                    for e in evidence[:5]:
+                        context += f"- {str(e)[:300]}\n"
+                context += "\nCite papers by [N] when referencing them in your interpretation.\n"
 
         response = router.complete(
             [
@@ -251,6 +284,7 @@ class Analyzer:
         use_ai: bool = False,
         custom_instructions: str = "",
         interpret: bool = False,
+        literature: dict | None = None,
     ) -> AnalysisResult:
         """Full analysis pipeline: generate script → run → optionally interpret.
 
@@ -260,6 +294,8 @@ class Analyzer:
             use_ai: If True, use LLM to generate script instead of template.
             custom_instructions: Extra instructions for AI script generation.
             interpret: If True, add AI interpretation of results.
+            literature: Optional literature context forwarded to interpret_results
+                to ground the interpretation in cited references.
 
         Returns:
             AnalysisResult with script, figures, values, and optional interpretation.
@@ -280,6 +316,6 @@ class Analyzer:
         result = self.run_script(script_path)
 
         if interpret:
-            result.ai_interpretation = self.interpret_results(result, data_path)
+            result.ai_interpretation = self.interpret_results(result, data_path, literature=literature)
 
         return result
