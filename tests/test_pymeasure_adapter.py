@@ -143,6 +143,67 @@ def test_disconnect_idempotent_when_never_connected():
     assert drv.connected is False
 
 
+def test_configure_source_voltage_sets_compliance_current():
+    """Electrometer/source-meter in voltage mode: compliance_current property must be set."""
+    mock_inst = MagicMock()
+    mock_inst.apply_voltage = MagicMock()
+    mock_inst.measure_current = MagicMock()
+    drv = pm.PyMeasureDriver(
+        resource="X",
+        model="Keithley 6517B",
+        vendor="Keithley",
+        role="electrometer",
+        _pm_instrument=mock_inst,
+        _connected=True,
+    )
+    drv.configure_source_voltage(compliance_i=1e-6)
+    mock_inst.apply_voltage.assert_called_once()
+    assert mock_inst.compliance_current == 1e-6
+
+
+def test_set_voltage_uses_source_voltage_property():
+    mock_inst = MagicMock()
+    drv = pm.PyMeasureDriver(
+        resource="X",
+        model="Keithley 2400",
+        vendor="Keithley",
+        role="source_meter",
+        _pm_instrument=mock_inst,
+        _connected=True,
+    )
+    drv.set_voltage(2.5)
+    assert mock_inst.source_voltage == 2.5
+
+
+def test_measure_current_reads_current_property():
+    mock_inst = MagicMock()
+    mock_inst.current = 1.23e-9
+    drv = pm.PyMeasureDriver(
+        resource="X",
+        model="Keithley 6517B",
+        vendor="Keithley",
+        role="electrometer",
+        _pm_instrument=mock_inst,
+        _connected=True,
+    )
+    assert drv.measure_current() == pytest.approx(1.23e-9)
+
+
+def test_measure_voltage_nv_refuses_wrong_role():
+    """Nanovolt readout only makes sense on nanovoltmeter/dmm roles."""
+    mock_inst = MagicMock()
+    drv = pm.PyMeasureDriver(
+        resource="X",
+        model="Keithley 2400",
+        vendor="Keithley",
+        role="source_meter",
+        _pm_instrument=mock_inst,
+        _connected=True,
+    )
+    with pytest.raises(NotImplementedError):
+        drv.measure_voltage_nv()
+
+
 def test_context_manager_calls_connect_disconnect():
     """`with drv:` should round-trip connect/disconnect via __enter__/__exit__."""
     drv = pm.build(resource="X", model="Keithley 2400", vendor="Keithley", role="source_meter")

@@ -19,19 +19,25 @@ classifier registry.
 - **Planning, classification, analysis, and memory layers work.** Safety
   validation works.
 - **Execution: partially real, partially simulated.** Real execution is
-  implemented for **IV and RT** measurement types, via a pymeasure adapter
-  plus our own three VisaDriver subclasses. When real hardware isn't
-  reachable or the measurement type has no real executor (HALL, MR, AHE,
-  CV, etc.), the flow falls back to a physics simulator. CSV/PNG output
-  clearly indicates which backend produced it — real runs say
-  "real instrument measurement data" with the driver coverage map, simulated
-  runs say "PHYSICS SIMULATION".
-- **Three concrete in-tree drivers** (Keithley 2400, Keithley 6221,
-  Lakeshore 335) on top of a reusable `VisaDriver` base class with
-  auto-retry. The pymeasure adapter adds ~15 more models (Keithley
-  2000/2182/2450/6517, Agilent 34410/33500/E4980, SRS SR830/SR860, Lake
-  Shore 335/425 via pymeasure's own classes). Extending
-  `PYMEASURE_MODEL_MAP` in `drivers/pymeasure_adapter.py` adds more.
+  implemented for **8 measurement types**: `IV`, `RT`, `DELTA`, `HIGH_R`,
+  `BREAKDOWN`, `SEEBECK`, `TUNNELING`, `PHOTO_IV`. Backed by three
+  driver backends (pymeasure adapter, in-tree VisaDriver subclasses,
+  Zurich Instruments adapter). When real hardware isn't reachable or
+  the measurement type has no real executor (HALL, MR, AHE, CV, EIS, etc.),
+  the flow falls back to a physics simulator. CSV/PNG output clearly
+  indicates which backend produced it — real runs say
+  "real instrument measurement data" with the driver coverage map,
+  simulated runs say "PHYSICS SIMULATION".
+- **Three driver backends:**
+  1. **In-tree VisaDriver subclasses** (3): Keithley 2400, Keithley 6221,
+     Lakeshore 335 — custom SCPI, auto-retry.
+  2. **pymeasure adapter** (~15 models): Keithley 2000/2182/2450/6517,
+     Agilent 34410/33500/E4980, SRS SR830/SR860, Lake Shore families, etc.
+     Extending `PYMEASURE_MODEL_MAP` in `drivers/pymeasure_adapter.py`
+     adds more.
+  3. **Zurich Instruments adapter** (3 models): MFLI, HF2LI, SHFQA via
+     `zhinst-toolkit`. Stub-level operations (frequency, time constant,
+     X/Y readout) — extend as lock-in executors land.
 - **`execution_mode`** on the session controls this: `"auto"` (default,
   try real → simulator on failure), `"real"` (fail loudly if no driver),
   or `"simulated"` (never touch hardware).
@@ -88,7 +94,7 @@ CLI subcommands:   15 (scan, classify, propose, literature, generate-skill,
                    analyze, procedures, chat, web, panel, export, campaign,
                    setup, serve, start)
 AI providers:      6 (Claude, GPT-4o, Gemini, Ollama, vLLM, DeepSeek) via litellm
-Tests:             222 passing
+Tests:             247 passing
 License:           MIT
 ```
 

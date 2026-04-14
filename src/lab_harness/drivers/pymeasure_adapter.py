@@ -211,6 +211,55 @@ class PyMeasureDriver:
         elif hasattr(inst, "setpoint"):
             inst.setpoint = target_k
 
+    # ── electrometer / source_meter voltage-source mode (HIGH_R) ────────
+
+    def configure_source_voltage(self, compliance_i: float = 1e-6) -> None:
+        """Put a source-meter/electrometer into voltage-source, current-measure mode."""
+        self._require_role("source_meter", "electrometer")
+        inst = self._pm_instrument
+        if hasattr(inst, "apply_voltage"):
+            inst.apply_voltage()
+        if hasattr(inst, "compliance_current"):
+            inst.compliance_current = compliance_i
+        if hasattr(inst, "measure_current"):
+            inst.measure_current()
+
+    def set_voltage(self, volts: float) -> None:
+        self._require_role("source_meter", "electrometer")
+        inst = self._pm_instrument
+        if hasattr(inst, "source_voltage"):
+            inst.source_voltage = volts
+        elif hasattr(inst, "voltage"):
+            # Only assign if it's not a read-only property.
+            try:
+                inst.voltage = volts
+            except AttributeError as exc:
+                raise NotImplementedError(f"{type(inst).__name__} has no voltage setter we know") from exc
+        else:
+            raise NotImplementedError(f"{type(inst).__name__} has no voltage setter we know")
+
+    def measure_current(self) -> float:
+        """Read current. Used by electrometer (picoamp) and source_meter roles."""
+        self._require_role("source_meter", "electrometer", "dmm")
+        inst = self._pm_instrument
+        if hasattr(inst, "current"):
+            return float(inst.current)
+        if hasattr(inst, "read"):
+            return float(inst.read())
+        raise NotImplementedError(f"{type(inst).__name__} has no current reader we know")
+
+    # ── nanovoltmeter / DMM (DELTA, SEEBECK) ────────────────────────────
+
+    def measure_voltage_nv(self) -> float:
+        """Low-noise voltage readout for K2182A / nanovoltmeter-class DMMs."""
+        self._require_role("nanovoltmeter", "dmm")
+        inst = self._pm_instrument
+        if hasattr(inst, "voltage"):
+            return float(inst.voltage)
+        if hasattr(inst, "read"):
+            return float(inst.read())
+        raise NotImplementedError(f"{type(inst).__name__} nanovolt readout unknown")
+
     # ── internals ───────────────────────────────────────────────────────
 
     def _require_role(self, *allowed: str) -> None:

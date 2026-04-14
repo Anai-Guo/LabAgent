@@ -5,7 +5,7 @@
 <p align="center">
   <a href="https://github.com/Anai-Guo/LabAgent/actions/workflows/ci.yml"><img src="https://github.com/Anai-Guo/LabAgent/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
   <img src="https://img.shields.io/badge/python-3.10%2B-blue.svg" alt="Python">
-  <img src="https://img.shields.io/badge/tests-222%20passed-brightgreen.svg" alt="Tests">
+  <img src="https://img.shields.io/badge/tests-247%20passed-brightgreen.svg" alt="Tests">
   <img src="https://img.shields.io/badge/templates-46-orange.svg" alt="Templates">
   <img src="https://img.shields.io/badge/instruments-~50%20models-blue.svg" alt="Instruments">
   <img src="https://img.shields.io/badge/AI%20models-6%20providers-purple.svg" alt="Models">
@@ -22,7 +22,7 @@
   <img src="assets/demo.svg" alt="LabAgent /experiment page: live activity log, AI decision, measurement chart, extracted values, AI interpretation with citations" width="900">
 </p>
 
-Every block above is real: live SSE activity stream, AI-picked measurement type with reasoning, live-drawn measurement curve, extracted quantities, and AI interpretation that cites papers by `[N]`. The example above shows a cyclic voltammetry scan on a ferrocene probe — swap in a Keithley or a Keysight scope and you'll see an IV sweep or a waveform instead. **IV and RT now run on real instruments** (via pymeasure + our 3 in-tree drivers); other measurement types still fall back to a physics simulator, and every CSV/PNG is clearly marked with which backend produced it.
+Every block above is real: live SSE activity stream, AI-picked measurement type with reasoning, live-drawn measurement curve, extracted quantities, and AI interpretation that cites papers by `[N]`. The example above shows a cyclic voltammetry scan on a ferrocene probe — swap in a Keithley or a Keysight scope and you'll see an IV sweep or a waveform instead. **Eight measurement types now run on real instruments** (IV, RT, DELTA, HIGH_R, BREAKDOWN, SEEBECK, TUNNELING, PHOTO_IV — via pymeasure + 3 in-tree VisaDrivers + a Zurich Instruments adapter); other measurement types still fall back to a physics simulator, and every CSV/PNG is clearly marked with which backend produced it.
 
 ## Quick Start
 
@@ -223,10 +223,14 @@ labharness serve
 - [x] MCP server for Claude Code / Cursor integration
 - [x] Adaptive Web GUI with real-time monitoring
 - [x] Quantum Design PPMS/MPMS integration (MultiPyVu)
-- [x] Real-time measurement execution — **partial**: IV and RT run on real
-  hardware via pymeasure adapter + 3 in-tree drivers (Keithley 2400/6221,
-  Lakeshore 335); other types still use the simulator
-- [ ] Real execution for remaining types (HALL, MR, AHE, CV, EIS, …)
+- [x] Real-time measurement execution — **8 measurement types** (IV, RT,
+  DELTA, HIGH_R, BREAKDOWN, SEEBECK, TUNNELING, PHOTO_IV) run on real
+  hardware via three backends: pymeasure adapter (~15 models), 3 in-tree
+  VisaDrivers (Keithley 2400/6221, Lakeshore 335), and Zurich Instruments
+  adapter (MFLI/HF2LI/SHFQA). Remaining types still fall back to the
+  simulator.
+- [ ] Real execution for remaining types (HALL, MR, AHE, CV, EIS, FMR, …)
+- [ ] BioLogic / Gamry / CH Instruments potentiostat wrappers (electrochemistry)
 - [ ] Community template marketplace
 - [ ] PyPI package release
 

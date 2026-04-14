@@ -83,12 +83,23 @@ class DriverRegistry:
                 vendor=settings.get("vendor", ""),
                 role=settings.get("role", role),
             )
+        elif driver_name == "__zurich__":
+            from lab_harness.drivers import zurich_adapter as zi
+
+            instance = zi.build(
+                resource=resource,
+                model=settings.get("model", ""),
+                vendor=settings.get("vendor", ""),
+                role=settings.get("role", role),
+                device_serial=settings.get("device_serial", ""),
+            )
         elif driver_name in DRIVER_MAP:
             driver_cls = _import_driver(DRIVER_MAP[driver_name])
             instance = driver_cls(resource=resource, **settings)
         else:
             raise ValueError(
-                f"Unknown driver '{driver_name}'. Available: {list(DRIVER_MAP.keys()) + ['__pymeasure__']}"
+                f"Unknown driver '{driver_name}'. Available: "
+                f"{list(DRIVER_MAP.keys()) + ['__pymeasure__', '__zurich__']}"
             )
 
         self._instances[role] = instance
@@ -155,6 +166,7 @@ class DriverRegistry:
             (``"pymeasure"``, ``"builtin:<name>"``, or ``"none"``).
         """
         from lab_harness.drivers import pymeasure_adapter as pm
+        from lab_harness.drivers import zurich_adapter as zi
 
         configs: dict[str, dict] = {}
         coverage: dict[str, str] = {}
@@ -164,7 +176,18 @@ class DriverRegistry:
             model = _attr(inst, "model", default="")
             vendor = _attr(inst, "vendor", default="")
 
-            # 1. pymeasure
+            # 1. Zurich Instruments adapter (MFLI/HF2LI/SHFQA have no
+            #    pymeasure support; this wrapper is the only path).
+            if zi.is_supported(model):
+                configs[role] = {
+                    "driver": "__zurich__",
+                    "resource": resource,
+                    "settings": {"model": model, "vendor": vendor, "role": role},
+                }
+                coverage[role] = "zurich"
+                continue
+
+            # 2. pymeasure
             if prefer_pymeasure and pm.is_supported(model):
                 configs[role] = {
                     "driver": "__pymeasure__",
@@ -174,7 +197,7 @@ class DriverRegistry:
                 coverage[role] = "pymeasure"
                 continue
 
-            # 2. Built-in driver (substring match on model against DRIVER_MAP
+            # 3. Built-in driver (substring match on model against DRIVER_MAP
             #    keys is not useful because DRIVER_MAP keys are vendor-model
             #    slugs like "keithley2400". We probe by a small vendor+model
             #    table.)

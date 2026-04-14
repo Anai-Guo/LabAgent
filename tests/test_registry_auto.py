@@ -74,3 +74,28 @@ def test_pymeasure_config_carries_model_for_adapter():
     settings = reg.configs["source_meter"]["settings"]
     assert "2400" in settings["model"].upper()
     assert settings["vendor"].lower().startswith("keithley")
+
+
+def test_zurich_lockin_wins_over_pymeasure_for_mfli():
+    """MFLI has no pymeasure driver — the Zurich adapter must be picked."""
+    role_assignments = {"lockin_amplifier": _rec("MFLI", vendor="Zurich Instruments")}
+    reg, coverage = DriverRegistry.from_role_assignments(role_assignments)
+    assert coverage == {"lockin_amplifier": "zurich"}
+    assert reg.configs["lockin_amplifier"]["driver"] == "__zurich__"
+    settings = reg.configs["lockin_amplifier"]["settings"]
+    assert settings["model"].upper() == "MFLI"
+
+
+def test_mixed_multi_backend_coverage():
+    """A realistic lab has instruments served by three different backends."""
+    role_assignments = {
+        "source_meter": _rec("MODEL 2400", vendor="Keithley"),
+        "temperature_controller": _rec("MODEL 335", vendor="LakeShore"),
+        "lockin_amplifier": _rec("MFLI", vendor="Zurich Instruments"),
+        "unknown_role": _rec("ObscureX", vendor="NoName"),
+    }
+    reg, coverage = DriverRegistry.from_role_assignments(role_assignments, prefer_pymeasure=True)
+    assert coverage["source_meter"] == "pymeasure"
+    assert coverage["temperature_controller"] in ("pymeasure", "builtin:lakeshore335")
+    assert coverage["lockin_amplifier"] == "zurich"
+    assert coverage["unknown_role"] == "none"

@@ -191,9 +191,279 @@ def _execute_rt(
     return points
 
 
+# ──────────────────────────────────────────────────────────────────────────
+# DELTA: alternating ±I on a current source, read V on a nanovoltmeter
+# ──────────────────────────────────────────────────────────────────────────
+
+
+def _execute_delta(
+    plan: Any,
+    registry: DriverRegistry,
+    progress: Callable[[int, int, dict], None] | None,
+) -> list[dict]:
+    """Classic K6221 + K2182A delta mode: V = (V(+I) - V(-I)) / 2, R = V/I."""
+    src = _need(registry, "ac_current_source")
+    nv = _need(registry, "nanovoltmeter")
+
+    lo, hi = -plan.max_current_a, plan.max_current_a
+    currents = [max(lo, min(hi, v)) for v in _sweep_values(plan.x_axis)]
+
+    x_key = f"{plan.x_axis.label} ({plan.x_axis.unit})"
+    y_keys = [f"{c.label} ({c.unit})" for c in plan.y_channels] or ["Resistance (Ohm)"]
+
+    points: list[dict] = []
+    try:
+        with src, nv:
+            src.enable_output()
+            for i, current in enumerate(currents):
+                # +I
+                src.set_current(current)
+                time.sleep(plan.settling_time_s)
+                v_plus = nv.measure_voltage_nv()
+                # -I
+                src.set_current(-current)
+                time.sleep(plan.settling_time_s)
+                v_minus = nv.measure_voltage_nv()
+                v_delta = (v_plus - v_minus) / 2.0
+                resistance = v_delta / current if current else float("nan")
+
+                row = {x_key: current}
+                for k in y_keys:
+                    row[k] = resistance
+                points.append(row)
+                if progress is not None:
+                    progress(i, len(currents), row)
+    finally:
+        try:
+            src.disable_output()
+        except Exception as exc:  # noqa: BLE001
+            logger.warning("Could not disable ac_current_source cleanly: %s", exc)
+
+    return points
+
+
+# ──────────────────────────────────────────────────────────────────────────
+# HIGH_R: electrometer sweeps voltage, measures picoamp
+# ──────────────────────────────────────────────────────────────────────────
+
+
+def _execute_high_r(
+    plan: Any,
+    registry: DriverRegistry,
+    progress: Callable[[int, int, dict], None] | None,
+) -> list[dict]:
+    em = _need(registry, "electrometer")
+
+    lo, hi = -plan.max_voltage_v, plan.max_voltage_v
+    voltages = [max(lo, min(hi, v)) for v in _sweep_values(plan.x_axis)]
+
+    x_key = f"{plan.x_axis.label} ({plan.x_axis.unit})"
+    y_keys = [f"{c.label} ({c.unit})" for c in plan.y_channels] or ["Current (A)"]
+
+    points: list[dict] = []
+    try:
+        with em:
+            em.configure_source_voltage(compliance_i=plan.max_current_a)
+            em.enable_output()
+            for i, v in enumerate(voltages):
+                em.set_voltage(v)
+                time.sleep(plan.settling_time_s)
+                current = em.measure_current()
+                row = {x_key: v}
+                for k in y_keys:
+                    row[k] = current
+                points.append(row)
+                if progress is not None:
+                    progress(i, len(voltages), row)
+    finally:
+        try:
+            em.disable_output()
+        except Exception as exc:  # noqa: BLE001
+            logger.warning("Could not disable electrometer cleanly: %s", exc)
+
+    return points
+
+
+# ──────────────────────────────────────────────────────────────────────────
+# BREAKDOWN: ramp voltage slowly, stop when compliance current trips
+# ──────────────────────────────────────────────────────────────────────────
+
+
+def _execute_breakdown(
+    plan: Any,
+    registry: DriverRegistry,
+    progress: Callable[[int, int, dict], None] | None,
+) -> list[dict]:
+    src = _need(registry, "source_meter")
+
+    # For breakdown we take |max_voltage_v| as the stop value; sweep upwards
+    # from 0. The compliance_i is the plan's max_current_a.
+    compliance = plan.max_current_a
+    stop_v = abs(plan.max_voltage_v)
+    n = max(2, plan.x_axis.num_points)
+    voltages = [stop_v * i / (n - 1) for i in range(n)]
+
+    x_key = f"{plan.x_axis.label} ({plan.x_axis.unit})"
+    y_keys = [f"{c.label} ({c.unit})" for c in plan.y_channels] or ["Current (A)"]
+
+    points: list[dict] = []
+    try:
+        with src:
+            src.configure_source_voltage(compliance_i=compliance)
+            src.enable_output()
+            for i, v in enumerate(voltages):
+                src.set_voltage(v)
+                time.sleep(plan.settling_time_s)
+                current = src.measure_current()
+                row = {x_key: v}
+                for k in y_keys:
+                    row[k] = current
+                points.append(row)
+                if progress is not None:
+                    progress(i, len(voltages), row)
+                # Breakdown detection: current crosses 95% of compliance.
+                if abs(current) >= 0.95 * abs(compliance):
+                    logger.info("Breakdown detected at %.3f V (I=%.3e A); stopping sweep", v, current)
+                    break
+    finally:
+        try:
+            src.disable_output()
+        except Exception as exc:  # noqa: BLE001
+            logger.warning("Could not disable source_meter cleanly: %s", exc)
+
+    return points
+
+
+# ──────────────────────────────────────────────────────────────────────────
+# SEEBECK: sweep T, measure thermo-voltage on a nanovoltmeter
+# ──────────────────────────────────────────────────────────────────────────
+
+
+def _execute_seebeck(
+    plan: Any,
+    registry: DriverRegistry,
+    progress: Callable[[int, int, dict], None] | None,
+) -> list[dict]:
+    tc = _need(registry, "temperature_controller")
+    nv = _need(registry, "nanovoltmeter")
+
+    setpoints = _sweep_values(plan.x_axis)
+    x_key = f"{plan.x_axis.label} ({plan.x_axis.unit})"
+    y_keys = [f"{c.label} ({c.unit})" for c in plan.y_channels] or ["V_thermo (V)"]
+
+    points: list[dict] = []
+    with tc, nv:
+        for i, target_k in enumerate(setpoints):
+            if target_k > plan.max_temperature_k:
+                continue
+            tc.set_temperature(target_k)
+            time.sleep(plan.settling_time_s)
+            actual_k = tc.read_temperature()
+            v_thermo = nv.measure_voltage_nv()
+            row = {x_key: actual_k}
+            for k in y_keys:
+                row[k] = v_thermo
+            points.append(row)
+            if progress is not None:
+                progress(i, len(setpoints), row)
+    return points
+
+
+# ──────────────────────────────────────────────────────────────────────────
+# TUNNELING: voltage sweep, measure current (dI/dV computed in analysis)
+# ──────────────────────────────────────────────────────────────────────────
+
+
+def _execute_tunneling(
+    plan: Any,
+    registry: DriverRegistry,
+    progress: Callable[[int, int, dict], None] | None,
+) -> list[dict]:
+    src = _need(registry, "source_meter")
+
+    lo, hi = -plan.max_voltage_v, plan.max_voltage_v
+    voltages = [max(lo, min(hi, v)) for v in _sweep_values(plan.x_axis)]
+
+    x_key = f"{plan.x_axis.label} ({plan.x_axis.unit})"
+    y_keys = [f"{c.label} ({c.unit})" for c in plan.y_channels] or ["Current (A)"]
+
+    points: list[dict] = []
+    try:
+        with src:
+            src.configure_source_voltage(compliance_i=plan.max_current_a)
+            src.enable_output()
+            for i, v in enumerate(voltages):
+                src.set_voltage(v)
+                time.sleep(plan.settling_time_s)
+                current = src.measure_current()
+                row = {x_key: v}
+                for k in y_keys:
+                    row[k] = current
+                points.append(row)
+                if progress is not None:
+                    progress(i, len(voltages), row)
+    finally:
+        try:
+            src.disable_output()
+        except Exception as exc:  # noqa: BLE001
+            logger.warning("Could not disable source_meter cleanly: %s", exc)
+
+    return points
+
+
+# ──────────────────────────────────────────────────────────────────────────
+# PHOTO_IV: solar cell IV under illumination (identical electrical protocol
+# to BREAKDOWN but with negative currents too; assumes external illumination
+# control — lamps are typically toggled manually or via DAQ trigger)
+# ──────────────────────────────────────────────────────────────────────────
+
+
+def _execute_photo_iv(
+    plan: Any,
+    registry: DriverRegistry,
+    progress: Callable[[int, int, dict], None] | None,
+) -> list[dict]:
+    src = _need(registry, "source_meter")
+
+    lo, hi = -plan.max_voltage_v, plan.max_voltage_v
+    voltages = [max(lo, min(hi, v)) for v in _sweep_values(plan.x_axis)]
+
+    x_key = f"{plan.x_axis.label} ({plan.x_axis.unit})"
+    y_keys = [f"{c.label} ({c.unit})" for c in plan.y_channels] or ["Current (A)"]
+
+    points: list[dict] = []
+    try:
+        with src:
+            src.configure_source_voltage(compliance_i=plan.max_current_a)
+            src.enable_output()
+            for i, v in enumerate(voltages):
+                src.set_voltage(v)
+                time.sleep(plan.settling_time_s)
+                current = src.measure_current()
+                row = {x_key: v}
+                for k in y_keys:
+                    row[k] = current
+                points.append(row)
+                if progress is not None:
+                    progress(i, len(voltages), row)
+    finally:
+        try:
+            src.disable_output()
+        except Exception as exc:  # noqa: BLE001
+            logger.warning("Could not disable source_meter cleanly: %s", exc)
+
+    return points
+
+
 EXECUTORS: dict[str, Callable[[Any, DriverRegistry, Any], list[dict]]] = {
     "IV": _execute_iv,
     "RT": _execute_rt,
+    "DELTA": _execute_delta,
+    "HIGH_R": _execute_high_r,
+    "BREAKDOWN": _execute_breakdown,
+    "SEEBECK": _execute_seebeck,
+    "TUNNELING": _execute_tunneling,
+    "PHOTO_IV": _execute_photo_iv,
 }
 
 
