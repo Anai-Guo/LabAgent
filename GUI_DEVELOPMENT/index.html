@@ -1,0 +1,1317 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Your AI-powered lab assistant">
+      
+      
+      
+        <link rel="canonical" href="https://anai-guo.github.io/LabAgent/GUI_DEVELOPMENT/">
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>GUI Development Guide - LabAgent</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="deep-purple" data-md-color-accent="amber">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#gui-development-guide" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="LabAgent" class="md-header__button md-logo" aria-label="LabAgent" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            LabAgent
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              GUI Development Guide
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="deep-purple" data-md-color-accent="amber"  aria-label="Light mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Light mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="deep-purple" data-md-color-accent="amber"  aria-label="Dark mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Dark mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/Anai-Guo/LabAgent" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    Anai-Guo/LabAgent
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href=".." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../getting-started/installation/" class="md-tabs__link">
+          
+  
+  
+  Getting Started
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../features/discovery/" class="md-tabs__link">
+          
+  
+  
+  Features
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../contributing/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Contributing
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="LabAgent" class="md-nav__button md-logo" aria-label="LabAgent" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    LabAgent
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/Anai-Guo/LabAgent" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    Anai-Guo/LabAgent
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Getting Started
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../getting-started/installation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Installation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../getting-started/quickstart/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Quick Start
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../getting-started/configuration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Configuration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Features
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Features
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features/discovery/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Instrument Discovery
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features/planning/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Measurement Planning
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features/analysis/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AI Analysis
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features/safety/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Safety System
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features/web-gui/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Web GUI
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../contributing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Contributing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#architecture-overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Architecture Overview
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Architecture Overview">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#why-single-file" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Why Single-File?
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#technology-stack" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Technology Stack
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#file-structure" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        File Structure
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#how-to-modify-the-monitor-page" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How to Modify the Monitor Page
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="How to Modify the Monitor Page">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#adding-a-new-data-channel" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Adding a New Data Channel
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#adding-a-new-metric-card" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Adding a New Metric Card
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#changing-the-color-scheme" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Changing the Color Scheme
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#adding-a-new-chart-panel" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Adding a New Chart Panel
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#template-driven-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Template-Driven Configuration
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#presets-system" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Presets System
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#how-to-connect-real-data" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How to Connect Real Data
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="How to Connect Real Data">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#option-1-websocket-recommended" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Option 1: WebSocket (Recommended)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#option-2-polling" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Option 2: Polling
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#common-modification-patterns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Common Modification Patterns
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Common Modification Patterns">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#i-want-to-change-the-chart-colors" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        "I want to change the chart colors"
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#i-want-more-than-4-default-charts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        "I want more than 4 default charts"
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#i-want-to-change-the-sidebar-layout" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        "I want to change the sidebar layout"
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#i-want-to-add-a-control-panel-not-just-monitoring" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        "I want to add a control panel (not just monitoring)"
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#testing-the-gui" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Testing the GUI
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="gui-development-guide">GUI Development Guide</h1>
+<blockquote>
+<p>For AI assistants and developers who need to modify the Web GUI.</p>
+</blockquote>
+<h2 id="architecture-overview">Architecture Overview</h2>
+<p>The Web GUI is a <strong>single-file embedded HTML application</strong> inside
+<code>src/lab_harness/web/app.py</code>. There are NO external HTML/CSS/JS files —
+everything is returned as a Python string from two functions:</p>
+<div class="highlight"><pre><span></span><code>_embedded_dashboard()  → GET /       (measurement template configurator)
+_embedded_monitor()    → GET /monitor (real-time data monitoring)
+</code></pre></div>
+<h3 id="why-single-file">Why Single-File?</h3>
+<ul>
+<li>Zero static file dependencies — works anywhere Python runs</li>
+<li>No build step (no webpack, no npm)</li>
+<li>Easy to modify — just edit the Python string</li>
+<li>Keeps deployment simple — <code>pip install</code> and done</li>
+</ul>
+<h3 id="technology-stack">Technology Stack</h3>
+<table>
+<thead>
+<tr>
+<th>Layer</th>
+<th>Technology</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Backend</td>
+<td>FastAPI</td>
+<td>API endpoints in <code>app.py</code></td>
+</tr>
+<tr>
+<td>Charts</td>
+<td>Chart.js 4.x</td>
+<td>Loaded from CDN</td>
+</tr>
+<tr>
+<td>Styling</td>
+<td>Inline CSS</td>
+<td>Genshin-inspired dark theme</td>
+</tr>
+<tr>
+<td>State</td>
+<td>JavaScript + localStorage</td>
+<td>Presets saved locally</td>
+</tr>
+<tr>
+<td>Data</td>
+<td>Simulated</td>
+<td>Replace with real WebSocket in production</td>
+</tr>
+</tbody>
+</table>
+<h2 id="file-structure">File Structure</h2>
+<div class="highlight"><pre><span></span><code>src/lab_harness/web/
+  __init__.py
+  app.py          ← Everything is here
+    ├── API endpoints (lines ~27-120)
+    │   GET /api/templates
+    │   GET /api/templates/{type}
+    │   GET /api/instruments
+    │   POST /api/plan
+    │   GET /api/health
+    │
+    ├── _embedded_dashboard() (lines ~130-360)
+    │   Template configurator page
+    │
+    └── _embedded_monitor() (lines ~365-end)
+        Real-time monitoring page
+</code></pre></div>
+<h2 id="how-to-modify-the-monitor-page">How to Modify the Monitor Page</h2>
+<h3 id="adding-a-new-data-channel">Adding a New Data Channel</h3>
+<ol>
+<li>
+<p>Find the <code>CHANNELS</code> array in the JavaScript section of <code>_embedded_monitor()</code>:
+<div class="highlight"><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">CHANNELS</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
+<span class="w">  </span><span class="p">{</span><span class="nx">id</span><span class="o">:</span><span class="s2">&quot;time&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">label</span><span class="o">:</span><span class="s2">&quot;Time&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">unit</span><span class="o">:</span><span class="s2">&quot;s&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">element</span><span class="o">:</span><span class="s2">&quot;geo&quot;</span><span class="p">},</span>
+<span class="w">  </span><span class="p">{</span><span class="nx">id</span><span class="o">:</span><span class="s2">&quot;voltage&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">label</span><span class="o">:</span><span class="s2">&quot;Voltage&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">unit</span><span class="o">:</span><span class="s2">&quot;V&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">element</span><span class="o">:</span><span class="s2">&quot;hydro&quot;</span><span class="p">},</span>
+<span class="w">  </span><span class="c1">// ... add your new channel here:</span>
+<span class="w">  </span><span class="p">{</span><span class="nx">id</span><span class="o">:</span><span class="s2">&quot;my_new_channel&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">label</span><span class="o">:</span><span class="s2">&quot;My Sensor&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">unit</span><span class="o">:</span><span class="s2">&quot;mV&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">element</span><span class="o">:</span><span class="s2">&quot;dendro&quot;</span><span class="p">},</span>
+<span class="p">];</span>
+</code></pre></div></p>
+</li>
+<li>
+<p>The channel automatically appears in:</p>
+</li>
+<li>Chart X/Y axis dropdowns</li>
+<li>Metric card options</li>
+<li>
+<p>Sidebar channel list</p>
+</li>
+<li>
+<p>Add simulated data in the <code>simulateData()</code> function:
+<div class="highlight"><pre><span></span><code><span class="nx">newPoint</span><span class="p">.</span><span class="nx">my_new_channel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">Math</span><span class="p">.</span><span class="nx">random</span><span class="p">()</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mf">100</span><span class="p">;</span>
+</code></pre></div></p>
+</li>
+</ol>
+<h3 id="adding-a-new-metric-card">Adding a New Metric Card</h3>
+<p>Metric cards are driven by <code>METRIC_DEFS</code> array. To add one:
+<div class="highlight"><pre><span></span><code><span class="nx">METRIC_DEFS</span><span class="p">.</span><span class="nx">push</span><span class="p">({</span><span class="nx">ch</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;my_new_channel&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">element</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;dendro&quot;</span><span class="p">});</span>
+<span class="nx">renderMetricCards</span><span class="p">();</span>
+</code></pre></div></p>
+<p>Or let the template selector handle it automatically — when a user
+selects a template, <code>applyTemplate()</code> rebuilds metric cards from
+the template's <code>y_channels</code>.</p>
+<h3 id="changing-the-color-scheme">Changing the Color Scheme</h3>
+<p>All colors are CSS variables at the top of the <code>&lt;style&gt;</code> block:
+<div class="highlight"><pre><span></span><code><span class="p">:</span><span class="nd">root</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nv">--bg-primary</span><span class="p">:</span><span class="w"> </span><span class="mh">#0f0f1e</span><span class="p">;</span><span class="w">    </span><span class="c">/* Main background */</span>
+<span class="w">  </span><span class="nv">--bg-card</span><span class="p">:</span><span class="w"> </span><span class="mh">#151530</span><span class="p">;</span><span class="w">        </span><span class="c">/* Card background */</span>
+<span class="w">  </span><span class="nv">--border-gold</span><span class="p">:</span><span class="w"> </span><span class="mh">#c8a96e</span><span class="p">;</span><span class="w">    </span><span class="c">/* Gold accent border */</span>
+<span class="w">  </span><span class="nv">--electro</span><span class="p">:</span><span class="w"> </span><span class="mh">#c882ff</span><span class="p">;</span><span class="w">        </span><span class="c">/* Purple (electrical) */</span>
+<span class="w">  </span><span class="nv">--cryo</span><span class="p">:</span><span class="w"> </span><span class="mh">#9cf0ff</span><span class="p">;</span><span class="w">           </span><span class="c">/* Blue (cryo/temperature) */</span>
+<span class="w">  </span><span class="nv">--pyro</span><span class="p">:</span><span class="w"> </span><span class="mh">#ff6b4a</span><span class="p">;</span><span class="w">           </span><span class="c">/* Red (warning/thermal) */</span>
+<span class="w">  </span><span class="nv">--hydro</span><span class="p">:</span><span class="w"> </span><span class="mh">#4cc2ff</span><span class="p">;</span><span class="w">          </span><span class="c">/* Blue (voltage/current) */</span>
+<span class="w">  </span><span class="nv">--dendro</span><span class="p">:</span><span class="w"> </span><span class="mh">#7bc639</span><span class="p">;</span><span class="w">         </span><span class="c">/* Green (bio/chem) */</span>
+<span class="w">  </span><span class="nv">--geo</span><span class="p">:</span><span class="w"> </span><span class="mh">#f0b232</span><span class="p">;</span><span class="w">            </span><span class="c">/* Gold (field/mechanical) */</span>
+<span class="p">}</span>
+</code></pre></div></p>
+<h3 id="adding-a-new-chart-panel">Adding a New Chart Panel</h3>
+<p>The <code>addPanel()</code> function creates a new chart dynamically.
+Each chart gets:
+- Unique canvas element
+- X/Y dropdown selectors
+- Close button
+- Its own data buffer</p>
+<p>To add a chart programmatically:
+<div class="highlight"><pre><span></span><code><span class="nx">addPanel</span><span class="p">(</span><span class="s2">&quot;field&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;resistance&quot;</span><span class="p">);</span><span class="w">  </span><span class="c1">// X=field, Y=resistance</span>
+</code></pre></div></p>
+<h3 id="template-driven-configuration">Template-Driven Configuration</h3>
+<p>When user selects a measurement template:
+1. <code>applyTemplate(key)</code> fetches <code>/api/templates/{key}</code>
+2. Extracts <code>x_axis</code> and <code>y_channels</code> from the YAML
+3. Rebuilds <code>METRIC_DEFS</code> to show relevant channels
+4. Sets chart defaults (Chart 0 → template's primary sweep)
+5. Metric cards auto-update with template-specific channels</p>
+<p>To add template awareness for a new measurement type, just create
+the YAML template in <code>src/lab_harness/planning/templates/</code>. The GUI
+picks it up automatically — no code changes needed.</p>
+<h3 id="presets-system">Presets System</h3>
+<p>Users can save/load monitor configurations:
+<div class="highlight"><pre><span></span><code><span class="c1">// Save</span>
+<span class="nx">savePreset</span><span class="p">();</span><span class="w">  </span><span class="c1">// Prompts for name, stores in localStorage</span>
+
+<span class="c1">// Load</span>
+<span class="nx">loadPreset</span><span class="p">(</span><span class="s2">&quot;my_ahe_setup&quot;</span><span class="p">);</span>
+
+<span class="c1">// Data structure stored:</span>
+<span class="p">{</span>
+<span class="w">  </span><span class="nx">template</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;ahe&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">charts</span><span class="o">:</span><span class="w"> </span><span class="p">[{</span><span class="nx">x</span><span class="o">:</span><span class="s2">&quot;field&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">y</span><span class="o">:</span><span class="s2">&quot;hall_voltage&quot;</span><span class="p">},</span><span class="w"> </span><span class="p">...],</span>
+<span class="w">  </span><span class="nx">refreshRate</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;500&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">maxPoints</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;300&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">metricDefs</span><span class="o">:</span><span class="w"> </span><span class="p">[{</span><span class="nx">ch</span><span class="o">:</span><span class="s2">&quot;voltage&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">element</span><span class="o">:</span><span class="s2">&quot;hydro&quot;</span><span class="p">},</span><span class="w"> </span><span class="p">...]</span>
+<span class="p">}</span>
+</code></pre></div></p>
+<p>Storage key: <code>labharness_presets</code> in <code>localStorage</code>.</p>
+<h2 id="how-to-connect-real-data">How to Connect Real Data</h2>
+<p>Currently the monitor uses <code>simulateData()</code> for demo purposes.
+To connect real instruments:</p>
+<h3 id="option-1-websocket-recommended">Option 1: WebSocket (Recommended)</h3>
+<ol>
+<li>
+<p>Add a WebSocket endpoint to <code>app.py</code>:
+<div class="highlight"><pre><span></span><code><span class="nd">@app</span><span class="o">.</span><span class="n">websocket</span><span class="p">(</span><span class="s2">&quot;/ws/data&quot;</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">ws_data</span><span class="p">(</span><span class="n">websocket</span><span class="p">:</span> <span class="n">WebSocket</span><span class="p">):</span>
+    <span class="k">await</span> <span class="n">websocket</span><span class="o">.</span><span class="n">accept</span><span class="p">()</span>
+    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="c1"># Read from instruments</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">read_all_channels</span><span class="p">()</span>
+        <span class="k">await</span> <span class="n">websocket</span><span class="o">.</span><span class="n">send_json</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span>
+</code></pre></div></p>
+</li>
+<li>
+<p>In the monitor JavaScript, replace <code>simulateData()</code>:
+<div class="highlight"><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">ws</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nx">WebSocket</span><span class="p">(</span><span class="s2">&quot;ws://&quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">location</span><span class="p">.</span><span class="nx">host</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s2">&quot;/ws/data&quot;</span><span class="p">);</span>
+<span class="nx">ws</span><span class="p">.</span><span class="nx">onmessage</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="nx">event</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">JSON</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span><span class="nx">event</span><span class="p">.</span><span class="nx">data</span><span class="p">);</span>
+<span class="w">  </span><span class="c1">// Update charts and metrics with real data</span>
+<span class="w">  </span><span class="nx">pushDataPoint</span><span class="p">(</span><span class="nx">data</span><span class="p">);</span>
+<span class="p">};</span>
+</code></pre></div></p>
+</li>
+</ol>
+<h3 id="option-2-polling">Option 2: Polling</h3>
+<p>Replace <code>setInterval(simulateData, ...)</code> with:
+<div class="highlight"><pre><span></span><code><span class="k">async</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">fetchData</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">res</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">fetch</span><span class="p">(</span><span class="s2">&quot;/api/live-data&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">res</span><span class="p">.</span><span class="nx">json</span><span class="p">();</span>
+<span class="w">  </span><span class="nx">pushDataPoint</span><span class="p">(</span><span class="nx">data</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="nx">setInterval</span><span class="p">(</span><span class="nx">fetchData</span><span class="p">,</span><span class="w"> </span><span class="nb">parseInt</span><span class="p">(</span><span class="nx">refreshRate</span><span class="p">));</span>
+</code></pre></div></p>
+<h2 id="common-modification-patterns">Common Modification Patterns</h2>
+<h3 id="i-want-to-change-the-chart-colors">"I want to change the chart colors"</h3>
+<p>In <code>initCharts()</code>, modify the <code>borderColor</code> and <code>backgroundColor</code>:
+<div class="highlight"><pre><span></span><code><span class="nx">borderColor</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;rgba(200, 130, 255, 1)&quot;</span><span class="p">,</span><span class="w">  </span><span class="c1">// Change this</span>
+<span class="nx">backgroundColor</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;rgba(200, 130, 255, 0.1)&quot;</span><span class="p">,</span>
+</code></pre></div></p>
+<h3 id="i-want-more-than-4-default-charts">"I want more than 4 default charts"</h3>
+<p>In the HTML section, add more <code>&lt;div class="chart-panel"&gt;</code> blocks.
+In <code>initCharts()</code>, extend the <code>CHART_DEFAULTS</code> array.</p>
+<h3 id="i-want-to-change-the-sidebar-layout">"I want to change the sidebar layout"</h3>
+<p>The sidebar HTML is in the <code>&lt;div class="sidebar"&gt;</code> section.
+Add new <code>&lt;div class="sidebar-section"&gt;</code> blocks for new groups.</p>
+<h3 id="i-want-to-add-a-control-panel-not-just-monitoring">"I want to add a control panel (not just monitoring)"</h3>
+<p>Add a new route and function:
+<div class="highlight"><pre><span></span><code><span class="nd">@app</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;/control&quot;</span><span class="p">,</span> <span class="n">response_class</span><span class="o">=</span><span class="n">HTMLResponse</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">control_page</span><span class="p">():</span>
+    <span class="k">return</span> <span class="n">_embedded_control_panel</span><span class="p">()</span>
+</code></pre></div></p>
+<p>Then create <code>_embedded_control_panel()</code> with forms for instrument
+control (set current, set temperature, etc.).</p>
+<h2 id="testing-the-gui">Testing the GUI</h2>
+<div class="highlight"><pre><span></span><code><span class="c1"># Install web dependencies</span>
+pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span><span class="s2">&quot;.[web]&quot;</span>
+
+<span class="c1"># Start the server</span>
+labharness<span class="w"> </span>web<span class="w"> </span>--port<span class="w"> </span><span class="m">8080</span>
+
+<span class="c1"># Open in browser</span>
+<span class="c1"># Dashboard: http://localhost:8080/</span>
+<span class="c1"># Monitor:   http://localhost:8080/monitor</span>
+</code></pre></div>
+<p>No automated GUI tests — verify visually in browser.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.tabs", "navigation.sections", "navigation.top", "search.suggest", "content.code.copy"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>
