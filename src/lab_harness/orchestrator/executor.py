@@ -663,6 +663,188 @@ def _execute_cyclic_voltammetry(
     return points
 
 
+# ──────────────────────────────────────────────────────────────────────────
+# EIS: impedance spectroscopy on a potentiostat
+# ──────────────────────────────────────────────────────────────────────────
+
+
+def _execute_eis(
+    plan: Any,
+    registry: DriverRegistry,
+    progress: Callable[[int, int, dict], None] | None,
+) -> list[dict]:
+    """EIS via potentiostat.run_eis(). Returns Nyquist-ready [freq, Re(Z), Im(Z)] rows."""
+    pot = _need(registry, "potentiostat")
+
+    # plan.x_axis.start / stop interpreted as frequency endpoints in Hz
+    f_start = plan.x_axis.start
+    f_stop = plan.x_axis.stop
+    e_dc = getattr(plan, "e_dc_bias", 0.0)
+    amplitude = getattr(plan, "ac_amplitude", 0.01)
+    ppd = getattr(plan, "points_per_decade", 10)
+
+    x_key = f"{plan.x_axis.label} ({plan.x_axis.unit})"
+    y_keys = [f"{c.label} ({c.unit})" for c in plan.y_channels] or [
+        "Re_Z (Ohm)",
+        "Im_Z (Ohm)",
+    ]
+
+    with pot:
+        raw = pot.run_eis(
+            e_dc=e_dc,
+            frequency_start=f_start,
+            frequency_stop=f_stop,
+            amplitude=amplitude,
+            points_per_decade=ppd,
+        )
+
+    points: list[dict] = []
+    for i, (freq, z) in enumerate(raw):
+        row: dict[str, Any] = {x_key: freq}
+        # If the plan declared two y-channels (Re, Im) respect them; otherwise
+        # stuff both parts into the default names.
+        if len(y_keys) >= 2:
+            row[y_keys[0]] = z.real
+            row[y_keys[1]] = z.imag
+        else:
+            row[y_keys[0]] = z.real
+        points.append(row)
+        if progress is not None:
+            progress(i, len(raw), row)
+
+    return points
+
+
+# ──────────────────────────────────────────────────────────────────────────
+# CHRONOAMPEROMETRY: hold V, record I(t)
+# ──────────────────────────────────────────────────────────────────────────
+
+
+def _execute_chronoamperometry(
+    plan: Any,
+    registry: DriverRegistry,
+    progress: Callable[[int, int, dict], None] | None,
+) -> list[dict]:
+    pot = _need(registry, "potentiostat")
+
+    # plan.x_axis is (time start, time stop, step); here stop-start is duration.
+    e_hold = getattr(plan, "e_hold", 0.0)
+    duration = max(0.0, plan.x_axis.stop - plan.x_axis.start)
+    interval = plan.x_axis.step or 0.1
+
+    x_key = f"{plan.x_axis.label} ({plan.x_axis.unit})"
+    y_keys = [f"{c.label} ({c.unit})" for c in plan.y_channels] or ["Current (A)"]
+
+    with pot:
+        raw = pot.run_ca(
+            e_hold=e_hold,
+            duration_s=duration,
+            sample_interval_s=interval,
+        )
+
+    points: list[dict] = []
+    for i, (t, current) in enumerate(raw):
+        row = {x_key: t}
+        for k in y_keys:
+            row[k] = current
+        points.append(row)
+        if progress is not None:
+            progress(i, len(raw), row)
+    return points
+
+
+# ──────────────────────────────────────────────────────────────────────────
+# PHOTORESPONSE: time sweep on source_meter (photocurrent transient)
+# ──────────────────────────────────────────────────────────────────────────
+
+
+def _execute_photoresponse(
+    plan: Any,
+    registry: DriverRegistry,
+    progress: Callable[[int, int, dict], None] | None,
+) -> list[dict]:
+    """Time-resolved photocurrent. Assumes source_meter in voltage mode at a
+    fixed bias; operator (or DAQ) toggles illumination externally."""
+    src = _need(registry, "source_meter")
+
+    v_bias = getattr(plan, "v_bias", 0.0)
+    duration = max(0.0, plan.x_axis.stop - plan.x_axis.start)
+    interval = plan.x_axis.step or 0.05
+    n = max(1, int(duration / interval) + 1)
+
+    x_key = f"{plan.x_axis.label} ({plan.x_axis.unit})"
+    y_keys = [f"{c.label} ({c.unit})" for c in plan.y_channels] or ["Current (A)"]
+
+    points: list[dict] = []
+    try:
+        with src:
+            src.configure_source_voltage(compliance_i=plan.max_current_a)
+            src.set_voltage(v_bias)
+            src.enable_output()
+            start = time.monotonic()
+            for i in range(n):
+                # Sleep the cadence; precise timestamping uses monotonic clock.
+                time.sleep(interval)
+                t = time.monotonic() - start + plan.x_axis.start
+                current = src.measure_current()
+                row = {x_key: t}
+                for k in y_keys:
+                    row[k] = current
+                points.append(row)
+                if progress is not None:
+                    progress(i, n, row)
+    finally:
+        try:
+            src.disable_output()
+        except Exception as exc:  # noqa: BLE001
+            logger.warning("Could not disable source_meter cleanly: %s", exc)
+    return points
+
+
+# ──────────────────────────────────────────────────────────────────────────
+# POTENTIOMETRY: open-circuit potential (OCP) vs time
+# ──────────────────────────────────────────────────────────────────────────
+
+
+def _execute_potentiometry(
+    plan: Any,
+    registry: DriverRegistry,
+    progress: Callable[[int, int, dict], None] | None,
+) -> list[dict]:
+    """OCP readout vs time. Uses ``potentiostat`` if available, otherwise
+    falls back to ``electrometer`` as a high-input-impedance V meter."""
+    if registry.supports_role("potentiostat"):
+        drv = registry.get_driver("potentiostat")
+        read = lambda: drv.read_ocp()  # noqa: E731
+        ctx = drv
+    else:
+        drv = _need(registry, "electrometer")
+        read = lambda: drv.measure_voltage()  # noqa: E731
+        ctx = drv
+
+    duration = max(0.0, plan.x_axis.stop - plan.x_axis.start)
+    interval = plan.x_axis.step or 0.5
+    n = max(1, int(duration / interval) + 1)
+
+    x_key = f"{plan.x_axis.label} ({plan.x_axis.unit})"
+    y_keys = [f"{c.label} ({c.unit})" for c in plan.y_channels] or ["E_OCP (V)"]
+
+    points: list[dict] = []
+    with ctx:
+        start = time.monotonic()
+        for i in range(n):
+            time.sleep(interval)
+            t = time.monotonic() - start + plan.x_axis.start
+            e = read()
+            row = {x_key: t}
+            for k in y_keys:
+                row[k] = e
+            points.append(row)
+            if progress is not None:
+                progress(i, n, row)
+    return points
+
+
 EXECUTORS: dict[str, Callable[[Any, DriverRegistry, Any], list[dict]]] = {
     "IV": _execute_iv,
     "RT": _execute_rt,
@@ -676,6 +858,10 @@ EXECUTORS: dict[str, Callable[[Any, DriverRegistry, Any], list[dict]]] = {
     "TRANSFER": _execute_transfer,
     "OUTPUT": _execute_output,
     "CYCLIC_VOLTAMMETRY": _execute_cyclic_voltammetry,
+    "EIS": _execute_eis,
+    "CHRONOAMPEROMETRY": _execute_chronoamperometry,
+    "PHOTORESPONSE": _execute_photoresponse,
+    "POTENTIOMETRY": _execute_potentiometry,
 }
 
 

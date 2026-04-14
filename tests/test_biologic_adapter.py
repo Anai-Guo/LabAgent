@@ -126,3 +126,81 @@ def test_list_supported_models_has_all_entries():
     keys = {k for k, _ in rows}
     assert "SP-200" in keys
     assert "VMP3" in keys
+
+
+def test_run_eis_parses_frequency_and_complex_z():
+    """run_eis should call easy_biologic.programs.PEIS and parse records into (freq, Z)."""
+
+    def fake_import(name):
+        if name == "easy_biologic":
+            return MagicMock()
+        if name == "easy_biologic.programs":
+            m = MagicMock()
+            fake_tech = MagicMock()
+            fake_tech.data = {
+                0: [
+                    {"freq": 10.0, "Re_Z": 100.0, "Im_Z": -50.0},
+                    {"freq": 100.0, "Re_Z": 100.0, "Im_Z": -5.0},
+                ]
+            }
+            m.PEIS.return_value = fake_tech
+            return m
+        raise ImportError(name)
+
+    drv = biolo.build(resource="10.0.0.1", model="SP-200")
+    drv._connected = True
+    drv._device = MagicMock()
+
+    with patch.object(biolo.importlib, "import_module", side_effect=fake_import):
+        rows = drv.run_eis(
+            e_dc=0.0,
+            frequency_start=1.0,
+            frequency_stop=1000.0,
+        )
+
+    assert rows == [(10.0, complex(100.0, -50.0)), (100.0, complex(100.0, -5.0))]
+
+
+def test_run_ca_parses_time_and_current():
+    def fake_import(name):
+        if name == "easy_biologic":
+            return MagicMock()
+        if name == "easy_biologic.programs":
+            m = MagicMock()
+            fake_tech = MagicMock()
+            fake_tech.data = {
+                0: [
+                    {"time": 0.0, "I": 1e-6},
+                    {"time": 0.1, "I": 5e-7},
+                    {"time": 0.2, "I": 3e-7},
+                ]
+            }
+            m.CA.return_value = fake_tech
+            return m
+        raise ImportError(name)
+
+    drv = biolo.build(resource="10.0.0.1", model="SP-200")
+    drv._connected = True
+    drv._device = MagicMock()
+
+    with patch.object(biolo.importlib, "import_module", side_effect=fake_import):
+        rows = drv.run_ca(e_hold=0.5, duration_s=0.2, sample_interval_s=0.1)
+
+    assert rows == [(0.0, 1e-6), (0.1, 5e-7), (0.2, 3e-7)]
+
+
+def test_read_ocp_from_device_property():
+    drv = biolo.build(resource="10.0.0.1", model="SP-200")
+    drv._connected = True
+    fake_device = MagicMock()
+    fake_device.open_circuit_potential = 0.72
+    drv._device = fake_device
+    assert drv.read_ocp() == pytest.approx(0.72)
+
+
+def test_eis_and_ca_require_connection():
+    drv = biolo.build(resource="10.0.0.1", model="SP-200")
+    with pytest.raises(RuntimeError, match="not connected"):
+        drv.run_eis(e_dc=0, frequency_start=1, frequency_stop=10)
+    with pytest.raises(RuntimeError, match="not connected"):
+        drv.run_ca(e_hold=0, duration_s=1.0)

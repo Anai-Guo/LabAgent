@@ -19,14 +19,15 @@ classifier registry.
 - **Planning, classification, analysis, and memory layers work.** Safety
   validation works.
 - **Execution: partially real, partially simulated.** Real execution is
-  implemented for **12 measurement types**: `IV`, `RT`, `DELTA`, `HIGH_R`,
+  implemented for **16 measurement types**: `IV`, `RT`, `DELTA`, `HIGH_R`,
   `BREAKDOWN`, `SEEBECK`, `TUNNELING`, `PHOTO_IV`, `CV` (capacitance-voltage),
-  `TRANSFER` (FET gate sweep), `OUTPUT` (FET nested sweep), and
-  `CYCLIC_VOLTAMMETRY` (electrochemistry). Backed by four driver
-  backends (pymeasure, Zurich Instruments, BioLogic, in-tree VisaDriver).
-  When real hardware isn't reachable or the measurement type has no real
-  executor (HALL, MR, AHE, EIS, FMR, etc.), the flow falls back to a
-  physics simulator. CSV/PNG output clearly indicates which backend
+  `TRANSFER` (FET gate sweep), `OUTPUT` (FET nested sweep),
+  `CYCLIC_VOLTAMMETRY`, `EIS`, `CHRONOAMPEROMETRY`, `PHOTORESPONSE`
+  (time-resolved photocurrent), and `POTENTIOMETRY` (OCP). Backed by
+  four driver backends (pymeasure, Zurich Instruments, BioLogic, in-tree
+  VisaDriver). When real hardware isn't reachable or the measurement
+  type has no real executor (HALL, MR, AHE, FMR, UV_VIS, etc.), the
+  flow falls back to a physics simulator. CSV/PNG output clearly indicates which backend
   produced it — real runs say "real instrument measurement data" with
   the driver coverage map, simulated runs say "PHYSICS SIMULATION".
 - **Four driver backends:**
@@ -98,7 +99,7 @@ CLI subcommands:   15 (scan, classify, propose, literature, generate-skill,
                    analyze, procedures, chat, web, panel, export, campaign,
                    setup, serve, start)
 AI providers:      6 (Claude, GPT-4o, Gemini, Ollama, vLLM, DeepSeek) via litellm
-Tests:             266 passing
+Tests:             276 passing
 License:           MIT
 ```
 

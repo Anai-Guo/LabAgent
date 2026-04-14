@@ -154,6 +154,109 @@ class BioLogicDriver:
             points.append((float(e), float(i)))
         return points
 
+    def run_eis(
+        self,
+        e_dc: float,
+        frequency_start: float,
+        frequency_stop: float,
+        amplitude: float = 0.01,
+        points_per_decade: int = 10,
+        channels: tuple[int, ...] = (0,),
+    ) -> list[tuple[float, complex]]:
+        """Run an EIS scan and return [(frequency_hz, Z_complex), ...].
+
+        Delegates to ``easy_biologic.programs.PEIS`` (potentiostatic EIS).
+        """
+        self._require_connected()
+        try:
+            ebl = importlib.import_module("easy_biologic")
+            programs = importlib.import_module("easy_biologic.programs")
+        except ImportError as exc:
+            raise BioLogicUnavailableError("easy-biologic missing") from exc
+
+        _ = ebl
+        peis_cls = programs.PEIS  # type: ignore[attr-defined]
+        technique = peis_cls(
+            self._device,
+            params={
+                "voltage": float(e_dc),
+                "amplitude": float(amplitude),
+                "initial_frequency": float(frequency_start),
+                "final_frequency": float(frequency_stop),
+                "frequency_number": int(points_per_decade),
+            },
+            channels=list(channels),
+        )
+        technique.run()
+        data = technique.data[channels[0]]
+        out: list[tuple[float, complex]] = []
+        for rec in data:
+            if isinstance(rec, dict):
+                f = rec.get("freq")
+                zr = rec.get("Zmod_cos") if "Zmod_cos" in rec else rec.get("Re_Z")
+                zi = rec.get("Zmod_sin") if "Zmod_sin" in rec else rec.get("Im_Z")
+            else:
+                f = getattr(rec, "freq", None)
+                zr = getattr(rec, "Re_Z", None)
+                zi = getattr(rec, "Im_Z", None)
+            if f is None or zr is None or zi is None:
+                continue
+            out.append((float(f), complex(zr, zi)))
+        return out
+
+    def run_ca(
+        self,
+        e_hold: float,
+        duration_s: float,
+        sample_interval_s: float = 0.1,
+        channels: tuple[int, ...] = (0,),
+    ) -> list[tuple[float, float]]:
+        """Run chronoamperometry — hold ``e_hold`` for ``duration_s`` while
+        sampling current at ``sample_interval_s``. Returns [(t, I), ...]."""
+        self._require_connected()
+        try:
+            ebl = importlib.import_module("easy_biologic")
+            programs = importlib.import_module("easy_biologic.programs")
+        except ImportError as exc:
+            raise BioLogicUnavailableError("easy-biologic missing") from exc
+
+        _ = ebl
+        ca_cls = programs.CA  # type: ignore[attr-defined]
+        technique = ca_cls(
+            self._device,
+            params={
+                "voltage": float(e_hold),
+                "duration": float(duration_s),
+                "sample_interval": float(sample_interval_s),
+            },
+            channels=list(channels),
+        )
+        technique.run()
+        data = technique.data[channels[0]]
+        out: list[tuple[float, float]] = []
+        for rec in data:
+            if isinstance(rec, dict):
+                t = rec.get("time")
+                i = rec.get("I")
+            else:
+                t = getattr(rec, "time", None)
+                i = getattr(rec, "I", None)
+            if t is None or i is None:
+                continue
+            out.append((float(t), float(i)))
+        return out
+
+    def read_ocp(self) -> float:
+        """Single-shot open-circuit potential read."""
+        self._require_connected()
+        # Most BioLogic devices expose open_circuit_potential on the device
+        ocp = getattr(self._device, "open_circuit_potential", None)
+        if callable(ocp):
+            return float(ocp())
+        if ocp is not None:
+            return float(ocp)
+        raise NotImplementedError(f"{type(self._device).__name__} has no OCP readout")
+
     # ── internals ───────────────────────────────────────────────────────
 
     def _require_connected(self) -> None:
