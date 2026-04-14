@@ -260,6 +260,55 @@ class PyMeasureDriver:
             return float(inst.read())
         raise NotImplementedError(f"{type(inst).__name__} nanovolt readout unknown")
 
+    # ── lcr_meter (CV, capacitance-frequency) ───────────────────────────
+
+    def configure_lcr(self, ac_volts: float = 0.05, frequency_hz: float = 1e6) -> None:
+        """Configure an LCR meter for capacitance measurement."""
+        self._require_role("lcr_meter")
+        inst = self._pm_instrument
+        # pymeasure Agilent E4980 exposes these as properties
+        if hasattr(inst, "mode"):
+            inst.mode = "CPD"  # parallel capacitance + dissipation
+        if hasattr(inst, "ac_voltage"):
+            inst.ac_voltage = ac_volts
+        if hasattr(inst, "frequency"):
+            inst.frequency = frequency_hz
+
+    def set_dc_bias(self, volts: float) -> None:
+        self._require_role("lcr_meter")
+        inst = self._pm_instrument
+        if hasattr(inst, "bias_voltage"):
+            inst.bias_voltage = volts
+        elif hasattr(inst, "dc_bias"):
+            inst.dc_bias = volts
+        else:
+            raise NotImplementedError(f"{type(inst).__name__} has no DC bias setter we know")
+
+    def enable_bias(self) -> None:
+        self._require_role("lcr_meter")
+        inst = self._pm_instrument
+        if hasattr(inst, "bias_enabled"):
+            inst.bias_enabled = True
+
+    def disable_bias(self) -> None:
+        if not self._connected:
+            return
+        inst = self._pm_instrument
+        if hasattr(inst, "bias_enabled"):
+            inst.bias_enabled = False
+
+    def measure_capacitance(self) -> float:
+        """Return the primary parameter (C). Dissipation is dropped here."""
+        self._require_role("lcr_meter")
+        inst = self._pm_instrument
+        if hasattr(inst, "impedance"):
+            # AgilentE4980.impedance returns (primary, secondary)
+            primary, _ = inst.impedance
+            return float(primary)
+        if hasattr(inst, "capacitance"):
+            return float(inst.capacitance)
+        raise NotImplementedError(f"{type(inst).__name__} capacitance readout unknown")
+
     # ── internals ───────────────────────────────────────────────────────
 
     def _require_role(self, *allowed: str) -> None:

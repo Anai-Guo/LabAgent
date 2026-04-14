@@ -93,13 +93,22 @@ class DriverRegistry:
                 role=settings.get("role", role),
                 device_serial=settings.get("device_serial", ""),
             )
+        elif driver_name == "__biologic__":
+            from lab_harness.drivers import biologic_adapter as biolo
+
+            instance = biolo.build(
+                resource=resource,
+                model=settings.get("model", ""),
+                vendor=settings.get("vendor", ""),
+                role=settings.get("role", role),
+            )
         elif driver_name in DRIVER_MAP:
             driver_cls = _import_driver(DRIVER_MAP[driver_name])
             instance = driver_cls(resource=resource, **settings)
         else:
             raise ValueError(
                 f"Unknown driver '{driver_name}'. Available: "
-                f"{list(DRIVER_MAP.keys()) + ['__pymeasure__', '__zurich__']}"
+                f"{list(DRIVER_MAP.keys()) + ['__pymeasure__', '__zurich__', '__biologic__']}"
             )
 
         self._instances[role] = instance
@@ -165,6 +174,7 @@ class DriverRegistry:
             ``{role: backend_name}`` describing which driver was picked
             (``"pymeasure"``, ``"builtin:<name>"``, or ``"none"``).
         """
+        from lab_harness.drivers import biologic_adapter as biolo
         from lab_harness.drivers import pymeasure_adapter as pm
         from lab_harness.drivers import zurich_adapter as zi
 
@@ -176,7 +186,18 @@ class DriverRegistry:
             model = _attr(inst, "model", default="")
             vendor = _attr(inst, "vendor", default="")
 
-            # 1. Zurich Instruments adapter (MFLI/HF2LI/SHFQA have no
+            # 1. BioLogic potentiostat (electrochemistry — no pymeasure
+            #    coverage).
+            if biolo.is_supported(model):
+                configs[role] = {
+                    "driver": "__biologic__",
+                    "resource": resource,
+                    "settings": {"model": model, "vendor": vendor, "role": role},
+                }
+                coverage[role] = "biologic"
+                continue
+
+            # 2. Zurich Instruments adapter (MFLI/HF2LI/SHFQA have no
             #    pymeasure support; this wrapper is the only path).
             if zi.is_supported(model):
                 configs[role] = {
@@ -187,7 +208,7 @@ class DriverRegistry:
                 coverage[role] = "zurich"
                 continue
 
-            # 2. pymeasure
+            # 3. pymeasure
             if prefer_pymeasure and pm.is_supported(model):
                 configs[role] = {
                     "driver": "__pymeasure__",

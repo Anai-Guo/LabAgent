@@ -455,6 +455,214 @@ def _execute_photo_iv(
     return points
 
 
+# ──────────────────────────────────────────────────────────────────────────
+# CV: DC bias sweep with small AC excitation on an LCR meter
+# ──────────────────────────────────────────────────────────────────────────
+
+
+def _execute_cv(
+    plan: Any,
+    registry: DriverRegistry,
+    progress: Callable[[int, int, dict], None] | None,
+) -> list[dict]:
+    lcr = _need(registry, "lcr_meter")
+
+    lo, hi = -plan.max_voltage_v, plan.max_voltage_v
+    bias_values = [max(lo, min(hi, v)) for v in _sweep_values(plan.x_axis)]
+
+    x_key = f"{plan.x_axis.label} ({plan.x_axis.unit})"
+    y_keys = [f"{c.label} ({c.unit})" for c in plan.y_channels] or ["Capacitance (F)"]
+
+    # Test signal: small AC + user-chosen frequency. 0.05 V RMS at 1 MHz is
+    # a reasonable default for thin-film C-V work.
+    ac_v = 0.05
+    test_freq = 1e6
+
+    points: list[dict] = []
+    try:
+        with lcr:
+            lcr.configure_lcr(ac_volts=ac_v, frequency_hz=test_freq)
+            lcr.enable_bias()
+            for i, v in enumerate(bias_values):
+                lcr.set_dc_bias(v)
+                time.sleep(plan.settling_time_s)
+                c = lcr.measure_capacitance()
+                row = {x_key: v}
+                for k in y_keys:
+                    row[k] = c
+                points.append(row)
+                if progress is not None:
+                    progress(i, len(bias_values), row)
+    finally:
+        try:
+            lcr.disable_bias()
+        except Exception as exc:  # noqa: BLE001
+            logger.warning("Could not disable LCR bias cleanly: %s", exc)
+
+    return points
+
+
+# ──────────────────────────────────────────────────────────────────────────
+# FET transfer curve: sweep V_gs, measure I_d at each V_gs (fixed V_ds)
+# ──────────────────────────────────────────────────────────────────────────
+
+
+def _execute_transfer(
+    plan: Any,
+    registry: DriverRegistry,
+    progress: Callable[[int, int, dict], None] | None,
+) -> list[dict]:
+    gate = _need(registry, "source_meter_gate")
+    drain = _need(registry, "source_meter_drain")
+
+    # Fixed drain voltage: take from plan metadata or default 0.1 V.
+    v_ds = getattr(plan, "v_ds_fixed", 0.1)
+
+    lo, hi = -plan.max_voltage_v, plan.max_voltage_v
+    v_gs_sweep = [max(lo, min(hi, v)) for v in _sweep_values(plan.x_axis)]
+
+    x_key = f"{plan.x_axis.label} ({plan.x_axis.unit})"
+    y_keys = [f"{c.label} ({c.unit})" for c in plan.y_channels] or ["I_d (A)"]
+
+    points: list[dict] = []
+    try:
+        with gate, drain:
+            drain.configure_source_voltage(compliance_i=plan.max_current_a)
+            drain.set_voltage(v_ds)
+            drain.enable_output()
+            gate.configure_source_voltage(compliance_i=1e-9)  # tiny gate leakage limit
+            gate.enable_output()
+
+            for i, vg in enumerate(v_gs_sweep):
+                gate.set_voltage(vg)
+                time.sleep(plan.settling_time_s)
+                i_d = drain.measure_current()
+                row = {x_key: vg}
+                for k in y_keys:
+                    row[k] = i_d
+                points.append(row)
+                if progress is not None:
+                    progress(i, len(v_gs_sweep), row)
+    finally:
+        for d in (drain, gate):
+            try:
+                d.disable_output()
+            except Exception as exc:  # noqa: BLE001
+                logger.warning("Could not disable FET source cleanly: %s", exc)
+
+    return points
+
+
+# ──────────────────────────────────────────────────────────────────────────
+# FET output curve: outer sweep V_gs, inner sweep V_ds → I_d
+# ──────────────────────────────────────────────────────────────────────────
+
+
+def _execute_output(
+    plan: Any,
+    registry: DriverRegistry,
+    progress: Callable[[int, int, dict], None] | None,
+) -> list[dict]:
+    gate = _need(registry, "source_meter_gate")
+    drain = _need(registry, "source_meter_drain")
+
+    # Nested: outer = gate (plan.outer_sweep); inner = drain (plan.x_axis).
+    # Fall back to a single gate step when outer_sweep is None.
+    if plan.outer_sweep is None:
+        gate_values = [getattr(plan, "v_gs_fixed", 0.0)]
+        gate_label = "V_gs"
+        gate_unit = "V"
+    else:
+        gate_values = _sweep_values(plan.outer_sweep)
+        gate_label = plan.outer_sweep.label
+        gate_unit = plan.outer_sweep.unit
+
+    drain_values = _sweep_values(plan.x_axis)
+
+    drain_x_key = f"{plan.x_axis.label} ({plan.x_axis.unit})"
+    gate_key = f"{gate_label} ({gate_unit})"
+    y_keys = [f"{c.label} ({c.unit})" for c in plan.y_channels] or ["I_d (A)"]
+
+    points: list[dict] = []
+    total = len(gate_values) * len(drain_values)
+    idx = 0
+    try:
+        with gate, drain:
+            drain.configure_source_voltage(compliance_i=plan.max_current_a)
+            drain.enable_output()
+            gate.configure_source_voltage(compliance_i=1e-9)
+            gate.enable_output()
+
+            for vg in gate_values:
+                gate.set_voltage(vg)
+                time.sleep(plan.settling_time_s)
+                for vd in drain_values:
+                    drain.set_voltage(vd)
+                    time.sleep(plan.settling_time_s)
+                    i_d = drain.measure_current()
+                    row = {gate_key: vg, drain_x_key: vd}
+                    for k in y_keys:
+                        row[k] = i_d
+                    points.append(row)
+                    if progress is not None:
+                        progress(idx, total, row)
+                    idx += 1
+    finally:
+        for d in (drain, gate):
+            try:
+                d.disable_output()
+            except Exception as exc:  # noqa: BLE001
+                logger.warning("Could not disable FET source cleanly: %s", exc)
+
+    return points
+
+
+# ──────────────────────────────────────────────────────────────────────────
+# CYCLIC_VOLTAMMETRY: triangle voltage sweep on a potentiostat
+# ──────────────────────────────────────────────────────────────────────────
+
+
+def _execute_cyclic_voltammetry(
+    plan: Any,
+    registry: DriverRegistry,
+    progress: Callable[[int, int, dict], None] | None,
+) -> list[dict]:
+    """CV via any `potentiostat` driver that exposes run_cv()."""
+    pot = _need(registry, "potentiostat")
+
+    # Build the CV parameter dict from the plan's sweep axis.
+    # x_axis = potential sweep; we extract the triangle endpoints.
+    e_start = plan.x_axis.start
+    e_vertex = plan.x_axis.stop
+    e_step = plan.x_axis.step
+    scan_rate = getattr(plan, "scan_rate_mv_per_s", 100.0)
+    n_cycles = getattr(plan, "n_cycles", 1)
+
+    x_key = f"{plan.x_axis.label} ({plan.x_axis.unit})"
+    y_keys = [f"{c.label} ({c.unit})" for c in plan.y_channels] or ["Current (A)"]
+
+    with pot:
+        raw = pot.run_cv(
+            e_start=e_start,
+            e_vertex=e_vertex,
+            e_step=e_step,
+            scan_rate_mv_per_s=scan_rate,
+            n_cycles=n_cycles,
+        )
+
+    # ``run_cv`` returns [(E, I), ...]. Reshape into our dict layout.
+    points: list[dict] = []
+    for i, (e, current) in enumerate(raw):
+        row = {x_key: e}
+        for k in y_keys:
+            row[k] = current
+        points.append(row)
+        if progress is not None:
+            progress(i, len(raw), row)
+
+    return points
+
+
 EXECUTORS: dict[str, Callable[[Any, DriverRegistry, Any], list[dict]]] = {
     "IV": _execute_iv,
     "RT": _execute_rt,
@@ -464,6 +672,10 @@ EXECUTORS: dict[str, Callable[[Any, DriverRegistry, Any], list[dict]]] = {
     "SEEBECK": _execute_seebeck,
     "TUNNELING": _execute_tunneling,
     "PHOTO_IV": _execute_photo_iv,
+    "CV": _execute_cv,
+    "TRANSFER": _execute_transfer,
+    "OUTPUT": _execute_output,
+    "CYCLIC_VOLTAMMETRY": _execute_cyclic_voltammetry,
 }
 
 

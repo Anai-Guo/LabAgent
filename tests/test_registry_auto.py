@@ -99,3 +99,26 @@ def test_mixed_multi_backend_coverage():
     assert coverage["temperature_controller"] in ("pymeasure", "builtin:lakeshore335")
     assert coverage["lockin_amplifier"] == "zurich"
     assert coverage["unknown_role"] == "none"
+
+
+def test_biologic_sp200_routes_to_biologic_backend():
+    """BioLogic SP-200 has no pymeasure driver → biologic_adapter path."""
+    role_assignments = {"potentiostat": _rec("SP-200", vendor="BioLogic")}
+    reg, coverage = DriverRegistry.from_role_assignments(role_assignments)
+    assert coverage == {"potentiostat": "biologic"}
+    assert reg.configs["potentiostat"]["driver"] == "__biologic__"
+
+
+def test_four_backend_lab_coverage():
+    """A wet-chem + optics + cryo lab hits all four backends in one call."""
+    role_assignments = {
+        "source_meter": _rec("MODEL 2400", vendor="Keithley"),  # pymeasure
+        "temperature_controller": _rec("MODEL 335", vendor="LakeShore"),  # pymeasure or builtin
+        "lockin_amplifier": _rec("MFLI", vendor="Zurich"),  # zurich
+        "potentiostat": _rec("SP-200", vendor="BioLogic"),  # biologic
+    }
+    reg, coverage = DriverRegistry.from_role_assignments(role_assignments)
+    backends = set(coverage.values())
+    assert "biologic" in backends
+    assert "zurich" in backends
+    assert "pymeasure" in backends or "builtin:keithley2400" in backends
