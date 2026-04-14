@@ -180,6 +180,22 @@ class LabHarnessApp(App):
         input_widget.value = ""
 
         log = self.query_one("#conversation", ConversationLog)
+
+        # Handle model selection mode
+        if getattr(self, "_selecting_model", False):
+            self._selecting_model = False
+            for num, provider, model, desc in self._model_presets:
+                if user_text == num:
+                    self.settings = Settings.load()
+                    from lab_harness.config import ModelConfig
+
+                    self.context.model_config = ModelConfig(provider=provider, model=model)
+                    log.write(f"[#22c55e]Switched to {model}[/]\n")
+                    self._update_status()
+                    return
+            log.write("[dim]Selection cancelled[/]\n")
+            return
+
         log.write(f"\n[bold #4cc2ff]> {user_text}[/]\n")
 
         self.session.add_user_message(user_text)
@@ -239,8 +255,27 @@ class LabHarnessApp(App):
             self.session.add_assistant_message(assistant_text)
 
     def action_select_model(self) -> None:
+        """Show model presets and let user switch."""
         log = self.query_one("#conversation", ConversationLog)
-        log.write("\n[bold #c8a96e]Model selection: Edit configs/models.yaml and restart[/]\n")
+        log.write("\n[bold #c8a96e]═══ Model Selection ═══[/]\n")
+
+        presets = [
+            ("1", "anthropic", "claude-sonnet-4-20250514", "Best quality (cloud)"),
+            ("2", "openai", "gpt-4o", "Fast cloud model"),
+            ("3", "openai", "gpt-4o-mini", "Best value (cloud)"),
+            ("4", "ollama", "qwen3:32b", "Privacy-first (local)"),
+            ("5", "ollama", "llama3.3:70b", "High-end local (48GB+)"),
+            ("6", "deepseek", "deepseek/deepseek-chat", "DeepSeek"),
+        ]
+
+        for num, provider, model, desc in presets:
+            log.write(f"  [bold cyan]{num}[/] [{provider}] [bold]{model}[/] — [dim]{desc}[/]")
+
+        log.write("\n[dim]Type a number to switch, or press Enter to cancel[/]\n")
+
+        # Store presets for use when input is received
+        self._model_presets = presets
+        self._selecting_model = True
 
     def action_scan_instruments(self) -> None:
         self.process_query("scan my instruments")

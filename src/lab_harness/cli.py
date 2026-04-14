@@ -175,6 +175,180 @@ def cmd_panel(args: argparse.Namespace, settings: Settings) -> None:
     run_panel(model=args.model)
 
 
+def cmd_setup(args: argparse.Namespace, settings: Settings) -> None:
+    """Interactive setup wizard for first-time configuration."""
+    from pathlib import Path
+
+    print("╔══════════════════════════════════════╗")
+    print("║   LabAgent — Setup Wizard            ║")
+    print("╚══════════════════════════════════════╝")
+    print()
+
+    # Step 1: Choose provider
+    print("Step 1: Choose your AI provider\n")
+    providers = [
+        ("1", "anthropic", "Claude (recommended, best for science)"),
+        ("2", "openai", "OpenAI GPT-4o"),
+        ("3", "ollama", "Ollama (local, free, private)"),
+        ("4", "deepseek", "DeepSeek"),
+        ("5", "skip", "Skip for now"),
+    ]
+    for num, _, desc in providers:
+        print(f"  {num}. {desc}")
+
+    choice = input("\nSelect [1-5]: ").strip()
+    provider = "anthropic"
+    model = "claude-sonnet-4-20250514"
+    api_key = ""
+    base_url = ""
+
+    for num, prov, _ in providers:
+        if choice == num:
+            provider = prov
+            break
+
+    if provider == "skip":
+        print("\nSetup skipped. You can configure later in configs/models.yaml")
+        return
+
+    # Step 2: Model selection
+    if provider == "anthropic":
+        model = "claude-sonnet-4-20250514"
+    elif provider == "openai":
+        model = "gpt-4o"
+    elif provider == "ollama":
+        model = input("Ollama model name [qwen3:32b]: ").strip() or "qwen3:32b"
+        base_url = input("Ollama URL [http://localhost:11434]: ").strip() or "http://localhost:11434"
+    elif provider == "deepseek":
+        model = "deepseek/deepseek-chat"
+
+    # Step 3: API key (for cloud providers)
+    if provider in ("anthropic", "openai", "deepseek"):
+        api_key = input(f"\n{provider.upper()} API key (or press Enter to skip): ").strip()
+
+    # Step 4: Write .env file
+    env_path = Path(".env")
+    lines = []
+    lines.append(f"LABHARNESS_PROVIDER={provider}")
+    lines.append(f"LABHARNESS_MODEL={model}")
+    if api_key:
+        lines.append(f"LABHARNESS_API_KEY={api_key}")
+    if base_url:
+        lines.append(f"LABHARNESS_BASE_URL={base_url}")
+
+    env_path.write_text("\n".join(lines) + "\n")
+    print(f"\nConfiguration saved to {env_path}")
+
+    # Step 5: Test connection
+    print("\nTesting connection...")
+    try:
+        from lab_harness.config import Settings as S
+
+        s = S.load()
+        from lab_harness.llm.router import LLMRouter
+
+        router = LLMRouter(config=s.model)
+        result = router.complete([{"role": "user", "content": "Say 'hello' in one word."}])
+        reply = result["choices"][0]["message"]["content"]
+        print(f"Success! Model responded: {reply}")
+    except Exception as e:
+        print(f"Connection test failed: {e}")
+        print("You can fix this later by editing .env or configs/models.yaml")
+
+    print("\nSetup complete! Try: labharness scan")
+
+
+def cmd_export(args: argparse.Namespace, settings: Settings) -> None:
+    """Export measurement data to CSV, JSON, or HDF5."""
+    import csv as csv_mod
+
+    from lab_harness.export.exporter import DataExporter, ExportConfig
+
+    data_path = Path(args.data_file)
+    if not data_path.exists():
+        print(f"Error: data file not found: {data_path}")
+        sys.exit(1)
+
+    # Read source CSV
+    with open(data_path, newline="", encoding="utf-8") as f:
+        # Skip comment lines
+        lines = [line for line in f if not line.startswith("#")]
+
+    if not lines:
+        print("Error: data file is empty")
+        sys.exit(1)
+
+    import io
+
+    reader = csv_mod.DictReader(io.StringIO("".join(lines)))
+    data = list(reader)
+    if not data:
+        print("Error: no data rows found")
+        sys.exit(1)
+
+    # Convert numeric strings to floats where possible
+    for row in data:
+        for key, val in row.items():
+            try:
+                row[key] = float(val)
+            except (ValueError, TypeError):
+                pass
+
+    fmt = args.format or "csv"
+    name = args.name or data_path.stem
+    config = ExportConfig(format=fmt, timestamp_prefix=True)
+    exporter = DataExporter(config)
+    path = exporter.export(data, name=name, metadata={"source": str(data_path)}, fmt=fmt)
+    print(f"Exported {len(data)} rows to {path}")
+
+
+def cmd_campaign(args: argparse.Namespace, settings: Settings) -> None:
+    """Create or preview a batch campaign."""
+    from lab_harness.campaign.batch import Campaign, preview_campaign
+
+    # Parse --sweep arguments: "param=val1,val2,val3"
+    sweep_params: dict[str, list] = {}
+    for s in args.sweep or []:
+        if "=" not in s:
+            print(f"Error: --sweep must be 'param=val1,val2,...', got: {s}")
+            sys.exit(1)
+        key, vals_str = s.split("=", 1)
+        vals = []
+        for v in vals_str.split(","):
+            v = v.strip()
+            try:
+                vals.append(float(v))
+            except ValueError:
+                vals.append(v)
+        sweep_params[key.strip()] = vals
+
+    if not sweep_params:
+        print("Error: at least one --sweep parameter is required")
+        sys.exit(1)
+
+    # Parse --fixed arguments: "param=value"
+    fixed_params: dict[str, object] = {}
+    for f in args.fixed or []:
+        if "=" not in f:
+            print(f"Error: --fixed must be 'param=value', got: {f}")
+            sys.exit(1)
+        key, val = f.split("=", 1)
+        try:
+            fixed_params[key.strip()] = float(val.strip())
+        except ValueError:
+            fixed_params[key.strip()] = val.strip()
+
+    if args.preview:
+        print(preview_campaign(args.measurement_type, sweep_params, fixed_params))
+        return
+
+    campaign = Campaign.create(args.measurement_type, sweep_params, fixed_params)
+    save_path = Path(f"./data/campaigns/{campaign.campaign_id}.json")
+    campaign.save(save_path)
+    print(f"Campaign {campaign.campaign_id}: {campaign.total_points} points")
+    print(f"Saved to {save_path}")
+
+
 def cmd_serve(args: argparse.Namespace, settings: Settings) -> None:
     """Start the MCP server."""
     from lab_harness.server import run_server
@@ -242,6 +416,39 @@ def main() -> None:
     p_panel = sub.add_parser("panel", help="Launch the terminal panel (TUI)")
     p_panel.add_argument("--model", help="Override model name (e.g. claude-sonnet-4-20250514)")
 
+    # export
+    p_export = sub.add_parser("export", help="Export measurement data")
+    p_export.add_argument("data_file", help="Path to measurement data CSV file")
+    p_export.add_argument(
+        "--format",
+        choices=["csv", "json", "hdf5"],
+        default="csv",
+        help="Output format (default: csv)",
+    )
+    p_export.add_argument("--name", help="Base name for output file (default: input stem)")
+
+    # campaign
+    p_campaign = sub.add_parser("campaign", help="Create a batch measurement campaign")
+    p_campaign.add_argument("measurement_type", help="Measurement type (AHE, MR, IV, RT)")
+    p_campaign.add_argument(
+        "--sweep",
+        action="append",
+        help="Sweep parameter: 'param=val1,val2,...' (repeatable)",
+    )
+    p_campaign.add_argument(
+        "--fixed",
+        action="append",
+        help="Fixed parameter: 'param=value' (repeatable)",
+    )
+    p_campaign.add_argument(
+        "--preview",
+        action="store_true",
+        help="Preview campaign without creating it",
+    )
+
+    # setup
+    sub.add_parser("setup", help="Interactive setup wizard")
+
     # serve
     sub.add_parser("serve", help="Start MCP server")
 
@@ -258,10 +465,13 @@ def main() -> None:
         "literature": cmd_literature,
         "generate-skill": cmd_generate_skill,
         "analyze": cmd_analyze,
+        "export": cmd_export,
+        "campaign": cmd_campaign,
         "procedures": cmd_procedures,
         "chat": cmd_chat,
         "panel": cmd_panel,
         "web": cmd_web,
+        "setup": cmd_setup,
         "serve": cmd_serve,
     }
     cmd_map[args.command](args, settings)

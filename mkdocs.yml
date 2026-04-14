@@ -1,0 +1,59 @@
+site_name: LabAgent
+site_description: Your AI-powered lab assistant
+site_url: https://anai-guo.github.io/LabAgent/
+repo_url: https://github.com/Anai-Guo/LabAgent
+repo_name: Anai-Guo/LabAgent
+
+theme:
+  name: material
+  palette:
+    - scheme: slate
+      primary: deep purple
+      accent: amber
+      toggle:
+        icon: material/brightness-7
+        name: Light mode
+    - scheme: default
+      primary: deep purple
+      accent: amber
+      toggle:
+        icon: material/brightness-4
+        name: Dark mode
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.top
+    - search.suggest
+    - content.code.copy
+
+nav:
+  - Home: index.md
+  - Getting Started:
+    - Installation: getting-started/installation.md
+    - Quick Start: getting-started/quickstart.md
+    - Configuration: getting-started/configuration.md
+  - Features:
+    - Instrument Discovery: features/discovery.md
+    - Measurement Planning: features/planning.md
+    - AI Analysis: features/analysis.md
+    - Safety System: features/safety.md
+    - Web GUI: features/web-gui.md
+    - Terminal Panel: features/terminal.md
+  - Templates:
+    - Overview: templates/overview.md
+    - Template Catalog: templates/catalog.md
+  - API Reference:
+    - CLI Commands: api/cli.md
+    - MCP Tools: api/mcp.md
+  - Contributing: contributing.md
+
+markdown_extensions:
+  - pymdownx.highlight
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+  - admonition
+  - tables
+
+plugins:
+  - search
