@@ -1,8 +1,18 @@
 # Lab Harness - Common Instrument Database
 # Maps instrument models to their capabilities and typical roles.
+#
+# Coverage spans electrical, optical, electrochemical, biological, thermal,
+# and environmental instruments across major manufacturers. When you meet an
+# instrument not listed here, ask your AI to run the `manual_lookup` harness
+# tool FIRST — never guess SCPI commands.
+#
+# Each entry lists: model variants, vendor, which measurement roles it fills,
+# a short capability vocabulary, typical absolute limits (when known), and
+# links to the programming manual / open-source driver.
 
 instruments:
-  # --- Keithley Source Meters ---
+  # ───────────────────────── Source / Measure ─────────────────────────
+
   keithley_2400:
     models: ["2400", "2410", "2420", "2440"]
     vendor: "keithley"
@@ -11,23 +21,23 @@ instruments:
     typical_limits:
       max_current_a: 1.05
       max_voltage_v: 210.0
+    manual: "https://www.tek.com/en/manual/2400-series-user-s-manual"
+    driver: "pymeasure.instruments.keithley.Keithley2400"
 
-  # --- Keithley Digital Multimeters ---
   keithley_2000:
     models: ["2000", "2001", "2002"]
     vendor: "keithley"
     roles: ["dmm"]
     capabilities: ["measure_v", "measure_r", "measure_i"]
+    manual: "https://www.tek.com/en/manual/2000-series-user-s-manual"
 
-  # --- Keithley Nanovoltmeters ---
   keithley_2182:
     models: ["2182", "2182A"]
     vendor: "keithley"
     roles: ["nanovoltmeter"]
     capabilities: ["measure_v_low_noise"]
-    notes: "Often paired with 6221 for delta mode measurements"
+    notes: "Often paired with 6221 for delta-mode low-resistance measurements"
 
-  # --- Keithley Current Sources ---
   keithley_6221:
     models: ["6221"]
     vendor: "keithley"
@@ -36,28 +46,161 @@ instruments:
     typical_limits:
       max_current_a: 0.105
 
-  # --- Keithley Electrometers ---
   keithley_6517:
     models: ["6517", "6517A", "6517B"]
     vendor: "keithley"
     roles: ["electrometer"]
     capabilities: ["measure_r_high", "measure_i_low", "source_v"]
 
-  # --- Lakeshore Gaussmeters ---
-  lakeshore_425:
-    models: ["425", "455", "475"]
-    vendor: "lakeshore"
-    roles: ["gaussmeter"]
-    capabilities: ["measure_field"]
+  # ───────────────────────── DC Power Supplies ────────────────────────
 
-  # --- Lakeshore Temperature Controllers ---
-  lakeshore_335:
-    models: ["335", "336", "340", "350"]
-    vendor: "lakeshore"
-    roles: ["temperature_controller"]
-    capabilities: ["measure_temp", "control_temp", "control_heater"]
+  keysight_e36313a:
+    models: ["E36313A", "E36312A", "E36311A"]
+    vendor: "keysight"
+    roles: ["power_supply_dc"]
+    capabilities: ["source_v", "source_i", "programmable_ramp", "multi_channel"]
+    typical_limits:
+      max_voltage_v: 30.0
+      max_current_a: 10.0
+    manual: "https://www.keysight.com/us/en/assets/9018-04588/user-manuals/9018-04588.pdf"
 
-  # --- Keysight LCR Meters ---
+  rigol_dp832a:
+    models: ["DP832A", "DP832", "DP831A"]
+    vendor: "rigol"
+    roles: ["power_supply_dc"]
+    capabilities: ["source_v", "source_i", "multi_channel"]
+    typical_limits:
+      max_voltage_v: 30.0
+      max_current_a: 3.0
+
+  # ─────────────────────────── Oscilloscopes ──────────────────────────
+
+  tektronix_tds3054c:
+    models: ["TDS3054C", "TDS3052C", "TDS3014C"]
+    vendor: "tektronix"
+    roles: ["oscilloscope"]
+    capabilities: ["capture_waveform", "measure_rise_time", "measure_frequency"]
+    manual: "https://www.tek.com/en/manual/tds3000-series-programmer-manual"
+
+  tektronix_mso44:
+    models: ["MSO44", "MSO46", "MSO58"]
+    vendor: "tektronix"
+    roles: ["oscilloscope"]
+    capabilities: ["capture_waveform", "mixed_signal", "bus_decode"]
+
+  keysight_dsox1204g:
+    models: ["DSOX1204G", "DSOX1202G"]
+    vendor: "keysight"
+    roles: ["oscilloscope"]
+    capabilities: ["capture_waveform", "measure_rise_time"]
+    manual: "https://www.keysight.com/us/en/assets/9018-07252/programming-guides/9018-07252.pdf"
+
+  keysight_msox3054t:
+    models: ["MSOX3054T", "MSOX3034T", "MSOX3024T"]
+    vendor: "keysight"
+    roles: ["oscilloscope"]
+    capabilities: ["capture_waveform", "mixed_signal", "waveform_math"]
+
+  rigol_ds1054z:
+    models: ["DS1054Z", "DS1104Z", "DS1074Z"]
+    vendor: "rigol"
+    roles: ["oscilloscope"]
+    capabilities: ["capture_waveform"]
+    notes: "Budget-friendly; popular for teaching labs"
+
+  rigol_mso5354:
+    models: ["MSO5354", "MSO5204", "MSO5104"]
+    vendor: "rigol"
+    roles: ["oscilloscope"]
+    capabilities: ["capture_waveform", "mixed_signal"]
+
+  # ──────────────────────── Function Generators ───────────────────────
+
+  keysight_33622a:
+    models: ["33622A", "33612A", "33500B", "33522B"]
+    vendor: "keysight"
+    roles: ["function_generator"]
+    capabilities: ["awg", "arbitrary_waveform", "modulation"]
+    typical_limits:
+      max_frequency_hz: 120e6
+      max_amplitude_vpp: 20.0
+
+  tektronix_afg1062:
+    models: ["AFG1062", "AFG1022"]
+    vendor: "tektronix"
+    roles: ["function_generator"]
+    capabilities: ["awg", "arbitrary_waveform"]
+
+  tektronix_afg3102:
+    models: ["AFG3102", "AFG3252", "AFG3152"]
+    vendor: "tektronix"
+    roles: ["function_generator"]
+    capabilities: ["awg", "arbitrary_waveform", "modulation"]
+
+  rigol_dg1032z:
+    models: ["DG1032Z", "DG1022Z"]
+    vendor: "rigol"
+    roles: ["function_generator"]
+    capabilities: ["awg", "arbitrary_waveform"]
+
+  # ───────────────────────── Lock-in Amplifiers ───────────────────────
+
+  srs_sr830:
+    models: ["SR830", "SR810"]
+    vendor: "srs"
+    roles: ["lockin_amplifier"]
+    capabilities: ["phase_sensitive_detection", "lock_in"]
+    notes: "Classic lock-in; widely used for AC transport, small-signal detection"
+    manual: "https://www.thinksrs.com/downloads/pdfs/manuals/SR830m.pdf"
+
+  srs_sr860:
+    models: ["SR860", "SR865A"]
+    vendor: "srs"
+    roles: ["lockin_amplifier"]
+    capabilities: ["phase_sensitive_detection", "lock_in", "frequency_response"]
+
+  zurich_mfli:
+    models: ["MFLI", "MFLI-500K", "MFLI-5M"]
+    vendor: "zurich_instruments"
+    roles: ["lockin_amplifier"]
+    capabilities: ["phase_sensitive_detection", "demodulation", "frequency_response"]
+    driver: "zhinst-toolkit"
+    manual: "https://docs.zhinst.com/"
+
+  zurich_hf2li:
+    models: ["HF2LI"]
+    vendor: "zurich_instruments"
+    roles: ["lockin_amplifier"]
+    capabilities: ["phase_sensitive_detection", "demodulation", "dual_harmonic"]
+
+  # ───────────────────── Spectrum / Network Analyzers ─────────────────
+
+  keysight_n9320b:
+    models: ["N9320B", "N9000B", "N9010B"]
+    vendor: "keysight"
+    roles: ["spectrum_analyzer"]
+    capabilities: ["rf_spectrum", "measure_power", "emc_pre_compliance"]
+
+  rs_fsv:
+    models: ["FSV", "FSV4", "FSV7"]
+    vendor: "rohde_schwarz"
+    roles: ["spectrum_analyzer"]
+    capabilities: ["rf_spectrum", "measure_power", "signal_analysis"]
+
+  keysight_e5071c:
+    models: ["E5071C", "E5063A"]
+    vendor: "keysight"
+    roles: ["vna"]
+    capabilities: ["measure_sparam", "network_analysis", "time_domain"]
+
+  rs_zna:
+    models: ["ZNA", "ZNB"]
+    vendor: "rohde_schwarz"
+    roles: ["vna"]
+    capabilities: ["measure_sparam", "network_analysis"]
+
+  # ───────────────────────── LCR / Impedance ──────────────────────────
+
   keysight_e4980:
     models: ["E4980", "E4980A", "E4980AL"]
     vendor: "keysight"
@@ -65,10 +208,196 @@ instruments:
     capabilities: ["measure_c", "measure_z", "measure_r"]
     frequency_range: "20 Hz - 2 MHz"
 
-  # --- NI DAQ ---
+  # ─────────────────── Lake Shore (cryo / magnetics) ──────────────────
+
+  lakeshore_425:
+    models: ["425", "455", "475"]
+    vendor: "lakeshore"
+    roles: ["gaussmeter"]
+    capabilities: ["measure_field"]
+
+  lakeshore_335:
+    models: ["335", "336", "340", "350"]
+    vendor: "lakeshore"
+    roles: ["temperature_controller"]
+    capabilities: ["measure_temp", "control_temp", "control_heater"]
+
+  oxford_mercury_itc:
+    models: ["MERCURY ITC"]
+    vendor: "oxford_instruments"
+    roles: ["temp_controller_cryo"]
+    capabilities: ["cryogenic_temp_control", "heater_output", "multi_channel"]
+    notes: "Cryostat temperature controller; SCPI over TCP and GPIB"
+
+  # ───────────────────────── Optics / Photonics ───────────────────────
+
+  thorlabs_pm100d:
+    models: ["PM100D", "PM400", "PM100USB"]
+    vendor: "thorlabs"
+    roles: ["optical_power_meter"]
+    capabilities: ["measure_optical_power", "wavelength_correction"]
+    notes: "USB-TMC SCPI; works with S120/S130/S140 photodiode heads"
+    manual: "https://www.thorlabs.com/drawings/e7aed74fde84d4b0-PM100D-Manual.pdf"
+
+  newport_1830c:
+    models: ["1830-C", "2936-R"]
+    vendor: "newport"
+    roles: ["optical_power_meter"]
+    capabilities: ["measure_optical_power"]
+
+  thorlabs_ldc205c:
+    models: ["LDC205C", "LDC210C", "ITC4001"]
+    vendor: "thorlabs"
+    roles: ["laser_diode_driver"]
+    capabilities: ["drive_laser_diode", "tec_control", "modulation_input"]
+
+  thorlabs_mdt693b:
+    models: ["MDT693B", "MDT694B"]
+    vendor: "thorlabs"
+    roles: ["piezo_controller"]
+    capabilities: ["piezo_position", "hv_output"]
+    typical_limits:
+      max_voltage_v: 150.0
+
+  # ──────────────────────── Spectrometers ─────────────────────────────
+
+  ocean_insight_usb2000:
+    models: ["USB2000", "USB2000+", "HR2000"]
+    vendor: "ocean_insight"
+    roles: ["spectrometer_compact"]
+    capabilities: ["uv_vis_spectrum"]
+    notes: "Python binding: python-seabreeze"
+
+  ocean_insight_qepro:
+    models: ["QEPRO", "QE65"]
+    vendor: "ocean_insight"
+    roles: ["spectrometer_compact"]
+    capabilities: ["uv_vis_spectrum", "low_light_detection"]
+
+  thorlabs_ccs:
+    models: ["CCS100", "CCS200", "CCS175"]
+    vendor: "thorlabs"
+    roles: ["spectrometer_compact"]
+    capabilities: ["uv_vis_spectrum"]
+
+  # ──────────────────── Electrochemistry / Potentiostats ──────────────
+
+  biologic_sp200:
+    models: ["SP-200", "SP-300", "VSP", "VMP3"]
+    vendor: "biologic"
+    roles: ["potentiostat"]
+    capabilities: ["cv", "eis", "chronoamperometry", "chronopotentiometry"]
+    notes: "EClib DLL; Python wrapper: easy-biologic"
+    driver: "https://github.com/bicarlsen/easy-biologic"
+
+  gamry_reference_600:
+    models: ["REFERENCE 600", "REFERENCE 620", "REFERENCE 3000"]
+    vendor: "gamry"
+    roles: ["potentiostat"]
+    capabilities: ["cv", "eis", "chronoamperometry"]
+    notes: "COM/ActiveX automation via Gamry Framework"
+
+  gamry_interface_1010b:
+    models: ["INTERFACE 1010B", "INTERFACE 1010E"]
+    vendor: "gamry"
+    roles: ["potentiostat"]
+    capabilities: ["cv", "eis"]
+
+  chi_760e:
+    models: ["CHI760E", "CHI660E", "CHI600E"]
+    vendor: "ch_instruments"
+    roles: ["potentiostat"]
+    capabilities: ["cv", "eis", "chronoamperometry"]
+    notes: "Macro file (.mcr) driven; Python wrapper: hardpotato"
+
+  metrohm_autolab_pgstat:
+    models: ["PGSTAT302N", "PGSTAT204", "PGSTAT128N"]
+    vendor: "metrohm_autolab"
+    roles: ["potentiostat"]
+    capabilities: ["cv", "eis", "chronoamperometry"]
+    notes: "NOVA software automation via COM"
+
+  palmsens_palmsens4:
+    models: ["PALMSENS4", "EMSTAT4"]
+    vendor: "palmsens"
+    roles: ["potentiostat"]
+    capabilities: ["cv", "eis", "portable"]
+    driver: "https://github.com/MStoelzle/PalmSensSDK"
+
+  # ────────────────────── Plate readers (biology) ─────────────────────
+
+  bmg_clariostar:
+    models: ["CLARIOSTAR", "FLUOSTAR OMEGA", "POLARSTAR"]
+    vendor: "bmg_labtech"
+    roles: ["plate_reader"]
+    capabilities: ["absorbance", "fluorescence", "luminescence"]
+    notes: "MARS data analysis software; scripting via COM"
+
+  molecular_devices_spectramax:
+    models: ["SPECTRAMAX M5", "SPECTRAMAX ID5"]
+    vendor: "molecular_devices"
+    roles: ["plate_reader"]
+    capabilities: ["absorbance", "fluorescence", "luminescence"]
+
+  # ───────────────────────── Balance / pH ─────────────────────────────
+
+  mettler_xs_series:
+    models: ["XS205", "XP105", "XS204"]
+    vendor: "mettler_toledo"
+    roles: ["balance"]
+    capabilities: ["mass_readout"]
+    notes: "MT-SICS ASCII protocol over RS-232 / USB"
+
+  ohaus_adventurer:
+    models: ["ADVENTURER", "ADVENTURER PRO"]
+    vendor: "ohaus"
+    roles: ["balance"]
+    capabilities: ["mass_readout"]
+    notes: "Simple ASCII command set over RS-232"
+
+  thermo_orion_a221:
+    models: ["ORION A221", "ORION A214", "ORION STAR A215"]
+    vendor: "thermo_fisher"
+    roles: ["ph_meter"]
+    capabilities: ["measure_ph", "measure_ise", "measure_mv"]
+
+  # ─────────────────── Gas / Vacuum / Flow control ────────────────────
+
+  alicat_mc_series:
+    models: ["MC-100SCCM", "MC-500SCCM", "MC-1SLPM"]
+    vendor: "alicat"
+    roles: ["mass_flow_controller"]
+    capabilities: ["gas_flow_control", "pressure_readout"]
+    notes: "ASCII-line protocol over RS-232/RS-485"
+    driver: "https://github.com/numat/alicat"
+
+  mks_pr4000:
+    models: ["PR4000", "PR4000B"]
+    vendor: "mks"
+    roles: ["pressure_gauge"]
+    capabilities: ["measure_pressure", "control_pressure", "multi_channel"]
+
+  # ────────────────────── DAQ (NI) ────────────────────────────────────
+
   ni_usb6351:
     models: ["USB-6351", "USB-6001", "USB-6009"]
     vendor: "ni"
     roles: ["daq"]
     capabilities: ["analog_out", "analog_in", "digital_io"]
-    notes: "Used for magnet power supply control via analog output"
+    notes: "Used for magnet power supply control via analog output; "
+      "Python driver: nidaqmx-python"
+
+  # ──────────────── Quantum Design (condensed matter) ─────────────────
+
+  quantum_design_ppms:
+    models: ["PPMS", "DYNACOOL", "VERSALAB"]
+    vendor: "quantum_design"
+    roles: ["ppms"]
+    capabilities: ["cryogenic_transport", "variable_field", "variable_temp"]
+    notes: "MultiPyVu Python binding"
+
+  quantum_design_mpms3:
+    models: ["MPMS3"]
+    vendor: "quantum_design"
+    roles: ["mpms"]
+    capabilities: ["squid_magnetometry", "variable_field", "variable_temp"]

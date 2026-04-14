@@ -18,8 +18,15 @@ if TYPE_CHECKING:
 
 logger = logging.getLogger(__name__)
 
-# Known instrument model -> capability mapping
+# Known instrument model -> capability mapping.
+#
+# Coverage spans electrical, magnetic, optical, electrochemical, biological,
+# thermal, and environmental instruments across major manufacturers. When a
+# model is not listed here, the LLM fallback in classify_with_llm() kicks in;
+# AI agents should additionally call the `manual_lookup` harness tool to
+# retrieve authoritative documentation before proposing a command sequence.
 KNOWN_INSTRUMENTS: dict[str, dict] = {
+    # ── Keithley (source / measure) ─────────────────────────────────────
     "2400": {
         "roles": ["source_meter"],
         "vendor": "keithley",
@@ -56,9 +63,15 @@ KNOWN_INSTRUMENTS: dict[str, dict] = {
         "vendor": "keithley",
         "capabilities": ["measure_r_high", "source_v"],
     },
+    # ── Lake Shore (cryogenics / magnetics) ─────────────────────────────
     "425": {"roles": ["gaussmeter"], "vendor": "lakeshore", "capabilities": ["measure_field"]},
     "455": {"roles": ["gaussmeter"], "vendor": "lakeshore", "capabilities": ["measure_field"]},
     "335": {
+        "roles": ["temperature_controller"],
+        "vendor": "lakeshore",
+        "capabilities": ["measure_temp", "control_temp"],
+    },
+    "336": {
         "roles": ["temperature_controller"],
         "vendor": "lakeshore",
         "capabilities": ["measure_temp", "control_temp"],
@@ -73,10 +86,290 @@ KNOWN_INSTRUMENTS: dict[str, dict] = {
         "vendor": "lakeshore",
         "capabilities": ["measure_temp", "control_temp"],
     },
+    # ── Keysight / Agilent / HP (LCR, scopes, AWG, PSU, VNA, spectrum) ──
     "E4980": {
         "roles": ["lcr_meter"],
         "vendor": "keysight",
         "capabilities": ["measure_c", "measure_z"],
+    },
+    "E4980A": {
+        "roles": ["lcr_meter"],
+        "vendor": "keysight",
+        "capabilities": ["measure_c", "measure_z"],
+    },
+    "E4980AL": {
+        "roles": ["lcr_meter"],
+        "vendor": "keysight",
+        "capabilities": ["measure_c", "measure_z"],
+    },
+    "33500B": {
+        "roles": ["function_generator"],
+        "vendor": "keysight",
+        "capabilities": ["awg", "arbitrary_waveform"],
+    },
+    "33622A": {
+        "roles": ["function_generator"],
+        "vendor": "keysight",
+        "capabilities": ["awg", "arbitrary_waveform"],
+    },
+    "DSOX1204G": {
+        "roles": ["oscilloscope"],
+        "vendor": "keysight",
+        "capabilities": ["capture_waveform", "measure_rise_time"],
+    },
+    "MSOX3054T": {
+        "roles": ["oscilloscope"],
+        "vendor": "keysight",
+        "capabilities": ["capture_waveform", "mixed_signal"],
+    },
+    "E36313A": {
+        "roles": ["power_supply_dc"],
+        "vendor": "keysight",
+        "capabilities": ["source_v", "source_i", "programmable_ramp"],
+    },
+    "N9320B": {
+        "roles": ["spectrum_analyzer"],
+        "vendor": "keysight",
+        "capabilities": ["rf_spectrum", "measure_power"],
+    },
+    "E5071C": {
+        "roles": ["vna"],
+        "vendor": "keysight",
+        "capabilities": ["measure_sparam", "network_analysis"],
+    },
+    # ── Tektronix (scopes, AWG) ─────────────────────────────────────────
+    "TDS3054C": {
+        "roles": ["oscilloscope"],
+        "vendor": "tektronix",
+        "capabilities": ["capture_waveform"],
+    },
+    "MSO44": {
+        "roles": ["oscilloscope"],
+        "vendor": "tektronix",
+        "capabilities": ["capture_waveform", "mixed_signal"],
+    },
+    "DPO4054": {
+        "roles": ["oscilloscope"],
+        "vendor": "tektronix",
+        "capabilities": ["capture_waveform"],
+    },
+    "AFG1062": {
+        "roles": ["function_generator"],
+        "vendor": "tektronix",
+        "capabilities": ["awg", "arbitrary_waveform"],
+    },
+    "AFG3102": {
+        "roles": ["function_generator"],
+        "vendor": "tektronix",
+        "capabilities": ["awg", "arbitrary_waveform"],
+    },
+    # ── Rigol (budget scopes, AWG, PSU) ─────────────────────────────────
+    "DS1054Z": {
+        "roles": ["oscilloscope"],
+        "vendor": "rigol",
+        "capabilities": ["capture_waveform"],
+    },
+    "MSO5354": {
+        "roles": ["oscilloscope"],
+        "vendor": "rigol",
+        "capabilities": ["capture_waveform", "mixed_signal"],
+    },
+    "DG1032Z": {
+        "roles": ["function_generator"],
+        "vendor": "rigol",
+        "capabilities": ["awg", "arbitrary_waveform"],
+    },
+    "DP832A": {
+        "roles": ["power_supply_dc"],
+        "vendor": "rigol",
+        "capabilities": ["source_v", "source_i"],
+    },
+    # ── Rohde & Schwarz ─────────────────────────────────────────────────
+    "FSV": {
+        "roles": ["spectrum_analyzer"],
+        "vendor": "rohde_schwarz",
+        "capabilities": ["rf_spectrum", "measure_power"],
+    },
+    "ZNA": {
+        "roles": ["vna"],
+        "vendor": "rohde_schwarz",
+        "capabilities": ["measure_sparam", "network_analysis"],
+    },
+    # ── Stanford Research Systems (lock-ins) ────────────────────────────
+    "SR830": {
+        "roles": ["lockin_amplifier"],
+        "vendor": "srs",
+        "capabilities": ["phase_sensitive_detection", "lock_in"],
+    },
+    "SR860": {
+        "roles": ["lockin_amplifier"],
+        "vendor": "srs",
+        "capabilities": ["phase_sensitive_detection", "lock_in"],
+    },
+    "SR865A": {
+        "roles": ["lockin_amplifier"],
+        "vendor": "srs",
+        "capabilities": ["phase_sensitive_detection", "lock_in"],
+    },
+    # ── Zurich Instruments (high-end lock-in / AWG combo) ───────────────
+    "MFLI": {
+        "roles": ["lockin_amplifier"],
+        "vendor": "zurich_instruments",
+        "capabilities": ["phase_sensitive_detection", "demodulation", "frequency_response"],
+    },
+    "HF2LI": {
+        "roles": ["lockin_amplifier"],
+        "vendor": "zurich_instruments",
+        "capabilities": ["phase_sensitive_detection", "demodulation"],
+    },
+    # ── Optics / Photonics (Thorlabs, Newport) ──────────────────────────
+    "PM100D": {
+        "roles": ["optical_power_meter"],
+        "vendor": "thorlabs",
+        "capabilities": ["measure_optical_power"],
+    },
+    "LDC205C": {
+        "roles": ["laser_diode_driver"],
+        "vendor": "thorlabs",
+        "capabilities": ["drive_laser_diode", "tec_control"],
+    },
+    "MDT693B": {
+        "roles": ["piezo_controller"],
+        "vendor": "thorlabs",
+        "capabilities": ["piezo_position", "hv_output"],
+    },
+    "1830-C": {
+        "roles": ["optical_power_meter"],
+        "vendor": "newport",
+        "capabilities": ["measure_optical_power"],
+    },
+    # ── Spectrometers (UV-Vis / CCD) ────────────────────────────────────
+    "USB2000": {
+        "roles": ["spectrometer_compact"],
+        "vendor": "ocean_insight",
+        "capabilities": ["uv_vis_spectrum"],
+    },
+    "QEPRO": {
+        "roles": ["spectrometer_compact"],
+        "vendor": "ocean_insight",
+        "capabilities": ["uv_vis_spectrum", "low_light"],
+    },
+    "CCS100": {
+        "roles": ["spectrometer_compact"],
+        "vendor": "thorlabs",
+        "capabilities": ["uv_vis_spectrum"],
+    },
+    # ── Electrochemistry potentiostats ──────────────────────────────────
+    "SP-200": {
+        "roles": ["potentiostat"],
+        "vendor": "biologic",
+        "capabilities": ["cv", "eis", "chronoamperometry", "chronopotentiometry"],
+    },
+    "VSP": {
+        "roles": ["potentiostat"],
+        "vendor": "biologic",
+        "capabilities": ["cv", "eis", "multichannel"],
+    },
+    "VMP3": {
+        "roles": ["potentiostat"],
+        "vendor": "biologic",
+        "capabilities": ["cv", "eis", "multichannel"],
+    },
+    "REFERENCE 600": {
+        "roles": ["potentiostat"],
+        "vendor": "gamry",
+        "capabilities": ["cv", "eis", "chronoamperometry"],
+    },
+    "INTERFACE 1010B": {
+        "roles": ["potentiostat"],
+        "vendor": "gamry",
+        "capabilities": ["cv", "eis"],
+    },
+    "CHI760E": {
+        "roles": ["potentiostat"],
+        "vendor": "ch_instruments",
+        "capabilities": ["cv", "eis", "chronoamperometry"],
+    },
+    "CHI660E": {
+        "roles": ["potentiostat"],
+        "vendor": "ch_instruments",
+        "capabilities": ["cv", "eis"],
+    },
+    "PGSTAT302N": {
+        "roles": ["potentiostat"],
+        "vendor": "metrohm_autolab",
+        "capabilities": ["cv", "eis", "chronoamperometry"],
+    },
+    "PALMSENS4": {
+        "roles": ["potentiostat"],
+        "vendor": "palmsens",
+        "capabilities": ["cv", "eis", "portable"],
+    },
+    # ── Microplate readers / cell-culture ──────────────────────────────
+    "CLARIOSTAR": {
+        "roles": ["plate_reader"],
+        "vendor": "bmg_labtech",
+        "capabilities": ["absorbance", "fluorescence", "luminescence"],
+    },
+    "SPECTRAMAX M5": {
+        "roles": ["plate_reader"],
+        "vendor": "molecular_devices",
+        "capabilities": ["absorbance", "fluorescence", "luminescence"],
+    },
+    # ── Balances / pH ───────────────────────────────────────────────────
+    "XS205": {
+        "roles": ["balance"],
+        "vendor": "mettler_toledo",
+        "capabilities": ["mass_readout", "mt_sics"],
+    },
+    "ADVENTURER": {
+        "roles": ["balance"],
+        "vendor": "ohaus",
+        "capabilities": ["mass_readout"],
+    },
+    "ORION A221": {
+        "roles": ["ph_meter"],
+        "vendor": "thermo_fisher",
+        "capabilities": ["measure_ph", "measure_ise"],
+    },
+    # ── Gas / Vacuum / Flow ────────────────────────────────────────────
+    "MC-100SCCM": {
+        "roles": ["mass_flow_controller"],
+        "vendor": "alicat",
+        "capabilities": ["gas_flow_control"],
+    },
+    "PR4000": {
+        "roles": ["pressure_gauge"],
+        "vendor": "mks",
+        "capabilities": ["measure_pressure", "control_pressure"],
+    },
+    # ── Cryostats / Furnace controllers ────────────────────────────────
+    "MERCURY ITC": {
+        "roles": ["temp_controller_cryo"],
+        "vendor": "oxford_instruments",
+        "capabilities": ["cryogenic_temp_control", "heater_output"],
+    },
+    # ── National Instruments DAQ ────────────────────────────────────────
+    "USB-6351": {
+        "roles": ["daq"],
+        "vendor": "national_instruments",
+        "capabilities": ["analog_io", "digital_io"],
+    },
+    "USB-6001": {
+        "roles": ["daq"],
+        "vendor": "national_instruments",
+        "capabilities": ["analog_io", "digital_io"],
+    },
+    # ── Quantum Design systems ─────────────────────────────────────────
+    "PPMS": {
+        "roles": ["ppms"],
+        "vendor": "quantum_design",
+        "capabilities": ["cryogenic_transport", "variable_field", "variable_temp"],
+    },
+    "MPMS3": {
+        "roles": ["mpms"],
+        "vendor": "quantum_design",
+        "capabilities": ["squid_magnetometry", "variable_field", "variable_temp"],
     },
 }
 

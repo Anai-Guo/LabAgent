@@ -20,7 +20,12 @@ logger = logging.getLogger(__name__)
 
 mcp = FastMCP(
     "Lab Harness",
-    instructions="AI-guided laboratory automation for physics transport measurements",
+    instructions=(
+        "AI-guided laboratory automation for physics, chemistry, biology, "
+        "materials science, environmental, and engineering labs. Covers "
+        "electrical transport, electrochemistry, spectroscopy, thermal, optics, "
+        "and sensor measurements across ~30 instruments from 15+ manufacturers."
+    ),
 )
 
 
@@ -203,6 +208,44 @@ async def generate_skill(
         GenerateSkillInput(
             measurement_type=measurement_type,
             sample_description=sample_description,
+        ),
+        ToolContext(),
+    )
+    return {"output": result.output, "metadata": result.metadata}
+
+
+@mcp.tool()
+async def manual_lookup(
+    make: str,
+    model: str,
+    interface_or_topic: str = "",
+    search_web: bool = True,
+) -> dict:
+    """Look up an unknown instrument's programming manual and Python driver.
+
+    ALWAYS call this BEFORE classifying an unfamiliar instrument or writing
+    SCPI commands from memory. Combines a curated manufacturer documentation
+    index with a live DuckDuckGo search so the AI never has to guess a
+    command sequence for an unknown device.
+
+    Args:
+        make: Manufacturer name (e.g. "Tektronix", "BioLogic", "Thorlabs").
+        model: Model number (e.g. "TDS3054C", "SP-200", "PM100D").
+        interface_or_topic: Specific thing you need — "SCPI reference",
+            "Python driver", "IEEE-488 common commands", "trigger options".
+            Leave empty for general manual lookup.
+        search_web: If False, skip the network call and return only curated
+            manufacturer hints (useful in sandboxed/offline CI).
+    """
+    from lab_harness.harness.tools.manual_lookup_tool import ManualLookupInput, ManualLookupTool
+
+    tool = ManualLookupTool()
+    result = await tool.execute(
+        ManualLookupInput(
+            make=make,
+            model=model,
+            interface_or_topic=interface_or_topic,
+            search_web=search_web,
         ),
         ToolContext(),
     )

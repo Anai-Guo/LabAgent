@@ -23,7 +23,50 @@ dielectric, environmental/sensors) and supports **any GPIB/USB/serial instrument
 
 ---
 
-## 2. Installation
+## 2. Mandatory Rules for AI Agents
+
+These rules are not optional. Follow them on every task.
+
+### Rule 1 — Look up manuals online for unknown instruments
+
+When you encounter **any** instrument, interface, driver, or SCPI command that you
+do not recognize with certainty, **immediately** use `WebSearch` / `WebFetch` (or the
+built-in `manual_lookup` harness tool) to retrieve:
+
+1. The **manufacturer's programming manual** or user guide PDF (search query:
+   `"<make> <model> programming manual"`, `"<model> SCPI reference"`,
+   `"<model> command reference"`).
+2. Any **existing open-source driver** — search `pymeasure`, `pylablib`,
+   `PyExpLabSys`, `zhinst-toolkit`, `easy-biologic`, `hardpotato`,
+   `RsInstrument`, manufacturer GitHub org — before writing one from scratch.
+3. The **communication protocol** (SCPI, ASCII-line, binary, COM/ActiveX, custom
+   DLL, HTTP REST, OPC UA) — do not assume SCPI.
+
+Do this **before** classification, **before** driver registration, and
+**before** suggesting any command sequence. A single wrong SCPI command can
+damage samples or instruments; two minutes of reading the manual is always
+cheaper than one burnt device.
+
+When you find authoritative information, cite the URL in any code comment,
+skill file, or reply so the user can verify.
+
+### Rule 2 — Do not guess compliance/limits
+
+Never pick a compliance current, voltage limit, or sweep range from memory
+alone. Always either (a) read `configs/default_safety.yaml`, (b) read the
+manufacturer's datasheet, or (c) ask the user. Make safety boundary violations
+visible, not silent.
+
+### Rule 3 — Cross-discipline neutrality
+
+This framework serves physics, chemistry, biology, materials, environmental,
+and engineering labs equally. When a user's discipline is unknown, do **not**
+default to magnetic transport / spintronics examples. Pick neutral defaults
+(IV curve, temperature sweep, CV) and confirm the discipline first.
+
+---
+
+## 3. Installation
 
 ```bash
 # Basic install
@@ -41,7 +84,7 @@ pip install -e ".[dev]"
 
 ---
 
-## 3. Core Commands (CLI)
+## 4. Core Commands (CLI)
 
 | Command | What It Does |
 |---------|-------------|
@@ -60,7 +103,7 @@ pip install -e ".[dev]"
 
 ---
 
-## 4. Measurement Types
+## 5. Measurement Types
 
 When a user mentions a measurement, map it to one of these template keys:
 
@@ -131,7 +174,7 @@ When a user mentions a measurement, map it to one of these template keys:
 
 ---
 
-## 5. Typical Workflow (Guide the User Through This)
+## 6. Typical Workflow (Guide the User Through This)
 
 ### Step 1: Discover Instruments
 ```bash
@@ -167,7 +210,7 @@ and provides AI interpretation of the physics.
 
 ---
 
-## 6. Configuration
+## 7. Configuration
 
 ### AI Model Selection
 Edit `configs/models.yaml` or use environment variables:
@@ -203,7 +246,7 @@ instruments:
 
 ---
 
-## 7. MCP Server Integration
+## 8. MCP Server Integration
 
 For use with Claude Code, Cursor, or any MCP client:
 ```bash
@@ -222,7 +265,7 @@ Available MCP tools:
 
 ---
 
-## 8. Web GUI
+## 9. Web GUI
 
 ```bash
 pip install "lab-agent[web]"
@@ -234,7 +277,7 @@ forms from YAML templates — one adaptive interface for all 46+ measurement typ
 
 ---
 
-## 9. Key Architecture Concepts
+## 10. Key Architecture Concepts
 
 - **Templates** (`src/lab_harness/planning/templates/*.yaml`): Define what to measure
 - **Drivers** (`src/lab_harness/drivers/`): How to talk to instruments (VISA/GPIB)
@@ -246,12 +289,12 @@ forms from YAML templates — one adaptive interface for all 46+ measurement typ
 
 ---
 
-## 10. When Things Go Wrong
+## 11. When Things Go Wrong
 
 | Problem | Solution |
 |---------|----------|
 | No instruments found | Check GPIB cable, install NI-VISA driver, verify `pyvisa` installed |
-| Unknown instrument | AI classifier handles it automatically via LLM fallback |
+| Unknown instrument | Follow Rule 1: run `manual_lookup <make> <model>` or `WebSearch` for the programming manual before classifying. The AI classifier also has an LLM fallback, but the manual lookup is authoritative. |
 | No template for measurement | Use `labharness generate-skill <TYPE>` to create one with AI |
 | Safety boundary blocked | Review limits in `configs/default_safety.yaml`, or provide sample description for AI advice |
 | LLM not responding | Check API key, try a different provider, or use local model (Ollama) |
@@ -259,7 +302,7 @@ forms from YAML templates — one adaptive interface for all 46+ measurement typ
 
 ---
 
-## 11. Adding New Capabilities
+## 12. Adding New Capabilities
 
 ### New Measurement Template (5 minutes)
 1. Create `src/lab_harness/planning/templates/<type>.yaml`

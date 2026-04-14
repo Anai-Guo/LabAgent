@@ -19,7 +19,7 @@ bibliography: paper.bib
 
 # Summary
 
-LabAgent is an open-source Python framework that connects large language models (LLMs) to laboratory instruments for automated scientific measurements. The framework provides AI-guided measurement planning, instrument discovery and classification, safety boundary validation, data analysis with physics interpretation, and experiment memory — covering 46 measurement types across 9 scientific disciplines.
+LabAgent is an open-source Python framework that connects large language models (LLMs) to laboratory instruments for automated scientific measurements. The framework provides AI-guided measurement planning, instrument discovery and classification, safety boundary validation, data analysis with domain-specific interpretation, and experiment memory — covering 46 measurement types across 9 scientific disciplines and ~50 instrument models across 15+ manufacturers.
 
 # Statement of Need
 
@@ -27,7 +27,7 @@ High-precision laboratory measurements in physics, chemistry, biology, and mater
 
 While instrument control libraries such as PyVISA [@pyvisa] and PyMeasure [@pymeasure] provide foundational drivers, and measurement suites like PICA [@pica] offer hardcoded GUIs for specific instruments, no existing tool combines AI reasoning with instrument control in a unified, extensible framework.
 
-LabAgent addresses this gap by placing AI at every step of the measurement workflow: from literature-informed protocol discovery to adaptive measurement planning with three-tier safety validation, to AI-generated data analysis with physics interpretation.
+LabAgent addresses this gap by placing AI at every step of the measurement workflow: from literature-informed protocol discovery to adaptive measurement planning with three-tier safety validation, to AI-generated data analysis with domain-specific scientific interpretation.
 
 # Architecture
 
@@ -46,11 +46,16 @@ The framework follows an agent harness architecture inspired by OpenHarness [@op
 The framework includes 46 YAML-based measurement templates spanning:
 
 - **Electrical characterization**: IV curves, R-T, delta mode, high resistance, FET transfer/output, breakdown voltage
-- **Magnetic measurements**: Hall effect, magnetoresistance, anomalous Hall effect, FMR, hysteresis loops, spin-orbit torque, magnetostriction, Nernst effect
 - **Electrochemistry**: Cyclic voltammetry, EIS, chronoamperometry, potentiometry
 - **Semiconductor**: Solar cell IV, DLTS, photocurrent spectroscopy, C-f analysis, tunneling spectroscopy
-- **Quantum Design systems**: PPMS R-T/MR/Hall/heat capacity, MPMS M-H/M-T with MultiPyVu integration
-- **Additional disciplines**: Thermoelectric (Seebeck, thermal conductivity), superconductivity (Tc, Jc), dielectric/ferroelectric (P-E loop, pyroelectric), biosensors, gas sensors, strain/fatigue testing
+- **Optics and photonics**: Optical power measurement, UV-Vis absorbance, photoresponse transients
+- **Biological / analytical**: Plate-reader absorbance / fluorescence / luminescence, biosensor impedance, mass weighing, pH and ISE readout
+- **Environmental and sensor**: Gas sensor, humidity response, strain gauge, fatigue, mass flow, pressure control
+- **Thermoelectric**: Seebeck coefficient, thermal conductivity
+- **Magnetic and transport (condensed-matter specialty)**: Hall effect, magnetoresistance, anomalous Hall effect, FMR, hysteresis loops, magnetostriction, Nernst effect, SOT loop shift
+- **Superconductivity**: Tc transition, critical current density
+- **Dielectric / ferroelectric**: P-E loop, pyroelectric current
+- **Quantum Design systems**: PPMS R-T / MR / Hall / heat capacity, MPMS M-H / M-T with MultiPyVu integration
 
 ## AI Capabilities
 
@@ -60,7 +65,7 @@ The framework provides eight distinct AI capabilities:
 2. **Parameter Optimization**: LLM suggests optimal sweep ranges based on sample description and literature
 3. **Safety Advisory**: LLM explains why limits exist and suggests safer alternatives
 4. **Script Generation**: LLM creates custom analysis scripts for arbitrary measurement types
-5. **Result Interpretation**: LLM provides physics insights on extracted values
+5. **Result Interpretation**: LLM provides domain-specific scientific insights on extracted values (physics, electrochemistry, spectroscopy, etc.)
 6. **Skill Generation**: LLM creates new measurement protocols from existing examples
 7. **Agent Chat**: Multi-turn conversation with autonomous tool calling
 8. **Experiment Memory**: SQLite with FTS5 full-text search, frozen snapshots injected into agent context
