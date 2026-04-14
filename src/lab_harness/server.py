@@ -2,6 +2,9 @@
 
 Exposes lab automation tools via the Model Context Protocol,
 compatible with Claude Code, Cursor, and other MCP clients.
+
+Each MCP tool is a thin wrapper around a harness tool from
+lab_harness.harness.tools.
 """
 
 from __future__ import annotations
@@ -11,11 +14,7 @@ import logging
 
 from mcp.server.fastmcp import FastMCP
 
-from lab_harness.config import Settings
-from lab_harness.discovery.classifier import classify_instruments
-from lab_harness.discovery.visa_scanner import scan_visa_instruments
-from lab_harness.llm.router import LLMRouter
-from lab_harness.models.instrument import InstrumentRecord, LabInventory
+from lab_harness.harness.tools.base import ToolContext
 
 logger = logging.getLogger(__name__)
 
@@ -32,11 +31,11 @@ async def scan_instruments() -> dict:
     Discovers instruments on the VISA bus and returns their identity,
     resource address, and detected capabilities.
     """
-    instruments = scan_visa_instruments()
-    return {
-        "count": len(instruments),
-        "instruments": [inst.model_dump() for inst in instruments],
-    }
+    from lab_harness.harness.tools.scan_tool import ScanInput, ScanInstrumentsTool
+
+    tool = ScanInstrumentsTool()
+    result = await tool.execute(ScanInput(), ToolContext())
+    return {"output": result.output, "metadata": result.metadata}
 
 
 @mcp.tool()
@@ -51,26 +50,21 @@ async def classify_lab_instruments(
         inventory_json: Optional JSON string of previously scanned instruments.
             If not provided, performs a fresh scan.
     """
+    from lab_harness.harness.tools.classify_tool import ClassifyInput, ClassifyInstrumentsTool
+
+    instrument_data: list[dict] = []
     if inventory_json:
+        from lab_harness.models.instrument import LabInventory
+
         inventory = LabInventory.model_validate_json(inventory_json)
-    else:
-        instruments = scan_visa_instruments()
-        inventory = LabInventory(instruments=instruments)
+        instrument_data = [inst.model_dump() for inst in inventory.instruments]
 
-    # Build LLM router from settings when an API key is available
-    router: LLMRouter | None = None
-    try:
-        settings = Settings.load()
-        if settings.model.api_key or settings.model.base_url:
-            router = LLMRouter(config=settings.model)
-    except Exception as exc:
-        logger.debug("LLM router not available for classification fallback: %s", exc)
-
-    assignments = classify_instruments(inventory, measurement_type, router=router)
-    return {
-        "measurement_type": measurement_type,
-        "role_assignments": {role: inst.model_dump() for role, inst in assignments.items()},
-    }
+    tool = ClassifyInstrumentsTool()
+    result = await tool.execute(
+        ClassifyInput(measurement_type=measurement_type, instrument_data=instrument_data),
+        ToolContext(),
+    )
+    return {"output": result.output, "metadata": result.metadata}
 
 
 @mcp.tool()
@@ -87,25 +81,14 @@ async def propose_measurement(
         roles_json: Optional JSON of role assignments from classify_lab_instruments.
             Expected format: ``{"role_name": {InstrumentRecord fields}, ...}``
     """
-    from lab_harness.planning.boundary_checker import check_boundaries
-    from lab_harness.planning.plan_builder import build_plan_from_template
+    from lab_harness.harness.tools.propose_tool import ProposeInput, ProposeMeasurementTool
 
-    # Parse role assignments if provided
-    role_assignments: dict[str, InstrumentRecord] | None = None
-    if roles_json:
-        raw: dict = json.loads(roles_json)
-        role_assignments = {role: InstrumentRecord.model_validate(data) for role, data in raw.items()}
-
-    plan = build_plan_from_template(
-        measurement_type,
-        role_assignments=role_assignments,
+    tool = ProposeMeasurementTool()
+    result = await tool.execute(
+        ProposeInput(measurement_type=measurement_type),
+        ToolContext(),
     )
-    validation = check_boundaries(plan)
-
-    return {
-        "plan": plan.model_dump(),
-        "validation": validation.model_dump(),
-    }
+    return {"output": result.output, "metadata": result.metadata}
 
 
 @mcp.tool()
@@ -115,12 +98,15 @@ async def validate_plan(plan_json: str) -> dict:
     Args:
         plan_json: JSON string of the measurement plan to validate.
     """
-    from lab_harness.models.measurement import MeasurementPlan
-    from lab_harness.planning.boundary_checker import check_boundaries
+    from lab_harness.harness.tools.validate_tool import ValidateInput, ValidatePlanTool
 
-    plan = MeasurementPlan.model_validate_json(plan_json)
-    result = check_boundaries(plan)
-    return result.model_dump()
+    plan_dict = json.loads(plan_json)
+    tool = ValidatePlanTool()
+    result = await tool.execute(
+        ValidateInput(plan=plan_dict),
+        ToolContext(),
+    )
+    return {"output": result.output, "metadata": result.metadata}
 
 
 @mcp.tool()
@@ -138,11 +124,17 @@ async def search_literature(
         measurement_type: Type of measurement (e.g., "AHE", "MR", "SOT", "IV", "RT", "CV").
         sample_description: Optional sample details (e.g., "silicon wafer").
     """
-    from lab_harness.literature.paper_pilot_client import PaperPilotClient
+    from lab_harness.harness.tools.literature_tool import LiteratureInput, SearchLiteratureTool
 
-    client = PaperPilotClient()
-    ctx = await client.search_for_protocol(measurement_type, sample_description)
-    return ctx.model_dump()
+    tool = SearchLiteratureTool()
+    result = await tool.execute(
+        LiteratureInput(
+            measurement_type=measurement_type,
+            sample_description=sample_description,
+        ),
+        ToolContext(),
+    )
+    return {"output": result.output, "metadata": result.metadata}
 
 
 @mcp.tool()
@@ -171,26 +163,20 @@ async def analyze_data(
         custom_instructions: Extra instructions for AI analysis (e.g. "focus on coercivity").
         interpret: Add AI interpretation of results with physics insights.
     """
-    from pathlib import Path as _Path
+    from lab_harness.harness.tools.analyze_tool import AnalyzeDataTool, AnalyzeInput
 
-    from lab_harness.analysis.analyzer import Analyzer
-
-    analyzer = Analyzer(output_dir=_Path(output_dir))
-    dp = _Path(data_path)
-    if not dp.exists():
-        return {"error": f"Data file not found: {data_path}"}
-
-    try:
-        result = analyzer.analyze(
-            dp,
-            measurement_type,
+    tool = AnalyzeDataTool()
+    result = await tool.execute(
+        AnalyzeInput(
+            data_path=data_path,
+            measurement_type=measurement_type,
             use_ai=use_ai,
             custom_instructions=custom_instructions,
             interpret=interpret,
-        )
-        return result.model_dump()
-    except (FileNotFoundError, RuntimeError) as exc:
-        return {"error": str(exc)}
+        ),
+        ToolContext(),
+    )
+    return {"output": result.output, "metadata": result.metadata}
 
 
 @mcp.tool()
@@ -210,22 +196,17 @@ async def generate_skill(
         sample_description: Optional sample context to tailor the protocol
             (e.g., "NiFe thin film", "GaAs wafer").
     """
-    from lab_harness.skills.generator import generate_skill as _generate
-    from lab_harness.skills.generator import save_skill
+    from lab_harness.harness.tools.generate_skill_tool import GenerateSkillInput, GenerateSkillTool
 
-    try:
-        content = _generate(
+    tool = GenerateSkillTool()
+    result = await tool.execute(
+        GenerateSkillInput(
             measurement_type=measurement_type,
             sample_description=sample_description,
-        )
-        path = save_skill(measurement_type, content)
-        return {
-            "measurement_type": measurement_type,
-            "skill_path": str(path),
-            "content": content,
-        }
-    except RuntimeError as exc:
-        return {"error": str(exc)}
+        ),
+        ToolContext(),
+    )
+    return {"output": result.output, "metadata": result.metadata}
 
 
 @mcp.tool()
@@ -235,44 +216,11 @@ async def healthcheck() -> dict:
     Returns availability of PyVISA, available measurement templates,
     LLM configuration, and overall system readiness.
     """
-    from pathlib import Path
+    from lab_harness.harness.tools.health_tool import HealthcheckTool, HealthInput
 
-    status: dict = {
-        "version": "0.1.0",
-        "visa_available": False,
-        "visa_instruments": 0,
-        "templates": [],
-        "llm_configured": False,
-        "llm_provider": None,
-        "llm_model": None,
-    }
-
-    # Check PyVISA availability
-    try:
-        import pyvisa
-
-        rm = pyvisa.ResourceManager()
-        resources = rm.list_resources()
-        status["visa_available"] = True
-        status["visa_instruments"] = len(resources)
-    except Exception as exc:
-        logger.debug("PyVISA not available: %s", exc)
-
-    # Check available templates
-    templates_dir = Path(__file__).parent / "planning" / "templates"
-    if templates_dir.is_dir():
-        status["templates"] = sorted(p.stem for p in templates_dir.glob("*.yaml"))
-
-    # Check LLM configuration
-    try:
-        settings = Settings.load()
-        status["llm_provider"] = settings.model.provider
-        status["llm_model"] = settings.model.model
-        status["llm_configured"] = bool(settings.model.provider and settings.model.model)
-    except Exception as exc:
-        logger.debug("LLM config not available: %s", exc)
-
-    return status
+    tool = HealthcheckTool()
+    result = await tool.execute(HealthInput(), ToolContext())
+    return {"output": result.output, "metadata": result.metadata}
 
 
 def run_server():

@@ -1,0 +1,1014 @@
+{
+  "metadata": {
+    "measurement": "IV curve",
+    "exported": "2026-04-13T18:25:10.462844",
+    "points": 201
+  },
+  "data": [
+    {
+      "current_mA": -1.0,
+      "voltage_V": 0.000548,
+      "resistance_Ohm": -0.55
+    },
+    {
+      "current_mA": -0.99,
+      "voltage_V": 2.9e-05,
+      "resistance_Ohm": -0.03
+    },
+    {
+      "current_mA": -0.98,
+      "voltage_V": -0.000474,
+      "resistance_Ohm": 0.48
+    },
+    {
+      "current_mA": -0.97,
+      "voltage_V": -0.000682,
+      "resistance_Ohm": 0.7
+    },
+    {
+      "current_mA": -0.96,
+      "voltage_V": -0.000285,
+      "resistance_Ohm": 0.3
+    },
+    {
+      "current_mA": -0.95,
+      "voltage_V": 0.000589,
+      "resistance_Ohm": -0.62
+    },
+    {
+      "current_mA": -0.94,
+      "voltage_V": -0.000174,
+      "resistance_Ohm": 0.19
+    },
+    {
+      "current_mA": -0.93,
+      "voltage_V": 0.000209,
+      "resistance_Ohm": -0.22
+    },
+    {
+      "current_mA": -0.92,
+      "voltage_V": -1.6e-05,
+      "resistance_Ohm": 0.02
+    },
+    {
+      "current_mA": -0.91,
+      "voltage_V": 0.000368,
+      "resistance_Ohm": -0.4
+    },
+    {
+      "current_mA": -0.9,
+      "voltage_V": 0.000238,
+      "resistance_Ohm": -0.26
+    },
+    {
+      "current_mA": -0.89,
+      "voltage_V": 0.000655,
+      "resistance_Ohm": -0.74
+    },
+    {
+      "current_mA": -0.88,
+      "voltage_V": -0.000416,
+      "resistance_Ohm": 0.47
+    },
+    {
+      "current_mA": -0.87,
+      "voltage_V": -7.4e-05,
+      "resistance_Ohm": 0.09
+    },
+    {
+      "current_mA": -0.86,
+      "voltage_V": -0.000912,
+      "resistance_Ohm": 1.06
+    },
+    {
+      "current_mA": -0.85,
+      "voltage_V": 5.5e-05,
+      "resistance_Ohm": -0.06
+    },
+    {
+      "current_mA": -0.84,
+      "voltage_V": 0.000231,
+      "resistance_Ohm": -0.27
+    },
+    {
+      "current_mA": -0.83,
+      "voltage_V": 0.000411,
+      "resistance_Ohm": -0.49
+    },
+    {
+      "current_mA": -0.82,
+      "voltage_V": -0.000205,
+      "resistance_Ohm": 0.25
+    },
+    {
+      "current_mA": -0.81,
+      "voltage_V": -0.000716,
+      "resistance_Ohm": 0.88
+    },
+    {
+      "current_mA": -0.8,
+      "voltage_V": 6.9e-05,
+      "resistance_Ohm": -0.09
+    },
+    {
+      "current_mA": -0.79,
+      "voltage_V": 0.000201,
+      "resistance_Ohm": -0.25
+    },
+    {
+      "current_mA": -0.78,
+      "voltage_V": 0.001164,
+      "resistance_Ohm": -1.49
+    },
+    {
+      "current_mA": -0.77,
+      "voltage_V": -8.5e-05,
+      "resistance_Ohm": 0.11
+    },
+    {
+      "current_mA": -0.76,
+      "voltage_V": -0.000207,
+      "resistance_Ohm": 0.27
+    },
+    {
+      "current_mA": -0.75,
+      "voltage_V": -0.000828,
+      "resistance_Ohm": 1.1
+    },
+    {
+      "current_mA": -0.74,
+      "voltage_V": -0.000834,
+      "resistance_Ohm": 1.13
+    },
+    {
+      "current_mA": -0.73,
+      "voltage_V": 0.00063,
+      "resistance_Ohm": -0.86
+    },
+    {
+      "current_mA": -0.72,
+      "voltage_V": 0.000371,
+      "resistance_Ohm": -0.51
+    },
+    {
+      "current_mA": -0.71,
+      "voltage_V": -0.000499,
+      "resistance_Ohm": 0.7
+    },
+    {
+      "current_mA": -0.7,
+      "voltage_V": -0.000193,
+      "resistance_Ohm": 0.28
+    },
+    {
+      "current_mA": -0.69,
+      "voltage_V": -0.000315,
+      "resistance_Ohm": 0.46
+    },
+    {
+      "current_mA": -0.68,
+      "voltage_V": 7.4e-05,
+      "resistance_Ohm": -0.11
+    },
+    {
+      "current_mA": -0.67,
+      "voltage_V": -0.0004,
+      "resistance_Ohm": 0.6
+    },
+    {
+      "current_mA": -0.66,
+      "voltage_V": -0.000443,
+      "resistance_Ohm": 0.67
+    },
+    {
+      "current_mA": -0.65,
+      "voltage_V": -0.000594,
+      "resistance_Ohm": 0.91
+    },
+    {
+      "current_mA": -0.64,
+      "voltage_V": -0.000422,
+      "resistance_Ohm": 0.66
+    },
+    {
+      "current_mA": -0.63,
+      "voltage_V": -0.000797,
+      "resistance_Ohm": 1.26
+    },
+    {
+      "current_mA": -0.62,
+      "voltage_V": 0.000733,
+      "resistance_Ohm": -1.18
+    },
+    {
+      "current_mA": -0.61,
+      "voltage_V": -0.000342,
+      "resistance_Ohm": 0.56
+    },
+    {
+      "current_mA": -0.6,
+      "voltage_V": -0.000266,
+      "resistance_Ohm": 0.44
+    },
+    {
+      "current_mA": -0.59,
+      "voltage_V": 0.000216,
+      "resistance_Ohm": -0.37
+    },
+    {
+      "current_mA": -0.58,
+      "voltage_V": -0.000513,
+      "resistance_Ohm": 0.88
+    },
+    {
+      "current_mA": -0.57,
+      "voltage_V": -0.000629,
+      "resistance_Ohm": 1.1
+    },
+    {
+      "current_mA": -0.56,
+      "voltage_V": -0.000535,
+      "resistance_Ohm": 0.95
+    },
+    {
+      "current_mA": -0.55,
+      "voltage_V": 0.000118,
+      "resistance_Ohm": -0.21
+    },
+    {
+      "current_mA": -0.54,
+      "voltage_V": 0.000481,
+      "resistance_Ohm": -0.89
+    },
+    {
+      "current_mA": -0.53,
+      "voltage_V": -0.000149,
+      "resistance_Ohm": 0.28
+    },
+    {
+      "current_mA": -0.52,
+      "voltage_V": -0.000333,
+      "resistance_Ohm": 0.64
+    },
+    {
+      "current_mA": -0.51,
+      "voltage_V": -0.000151,
+      "resistance_Ohm": 0.3
+    },
+    {
+      "current_mA": -0.5,
+      "voltage_V": 0.00029,
+      "resistance_Ohm": -0.58
+    },
+    {
+      "current_mA": -0.49,
+      "voltage_V": 0.000327,
+      "resistance_Ohm": -0.67
+    },
+    {
+      "current_mA": -0.48,
+      "voltage_V": 0.000711,
+      "resistance_Ohm": -1.48
+    },
+    {
+      "current_mA": -0.47,
+      "voltage_V": 2.8e-05,
+      "resistance_Ohm": -0.06
+    },
+    {
+      "current_mA": -0.46,
+      "voltage_V": -5.4e-05,
+      "resistance_Ohm": 0.12
+    },
+    {
+      "current_mA": -0.45,
+      "voltage_V": 8e-05,
+      "resistance_Ohm": -0.18
+    },
+    {
+      "current_mA": -0.44,
+      "voltage_V": -0.000394,
+      "resistance_Ohm": 0.89
+    },
+    {
+      "current_mA": -0.43,
+      "voltage_V": -0.000342,
+      "resistance_Ohm": 0.8
+    },
+    {
+      "current_mA": -0.42,
+      "voltage_V": 0.000958,
+      "resistance_Ohm": -2.28
+    },
+    {
+      "current_mA": -0.41,
+      "voltage_V": -3.8e-05,
+      "resistance_Ohm": 0.09
+    },
+    {
+      "current_mA": -0.4,
+      "voltage_V": -0.00065,
+      "resistance_Ohm": 1.63
+    },
+    {
+      "current_mA": -0.39,
+      "voltage_V": 6.4e-05,
+      "resistance_Ohm": -0.16
+    },
+    {
+      "current_mA": -0.38,
+      "voltage_V": -0.000434,
+      "resistance_Ohm": 1.14
+    },
+    {
+      "current_mA": -0.37,
+      "voltage_V": 0.000543,
+      "resistance_Ohm": -1.47
+    },
+    {
+      "current_mA": -0.36,
+      "voltage_V": -0.000321,
+      "resistance_Ohm": 0.89
+    },
+    {
+      "current_mA": -0.35,
+      "voltage_V": 0.000516,
+      "resistance_Ohm": -1.47
+    },
+    {
+      "current_mA": -0.34,
+      "voltage_V": 0.000214,
+      "resistance_Ohm": -0.63
+    },
+    {
+      "current_mA": -0.33,
+      "voltage_V": -0.000245,
+      "resistance_Ohm": 0.74
+    },
+    {
+      "current_mA": -0.32,
+      "voltage_V": 0.000383,
+      "resistance_Ohm": -1.2
+    },
+    {
+      "current_mA": -0.31,
+      "voltage_V": -0.000483,
+      "resistance_Ohm": 1.56
+    },
+    {
+      "current_mA": -0.3,
+      "voltage_V": 0.000138,
+      "resistance_Ohm": -0.46
+    },
+    {
+      "current_mA": -0.29,
+      "voltage_V": 0.000107,
+      "resistance_Ohm": -0.37
+    },
+    {
+      "current_mA": -0.28,
+      "voltage_V": 0.000152,
+      "resistance_Ohm": -0.54
+    },
+    {
+      "current_mA": -0.27,
+      "voltage_V": 4.5e-05,
+      "resistance_Ohm": -0.17
+    },
+    {
+      "current_mA": -0.26,
+      "voltage_V": -0.000351,
+      "resistance_Ohm": 1.35
+    },
+    {
+      "current_mA": -0.25,
+      "voltage_V": 0.000201,
+      "resistance_Ohm": -0.8
+    },
+    {
+      "current_mA": -0.24,
+      "voltage_V": 0.000799,
+      "resistance_Ohm": -3.33
+    },
+    {
+      "current_mA": -0.23,
+      "voltage_V": -0.000207,
+      "resistance_Ohm": 0.9
+    },
+    {
+      "current_mA": -0.22,
+      "voltage_V": 1.5e-05,
+      "resistance_Ohm": -0.07
+    },
+    {
+      "current_mA": -0.21,
+      "voltage_V": -0.000272,
+      "resistance_Ohm": 1.3
+    },
+    {
+      "current_mA": -0.2,
+      "voltage_V": -1.2e-05,
+      "resistance_Ohm": 0.06
+    },
+    {
+      "current_mA": -0.19,
+      "voltage_V": -1.5e-05,
+      "resistance_Ohm": 0.08
+    },
+    {
+      "current_mA": -0.18,
+      "voltage_V": 0.000443,
+      "resistance_Ohm": -2.46
+    },
+    {
+      "current_mA": -0.17,
+      "voltage_V": 0.000672,
+      "resistance_Ohm": -3.95
+    },
+    {
+      "current_mA": -0.16,
+      "voltage_V": -5.7e-05,
+      "resistance_Ohm": 0.36
+    },
+    {
+      "current_mA": -0.15,
+      "voltage_V": 0.000163,
+      "resistance_Ohm": -1.09
+    },
+    {
+      "current_mA": -0.14,
+      "voltage_V": 0.000181,
+      "resistance_Ohm": -1.29
+    },
+    {
+      "current_mA": -0.13,
+      "voltage_V": 0.000461,
+      "resistance_Ohm": -3.54
+    },
+    {
+      "current_mA": -0.12,
+      "voltage_V": -0.000258,
+      "resistance_Ohm": 2.15
+    },
+    {
+      "current_mA": -0.11,
+      "voltage_V": -0.000636,
+      "resistance_Ohm": 5.78
+    },
+    {
+      "current_mA": -0.1,
+      "voltage_V": -7.3e-05,
+      "resistance_Ohm": 0.73
+    },
+    {
+      "current_mA": -0.09,
+      "voltage_V": -0.00067,
+      "resistance_Ohm": 7.44
+    },
+    {
+      "current_mA": -0.08,
+      "voltage_V": 0.000484,
+      "resistance_Ohm": -6.05
+    },
+    {
+      "current_mA": -0.07,
+      "voltage_V": -0.000637,
+      "resistance_Ohm": 9.1
+    },
+    {
+      "current_mA": -0.06,
+      "voltage_V": -3e-06,
+      "resistance_Ohm": 0.05
+    },
+    {
+      "current_mA": -0.05,
+      "voltage_V": 8.8e-05,
+      "resistance_Ohm": -1.76
+    },
+    {
+      "current_mA": -0.04,
+      "voltage_V": -0.000628,
+      "resistance_Ohm": 15.69
+    },
+    {
+      "current_mA": -0.03,
+      "voltage_V": -0.00027,
+      "resistance_Ohm": 8.99
+    },
+    {
+      "current_mA": -0.02,
+      "voltage_V": 0.000133,
+      "resistance_Ohm": -6.64
+    },
+    {
+      "current_mA": -0.01,
+      "voltage_V": -0.000498,
+      "resistance_Ohm": 49.84
+    },
+    {
+      "current_mA": 0.0,
+      "voltage_V": -0.000567,
+      "resistance_Ohm": "inf"
+    },
+    {
+      "current_mA": 0.01,
+      "voltage_V": 0.066373,
+      "resistance_Ohm": 6637.28
+    },
+    {
+      "current_mA": 0.02,
+      "voltage_V": 0.126404,
+      "resistance_Ohm": 6320.21
+    },
+    {
+      "current_mA": 0.03,
+      "voltage_V": 0.18229,
+      "resistance_Ohm": 6076.34
+    },
+    {
+      "current_mA": 0.04,
+      "voltage_V": 0.230189,
+      "resistance_Ohm": 5754.72
+    },
+    {
+      "current_mA": 0.05,
+      "voltage_V": 0.27573,
+      "resistance_Ohm": 5514.6
+    },
+    {
+      "current_mA": 0.06,
+      "voltage_V": 0.317369,
+      "resistance_Ohm": 5289.48
+    },
+    {
+      "current_mA": 0.07,
+      "voltage_V": 0.35478,
+      "resistance_Ohm": 5068.28
+    },
+    {
+      "current_mA": 0.08,
+      "voltage_V": 0.385456,
+      "resistance_Ohm": 4818.2
+    },
+    {
+      "current_mA": 0.09,
+      "voltage_V": 0.416175,
+      "resistance_Ohm": 4624.17
+    },
+    {
+      "current_mA": 0.1,
+      "voltage_V": 0.442902,
+      "resistance_Ohm": 4429.02
+    },
+    {
+      "current_mA": 0.11,
+      "voltage_V": 0.465949,
+      "resistance_Ohm": 4235.9
+    },
+    {
+      "current_mA": 0.12,
+      "voltage_V": 0.490558,
+      "resistance_Ohm": 4087.99
+    },
+    {
+      "current_mA": 0.13,
+      "voltage_V": 0.507815,
+      "resistance_Ohm": 3906.27
+    },
+    {
+      "current_mA": 0.14,
+      "voltage_V": 0.527947,
+      "resistance_Ohm": 3771.05
+    },
+    {
+      "current_mA": 0.15,
+      "voltage_V": 0.543729,
+      "resistance_Ohm": 3624.86
+    },
+    {
+      "current_mA": 0.16,
+      "voltage_V": 0.558746,
+      "resistance_Ohm": 3492.16
+    },
+    {
+      "current_mA": 0.17,
+      "voltage_V": 0.573114,
+      "resistance_Ohm": 3371.26
+    },
+    {
+      "current_mA": 0.18,
+      "voltage_V": 0.582537,
+      "resistance_Ohm": 3236.32
+    },
+    {
+      "current_mA": 0.19,
+      "voltage_V": 0.594639,
+      "resistance_Ohm": 3129.68
+    },
+    {
+      "current_mA": 0.2,
+      "voltage_V": 0.604866,
+      "resistance_Ohm": 3024.33
+    },
+    {
+      "current_mA": 0.21,
+      "voltage_V": 0.61482,
+      "resistance_Ohm": 2927.71
+    },
+    {
+      "current_mA": 0.22,
+      "voltage_V": 0.621936,
+      "resistance_Ohm": 2826.98
+    },
+    {
+      "current_mA": 0.23,
+      "voltage_V": 0.629171,
+      "resistance_Ohm": 2735.53
+    },
+    {
+      "current_mA": 0.24,
+      "voltage_V": 0.638166,
+      "resistance_Ohm": 2659.02
+    },
+    {
+      "current_mA": 0.25,
+      "voltage_V": 0.643287,
+      "resistance_Ohm": 2573.15
+    },
+    {
+      "current_mA": 0.26,
+      "voltage_V": 0.646696,
+      "resistance_Ohm": 2487.29
+    },
+    {
+      "current_mA": 0.27,
+      "voltage_V": 0.652452,
+      "resistance_Ohm": 2416.49
+    },
+    {
+      "current_mA": 0.28,
+      "voltage_V": 0.657295,
+      "resistance_Ohm": 2347.48
+    },
+    {
+      "current_mA": 0.29,
+      "voltage_V": 0.662425,
+      "resistance_Ohm": 2284.22
+    },
+    {
+      "current_mA": 0.3,
+      "voltage_V": 0.665875,
+      "resistance_Ohm": 2219.58
+    },
+    {
+      "current_mA": 0.31,
+      "voltage_V": 0.667746,
+      "resistance_Ohm": 2154.02
+    },
+    {
+      "current_mA": 0.32,
+      "voltage_V": 0.671561,
+      "resistance_Ohm": 2098.63
+    },
+    {
+      "current_mA": 0.33,
+      "voltage_V": 0.67273,
+      "resistance_Ohm": 2038.58
+    },
+    {
+      "current_mA": 0.34,
+      "voltage_V": 0.675261,
+      "resistance_Ohm": 1986.06
+    },
+    {
+      "current_mA": 0.35,
+      "voltage_V": 0.67989,
+      "resistance_Ohm": 1942.54
+    },
+    {
+      "current_mA": 0.36,
+      "voltage_V": 0.681146,
+      "resistance_Ohm": 1892.07
+    },
+    {
+      "current_mA": 0.37,
+      "voltage_V": 0.681441,
+      "resistance_Ohm": 1841.73
+    },
+    {
+      "current_mA": 0.38,
+      "voltage_V": 0.685577,
+      "resistance_Ohm": 1804.15
+    },
+    {
+      "current_mA": 0.39,
+      "voltage_V": 0.684785,
+      "resistance_Ohm": 1755.86
+    },
+    {
+      "current_mA": 0.4,
+      "voltage_V": 0.686377,
+      "resistance_Ohm": 1715.94
+    },
+    {
+      "current_mA": 0.41,
+      "voltage_V": 0.688844,
+      "resistance_Ohm": 1680.11
+    },
+    {
+      "current_mA": 0.42,
+      "voltage_V": 0.688907,
+      "resistance_Ohm": 1640.25
+    },
+    {
+      "current_mA": 0.43,
+      "voltage_V": 0.69033,
+      "resistance_Ohm": 1605.42
+    },
+    {
+      "current_mA": 0.44,
+      "voltage_V": 0.691719,
+      "resistance_Ohm": 1572.09
+    },
+    {
+      "current_mA": 0.45,
+      "voltage_V": 0.691817,
+      "resistance_Ohm": 1537.37
+    },
+    {
+      "current_mA": 0.46,
+      "voltage_V": 0.694165,
+      "resistance_Ohm": 1509.05
+    },
+    {
+      "current_mA": 0.47,
+      "voltage_V": 0.693574,
+      "resistance_Ohm": 1475.69
+    },
+    {
+      "current_mA": 0.48,
+      "voltage_V": 0.694468,
+      "resistance_Ohm": 1446.81
+    },
+    {
+      "current_mA": 0.49,
+      "voltage_V": 0.693873,
+      "resistance_Ohm": 1416.07
+    },
+    {
+      "current_mA": 0.5,
+      "voltage_V": 0.694661,
+      "resistance_Ohm": 1389.32
+    },
+    {
+      "current_mA": 0.51,
+      "voltage_V": 0.693681,
+      "resistance_Ohm": 1360.16
+    },
+    {
+      "current_mA": 0.52,
+      "voltage_V": 0.697349,
+      "resistance_Ohm": 1341.06
+    },
+    {
+      "current_mA": 0.53,
+      "voltage_V": 0.696886,
+      "resistance_Ohm": 1314.88
+    },
+    {
+      "current_mA": 0.54,
+      "voltage_V": 0.696722,
+      "resistance_Ohm": 1290.23
+    },
+    {
+      "current_mA": 0.55,
+      "voltage_V": 0.695901,
+      "resistance_Ohm": 1265.27
+    },
+    {
+      "current_mA": 0.56,
+      "voltage_V": 0.697423,
+      "resistance_Ohm": 1245.4
+    },
+    {
+      "current_mA": 0.57,
+      "voltage_V": 0.698642,
+      "resistance_Ohm": 1225.69
+    },
+    {
+      "current_mA": 0.58,
+      "voltage_V": 0.697866,
+      "resistance_Ohm": 1203.22
+    },
+    {
+      "current_mA": 0.59,
+      "voltage_V": 0.697543,
+      "resistance_Ohm": 1182.28
+    },
+    {
+      "current_mA": 0.6,
+      "voltage_V": 0.701496,
+      "resistance_Ohm": 1169.16
+    },
+    {
+      "current_mA": 0.61,
+      "voltage_V": 0.698388,
+      "resistance_Ohm": 1144.9
+    },
+    {
+      "current_mA": 0.62,
+      "voltage_V": 0.6986,
+      "resistance_Ohm": 1126.77
+    },
+    {
+      "current_mA": 0.63,
+      "voltage_V": 0.698698,
+      "resistance_Ohm": 1109.04
+    },
+    {
+      "current_mA": 0.64,
+      "voltage_V": 0.699817,
+      "resistance_Ohm": 1093.46
+    },
+    {
+      "current_mA": 0.65,
+      "voltage_V": 0.697851,
+      "resistance_Ohm": 1073.62
+    },
+    {
+      "current_mA": 0.66,
+      "voltage_V": 0.698405,
+      "resistance_Ohm": 1058.19
+    },
+    {
+      "current_mA": 0.67,
+      "voltage_V": 0.697332,
+      "resistance_Ohm": 1040.79
+    },
+    {
+      "current_mA": 0.68,
+      "voltage_V": 0.699072,
+      "resistance_Ohm": 1028.05
+    },
+    {
+      "current_mA": 0.69,
+      "voltage_V": 0.697489,
+      "resistance_Ohm": 1010.85
+    },
+    {
+      "current_mA": 0.7,
+      "voltage_V": 0.700202,
+      "resistance_Ohm": 1000.29
+    },
+    {
+      "current_mA": 0.71,
+      "voltage_V": 0.699365,
+      "resistance_Ohm": 985.02
+    },
+    {
+      "current_mA": 0.72,
+      "voltage_V": 0.699338,
+      "resistance_Ohm": 971.3
+    },
+    {
+      "current_mA": 0.73,
+      "voltage_V": 0.700295,
+      "resistance_Ohm": 959.31
+    },
+    {
+      "current_mA": 0.74,
+      "voltage_V": 0.700427,
+      "resistance_Ohm": 946.52
+    },
+    {
+      "current_mA": 0.75,
+      "voltage_V": 0.697978,
+      "resistance_Ohm": 930.64
+    },
+    {
+      "current_mA": 0.76,
+      "voltage_V": 0.698955,
+      "resistance_Ohm": 919.68
+    },
+    {
+      "current_mA": 0.77,
+      "voltage_V": 0.700959,
+      "resistance_Ohm": 910.34
+    },
+    {
+      "current_mA": 0.78,
+      "voltage_V": 0.699206,
+      "resistance_Ohm": 896.42
+    },
+    {
+      "current_mA": 0.79,
+      "voltage_V": 0.698267,
+      "resistance_Ohm": 883.88
+    },
+    {
+      "current_mA": 0.8,
+      "voltage_V": 0.699351,
+      "resistance_Ohm": 874.19
+    },
+    {
+      "current_mA": 0.81,
+      "voltage_V": 0.699099,
+      "resistance_Ohm": 863.09
+    },
+    {
+      "current_mA": 0.82,
+      "voltage_V": 0.698572,
+      "resistance_Ohm": 851.92
+    },
+    {
+      "current_mA": 0.83,
+      "voltage_V": 0.700738,
+      "resistance_Ohm": 844.26
+    },
+    {
+      "current_mA": 0.84,
+      "voltage_V": 0.699152,
+      "resistance_Ohm": 832.32
+    },
+    {
+      "current_mA": 0.85,
+      "voltage_V": 0.701219,
+      "resistance_Ohm": 824.96
+    },
+    {
+      "current_mA": 0.86,
+      "voltage_V": 0.700737,
+      "resistance_Ohm": 814.81
+    },
+    {
+      "current_mA": 0.87,
+      "voltage_V": 0.69966,
+      "resistance_Ohm": 804.21
+    },
+    {
+      "current_mA": 0.88,
+      "voltage_V": 0.699737,
+      "resistance_Ohm": 795.16
+    },
+    {
+      "current_mA": 0.89,
+      "voltage_V": 0.698858,
+      "resistance_Ohm": 785.23
+    },
+    {
+      "current_mA": 0.9,
+      "voltage_V": 0.701646,
+      "resistance_Ohm": 779.61
+    },
+    {
+      "current_mA": 0.91,
+      "voltage_V": 0.699214,
+      "resistance_Ohm": 768.37
+    },
+    {
+      "current_mA": 0.92,
+      "voltage_V": 0.700896,
+      "resistance_Ohm": 761.84
+    },
+    {
+      "current_mA": 0.93,
+      "voltage_V": 0.700232,
+      "resistance_Ohm": 752.94
+    },
+    {
+      "current_mA": 0.94,
+      "voltage_V": 0.702563,
+      "resistance_Ohm": 747.41
+    },
+    {
+      "current_mA": 0.95,
+      "voltage_V": 0.698227,
+      "resistance_Ohm": 734.98
+    },
+    {
+      "current_mA": 0.96,
+      "voltage_V": 0.698635,
+      "resistance_Ohm": 727.74
+    },
+    {
+      "current_mA": 0.97,
+      "voltage_V": 0.700851,
+      "resistance_Ohm": 722.53
+    },
+    {
+      "current_mA": 0.98,
+      "voltage_V": 0.700362,
+      "resistance_Ohm": 714.65
+    },
+    {
+      "current_mA": 0.99,
+      "voltage_V": 0.701482,
+      "resistance_Ohm": 708.57
+    },
+    {
+      "current_mA": 1.0,
+      "voltage_V": 0.700995,
+      "resistance_Ohm": 701.0
+    }
+  ]
+}

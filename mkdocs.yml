@@ -38,13 +38,6 @@ nav:
     - AI Analysis: features/analysis.md
     - Safety System: features/safety.md
     - Web GUI: features/web-gui.md
-    - Terminal Panel: features/terminal.md
-  - Templates:
-    - Overview: templates/overview.md
-    - Template Catalog: templates/catalog.md
-  - API Reference:
-    - CLI Commands: api/cli.md
-    - MCP Tools: api/mcp.md
   - Contributing: contributing.md
 
 markdown_extensions:

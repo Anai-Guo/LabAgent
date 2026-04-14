@@ -67,6 +67,7 @@ def create_default_registry() -> ToolRegistry:
     """Create registry with all lab tools registered."""
     from lab_harness.harness.tools.analyze_tool import AnalyzeDataTool
     from lab_harness.harness.tools.classify_tool import ClassifyInstrumentsTool
+    from lab_harness.harness.tools.generate_skill_tool import GenerateSkillTool
     from lab_harness.harness.tools.health_tool import HealthcheckTool
     from lab_harness.harness.tools.literature_tool import SearchLiteratureTool
     from lab_harness.harness.tools.memory_tool import RecallExperimentsTool
@@ -84,6 +85,7 @@ def create_default_registry() -> ToolRegistry:
         AnalyzeDataTool,
         RecallExperimentsTool,
         HealthcheckTool,
+        GenerateSkillTool,
     ]:
         registry.register(tool_cls())
     return registry
