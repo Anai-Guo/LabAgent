@@ -1,0 +1,1401 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Your AI-powered lab assistant">
+      
+      
+      
+        <link rel="canonical" href="https://anai-guo.github.io/LabAgent/features/discovery/">
+      
+      
+        <link rel="prev" href="../../getting-started/configuration/">
+      
+      
+        <link rel="next" href="../planning/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>Instrument Discovery - LabAgent</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="deep-purple" data-md-color-accent="amber">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#instrument-discovery" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="LabAgent" class="md-header__button md-logo" aria-label="LabAgent" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            LabAgent
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Instrument Discovery
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="deep-purple" data-md-color-accent="amber"  aria-label="Light mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Light mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="deep-purple" data-md-color-accent="amber"  aria-label="Dark mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Dark mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/Anai-Guo/LabAgent" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    Anai-Guo/LabAgent
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../getting-started/installation/" class="md-tabs__link">
+          
+  
+  
+  Getting Started
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="./" class="md-tabs__link">
+          
+  
+  
+  Features
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../contributing/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Contributing
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="LabAgent" class="md-nav__button md-logo" aria-label="LabAgent" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    LabAgent
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/Anai-Guo/LabAgent" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    Anai-Guo/LabAgent
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Getting Started
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/installation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Installation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/quickstart/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Quick Start
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/configuration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Configuration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Features
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Features
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Instrument Discovery
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Instrument Discovery
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#how-scanning-works" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How Scanning Works
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="How Scanning Works">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pyvisa-bus-scanning" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        PyVISA Bus Scanning
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#serial-port-scanning" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Serial Port Scanning
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#scan-output" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Scan Output
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ai-instrument-classifier" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        AI Instrument Classifier
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="AI Instrument Classifier">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#stage-1-dictionary-lookup" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Stage 1: Dictionary Lookup
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#stage-2-llm-fallback" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Stage 2: LLM Fallback
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#measurement-role-requirements" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Measurement Role Requirements
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#extending-the-instrument-database" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Extending the Instrument Database
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../planning/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Measurement Planning
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../analysis/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AI Analysis
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../safety/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Safety System
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../web-gui/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Web GUI
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../contributing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Contributing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#how-scanning-works" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How Scanning Works
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="How Scanning Works">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pyvisa-bus-scanning" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        PyVISA Bus Scanning
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#serial-port-scanning" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Serial Port Scanning
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#scan-output" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Scan Output
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ai-instrument-classifier" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        AI Instrument Classifier
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="AI Instrument Classifier">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#stage-1-dictionary-lookup" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Stage 1: Dictionary Lookup
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#stage-2-llm-fallback" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Stage 2: LLM Fallback
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#measurement-role-requirements" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Measurement Role Requirements
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#extending-the-instrument-database" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Extending the Instrument Database
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="instrument-discovery">Instrument Discovery</h1>
+<p>LabAgent automatically discovers laboratory instruments connected via GPIB, USB, serial, and TCP/IP buses. The discovery pipeline scans all available communication interfaces, queries each instrument for its identity, and classifies instruments into measurement roles using a two-stage approach: deterministic dictionary lookup followed by an optional LLM fallback.</p>
+<h2 id="how-scanning-works">How Scanning Works</h2>
+<h3 id="pyvisa-bus-scanning">PyVISA Bus Scanning</h3>
+<p>The primary scanner uses PyVISA to enumerate all VISA resources on the system. For each discovered resource, it sends a standard IEEE 488.2 <code>*IDN?</code> query and parses the four-field response (vendor, model, serial number, firmware version).</p>
+<div class="highlight"><pre><span></span><code>labharness<span class="w"> </span>scan
+</code></pre></div>
+<p>Supported bus types detected from the resource string:</p>
+<table>
+<thead>
+<tr>
+<th>Bus Type</th>
+<th>Resource Pattern</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GPIB</td>
+<td><code>GPIB0::N::INSTR</code></td>
+<td><code>GPIB0::5::INSTR</code></td>
+</tr>
+<tr>
+<td>USB</td>
+<td><code>USB0::...::INSTR</code></td>
+<td><code>USB0::0x05E6::0x2400::INSTR</code></td>
+</tr>
+<tr>
+<td>Serial (VISA)</td>
+<td><code>ASRL</code> or <code>COM</code></td>
+<td><code>ASRL1::INSTR</code></td>
+</tr>
+<tr>
+<td>Ethernet</td>
+<td><code>TCPIP::...</code></td>
+<td><code>TCPIP0::192.168.1.10::INSTR</code></td>
+</tr>
+</tbody>
+</table>
+<p>The scanner is configurable with a timeout (default 2000 ms per instrument) and can optionally skip the <code>*IDN?</code> query if you only need resource enumeration.</p>
+<h3 id="serial-port-scanning">Serial Port Scanning</h3>
+<p>For instruments that do not appear on the VISA bus (standalone serial devices, Arduino-based controllers, custom hardware), a separate serial scanner enumerates all available COM ports using pyserial. Serial scanning is non-invasive: it lists ports and their metadata (manufacturer, description, serial number) without sending any commands, since probing serial devices can interfere with running equipment.</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># Serial ports are included automatically in the scan</span>
+labharness<span class="w"> </span>scan
+</code></pre></div>
+<h3 id="scan-output">Scan Output</h3>
+<p>Each discovered instrument is represented as an <code>InstrumentRecord</code> containing:</p>
+<ul>
+<li><strong>resource</strong> -- VISA resource string or COM port path</li>
+<li><strong>vendor</strong> -- manufacturer name (e.g., KEITHLEY, Lakeshore)</li>
+<li><strong>model</strong> -- model number (e.g., MODEL 2400, 335)</li>
+<li><strong>serial</strong> -- instrument serial number</li>
+<li><strong>firmware</strong> -- firmware version</li>
+<li><strong>bus</strong> -- communication bus type (gpib, usb, serial, ethernet)</li>
+</ul>
+<p>You can save the full inventory to a JSON file for reuse:</p>
+<div class="highlight"><pre><span></span><code>labharness<span class="w"> </span>scan<span class="w"> </span>-o<span class="w"> </span>inventory.json
+</code></pre></div>
+<h2 id="ai-instrument-classifier">AI Instrument Classifier</h2>
+<p>After scanning, the classifier maps instruments to measurement roles. This is a two-stage process.</p>
+<h3 id="stage-1-dictionary-lookup">Stage 1: Dictionary Lookup</h3>
+<p>A built-in database of ~68 known instruments across 26 vendors provides instant,
+deterministic classification. Selected highlights (see
+<code>src/lab_harness/discovery/classifier.py</code> for the full list):</p>
+<table>
+<thead>
+<tr>
+<th>Models</th>
+<th>Vendor</th>
+<th>Assigned Roles</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2400, 2410, 2420, 2440</td>
+<td>Keithley</td>
+<td>source_meter</td>
+</tr>
+<tr>
+<td>2000, 2001, 2002</td>
+<td>Keithley</td>
+<td>dmm</td>
+</tr>
+<tr>
+<td>2182, 2182A</td>
+<td>Keithley</td>
+<td>nanovoltmeter</td>
+</tr>
+<tr>
+<td>6221</td>
+<td>Keithley</td>
+<td>ac_current_source</td>
+</tr>
+<tr>
+<td>6517, 6517A, 6517B</td>
+<td>Keithley</td>
+<td>electrometer</td>
+</tr>
+<tr>
+<td>425, 455, 475</td>
+<td>Lakeshore</td>
+<td>gaussmeter</td>
+</tr>
+<tr>
+<td>335, 336, 340, 350</td>
+<td>Lakeshore</td>
+<td>temperature_controller</td>
+</tr>
+<tr>
+<td>Mercury iTC</td>
+<td>Oxford Instruments</td>
+<td>temp_controller_cryo</td>
+</tr>
+<tr>
+<td>E4980A, DSOX1204G, MSOX3054T, 33500B/33622A, E36313A, N9320B, E5071C</td>
+<td>Keysight</td>
+<td>lcr_meter / oscilloscope / function_generator / power_supply_dc / spectrum_analyzer / vna</td>
+</tr>
+<tr>
+<td>TDS3054C, MSO44, AFG1062/AFG3102</td>
+<td>Tektronix</td>
+<td>oscilloscope / function_generator</td>
+</tr>
+<tr>
+<td>DS1054Z, MSO5354, DG1032Z, DP832A</td>
+<td>Rigol</td>
+<td>oscilloscope / function_generator / power_supply_dc</td>
+</tr>
+<tr>
+<td>FSV, ZNA</td>
+<td>Rohde &amp; Schwarz</td>
+<td>spectrum_analyzer / vna</td>
+</tr>
+<tr>
+<td>SR830, SR860, SR865A</td>
+<td>SRS</td>
+<td>lockin_amplifier</td>
+</tr>
+<tr>
+<td>MFLI, HF2LI</td>
+<td>Zurich Instruments</td>
+<td>lockin_amplifier</td>
+</tr>
+<tr>
+<td>PM100D, LDC205C, MDT693B</td>
+<td>Thorlabs</td>
+<td>optical_power_meter / laser_diode_driver / piezo_controller</td>
+</tr>
+<tr>
+<td>1830-C</td>
+<td>Newport</td>
+<td>optical_power_meter</td>
+</tr>
+<tr>
+<td>USB2000, QEPro, CCS100</td>
+<td>Ocean Insight / Thorlabs</td>
+<td>spectrometer_compact</td>
+</tr>
+<tr>
+<td>SP-200, VSP, VMP3</td>
+<td>BioLogic</td>
+<td>potentiostat</td>
+</tr>
+<tr>
+<td>Reference 600+, Interface 1010B</td>
+<td>Gamry</td>
+<td>potentiostat</td>
+</tr>
+<tr>
+<td>CHI760E, CHI660E</td>
+<td>CH Instruments</td>
+<td>potentiostat</td>
+</tr>
+<tr>
+<td>PGSTAT302N</td>
+<td>Metrohm Autolab</td>
+<td>potentiostat</td>
+</tr>
+<tr>
+<td>PalmSens4</td>
+<td>Palmsens</td>
+<td>potentiostat</td>
+</tr>
+<tr>
+<td>CLARIOstar, SpectraMax M5</td>
+<td>BMG / Molecular Devices</td>
+<td>plate_reader</td>
+</tr>
+<tr>
+<td>XS205, Adventurer</td>
+<td>Mettler Toledo / Ohaus</td>
+<td>balance</td>
+</tr>
+<tr>
+<td>Orion A221</td>
+<td>Thermo Fisher</td>
+<td>ph_meter</td>
+</tr>
+<tr>
+<td>MC-series</td>
+<td>Alicat</td>
+<td>mass_flow_controller</td>
+</tr>
+<tr>
+<td>PR4000</td>
+<td>MKS</td>
+<td>pressure_gauge</td>
+</tr>
+<tr>
+<td>USB-6351, USB-6001, USB-6009</td>
+<td>National Instruments</td>
+<td>daq</td>
+</tr>
+<tr>
+<td>PPMS, MPMS3</td>
+<td>Quantum Design</td>
+<td>ppms / mpms</td>
+</tr>
+</tbody>
+</table>
+<h3 id="stage-2-llm-fallback">Stage 2: LLM Fallback</h3>
+<p>When the dictionary lookup cannot assign all required roles for a measurement type, the classifier invokes an LLM. The LLM receives the list of unmatched instruments (with their <code>*IDN?</code> responses) and the list of still-needed roles. It returns structured JSON with role assignments, confidence scores, and reasoning.</p>
+<p>Safety guardrails ensure the LLM can only assign roles that are genuinely unassigned -- it cannot override dictionary-based assignments or assign duplicate roles.</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># Classify instruments for an AHE measurement</span>
+labharness<span class="w"> </span>classify<span class="w"> </span>AHE
+
+<span class="c1"># Use a saved inventory file</span>
+labharness<span class="w"> </span>classify<span class="w"> </span>AHE<span class="w"> </span>--inventory<span class="w"> </span>inventory.json
+</code></pre></div>
+<h3 id="measurement-role-requirements">Measurement Role Requirements</h3>
+<p>Each measurement type defines its required instrument roles. Example configurations:</p>
+<table>
+<thead>
+<tr>
+<th>Measurement</th>
+<th>Required Roles</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>IV</td>
+<td>source_meter</td>
+</tr>
+<tr>
+<td>AHE</td>
+<td>source_meter, dmm, gaussmeter</td>
+</tr>
+<tr>
+<td>MR</td>
+<td>source_meter, dmm, gaussmeter</td>
+</tr>
+<tr>
+<td>RT</td>
+<td>source_meter, temperature_controller</td>
+</tr>
+<tr>
+<td>SOT</td>
+<td>source_meter, ac_current_source, dmm, gaussmeter</td>
+</tr>
+<tr>
+<td>CV</td>
+<td>lcr_meter, temperature_controller</td>
+</tr>
+<tr>
+<td>Hall</td>
+<td>source_meter, dmm, magnet</td>
+</tr>
+<tr>
+<td>PPMS_RT</td>
+<td>ppms</td>
+</tr>
+</tbody>
+</table>
+<p>The full classifier supports 40+ measurement types across electrical, magnetic, thermoelectric, optical, superconducting, electrochemical, and biosensor disciplines.</p>
+<h2 id="extending-the-instrument-database">Extending the Instrument Database</h2>
+<p>To add support for new instruments, update the <code>KNOWN_INSTRUMENTS</code> dictionary in <code>src/lab_harness/discovery/classifier.py</code> with the model string, vendor, assignable roles, and capabilities. Instruments not in the database will be handled by the LLM fallback if an API key is configured.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.top", "search.suggest", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>
