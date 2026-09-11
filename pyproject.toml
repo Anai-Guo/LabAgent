@@ -44,6 +44,11 @@ dependencies = [
     "pyvisa>=1.14.0,<2",
     "pyyaml>=6.0,<7",
     "pydantic>=2.0,<3",
+    # Security floor for litellm's transitive aiohttp dependency:
+    # 3.13.x is affected by CVE-2026-34993 / CVE-2026-47265 (fixed in 3.14.0), and
+    # 3.14.0 by CVE-2026-54273..54280 (fixed in 3.14.1), and 3.14.0-3.14.2 by
+    # CVE-2026-59881 / CVE-2026-69243 / CVE-2026-69244 (fixed in 3.14.3).
+    "aiohttp>=3.14.3",
 ]
 
 [project.optional-dependencies]
