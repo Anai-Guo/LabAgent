@@ -39,7 +39,12 @@ classifiers = [
     "Topic :: Scientific/Engineering :: Bio-Informatics",
 ]
 dependencies = [
-    "mcp>=1.12.0,<2",
+    # Security floor: mcp < 1.28.1 accepts WebSocket handshakes without Host/Origin
+    # validation in the deprecated mcp.server.websocket transport
+    # (CVE-2026-59950 / GHSA-vj7q-gjh5-988w, fixed in 1.28.1). LabAgent only uses the
+    # stdio transports (FastMCP server, mcp.client.stdio), so it is not directly
+    # exposed, but the floor keeps `pip-audit` clean for downstream installs.
+    "mcp>=1.28.1,<2",
     # Cap litellm below 1.98: 1.98.0+ imports typing.NotRequired unguarded (Python 3.11+ only)
     # via llms/anthropic/experimental_pass_through/context_management/editors/compact.py, which
     # is pulled in by `import litellm` and breaks the Python 3.10 CI matrix. Lift the cap once
