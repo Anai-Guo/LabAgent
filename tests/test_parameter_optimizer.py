@@ -100,3 +100,25 @@ def test_optimize_omits_optional_context_when_absent(mock_router_cls, mock_setti
     assert "Measurement: CYCLIC_VOLTAMMETRY" in user_msg
     assert "Sample:" not in user_msg
     assert "Current defaults:" not in user_msg
+
+
+@patch("lab_harness.config.Settings.load")
+@patch("lab_harness.llm.router.LLMRouter")
+def test_optimize_handles_single_line_fenced_reply(mock_router_cls, mock_settings):
+    """A fenced reply with no newline used to raise ValueError; it must still parse."""
+    mock_settings.return_value.model.api_key = "test"
+    mock_settings.return_value.model.base_url = None
+    mock_router_cls.return_value = _make_mock_router(f"```{json.dumps(SUGGESTION)}```")
+
+    assert optimize_parameters("IV") == SUGGESTION
+
+
+@patch("lab_harness.config.Settings.load")
+@patch("lab_harness.llm.router.LLMRouter")
+def test_optimize_bare_fence_reply_degrades_to_reasoning(mock_router_cls, mock_settings):
+    """A reply that is only a fence marker falls back to reasoning instead of crashing."""
+    mock_settings.return_value.model.api_key = "test"
+    mock_settings.return_value.model.base_url = None
+    mock_router_cls.return_value = _make_mock_router("```")
+
+    assert optimize_parameters("IV") == {"reasoning": "```"}
