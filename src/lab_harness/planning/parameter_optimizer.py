@@ -74,7 +74,9 @@ def optimize_parameters(
     # Parse JSON from response (strip markdown fences if present)
     text = content
     if text.startswith("```"):
-        text = text[text.index("\n") + 1 :]
+        # Drop the opening fence line; a single-line reply has no newline to split on.
+        newline = text.find("\n")
+        text = text[newline + 1 :] if newline != -1 else text[3:]
         if text.endswith("```"):
             text = text[:-3]
         text = text.strip()
