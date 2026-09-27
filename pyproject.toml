@@ -58,6 +58,18 @@ dependencies = [
     # 3.14.0 by CVE-2026-54273..54280 (fixed in 3.14.1), and 3.14.0-3.14.2 by
     # CVE-2026-59881 / CVE-2026-69243 / CVE-2026-69244 (fixed in 3.14.3).
     "aiohttp>=3.14.3",
+    # Security floors for mcp's transitive server stack (mcp itself only requires
+    # anyio>=4.5 / starlette>=0.27 / python-multipart>=0.0.9 / pydantic-settings>=2.5.2):
+    # - anyio < 4.14.2: CVE-2026-63374 (IDNA TLS hostname check), CVE-2026-64847 (undrained worker stderr)
+    # - starlette < 1.3.1: CVE-2026-54282 (request.url path reconstruction), CVE-2026-54283 (urlencoded form limits)
+    # - python-multipart < 0.0.31: CVE-2026-53538 / 53539 / 53540 (urlencoded parsing, negative Content-Length)
+    # - pydantic-settings < 2.14.2: CVE-2026-58203 (nested secrets_dir symlink escape)
+    # LabAgent only uses mcp's stdio transports, so it is not directly exposed; the floors keep
+    # `pip-audit` clean for downstream installs that reuse an older environment.
+    "anyio>=4.14.2",
+    "starlette>=1.3.1",
+    "python-multipart>=0.0.31",
+    "pydantic-settings>=2.14.2",
 ]
 
 [project.optional-dependencies]
