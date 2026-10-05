@@ -76,3 +76,107 @@ def test_load_no_args():
     s = Settings.load()
     assert isinstance(s.model, ModelConfig)
     assert isinstance(s.data_dir, Path)
+
+
+# ---------------------------------------------------------------------------
+# Config file contents and precedence
+# ---------------------------------------------------------------------------
+
+_LABHARNESS_ENV_VARS = (
+    "LABHARNESS_API_KEY",
+    "LABHARNESS_MODEL",
+    "LABHARNESS_BASE_URL",
+    "LABHARNESS_PROVIDER",
+    "LABHARNESS_DATA_DIR",
+)
+
+
+@pytest.fixture()
+def clean_env(monkeypatch: pytest.MonkeyPatch) -> pytest.MonkeyPatch:
+    """Remove LABHARNESS_* variables so ambient shell config cannot leak in."""
+    for name in _LABHARNESS_ENV_VARS:
+        monkeypatch.delenv(name, raising=False)
+    return monkeypatch
+
+
+def _write_config(tmp_path: Path, text: str) -> Path:
+    path = tmp_path / "models.yaml"
+    path.write_text(text, encoding="utf-8")
+    return path
+
+
+def test_config_file_model_section(clean_env: pytest.MonkeyPatch, tmp_path: Path):
+    """The ``model:`` section of the config file populates ModelConfig."""
+    path = _write_config(
+        tmp_path,
+        "model:\n"
+        "  provider: ollama\n"
+        "  model: qwen3:32b\n"
+        "  base_url: http://localhost:11434\n"
+        "  temperature: 0.2\n"
+        "  max_tokens: 1024\n",
+    )
+    s = Settings.load(config_path=path)
+    assert s.model.provider == "ollama"
+    assert s.model.model == "qwen3:32b"
+    assert s.model.base_url == "http://localhost:11434"
+    assert s.model.temperature == 0.2
+    assert s.model.max_tokens == 1024
+    assert s.model.api_key is None
+
+
+def test_config_file_partial_keeps_defaults(clean_env: pytest.MonkeyPatch, tmp_path: Path):
+    """Fields missing from the config file fall back to ModelConfig defaults."""
+    path = _write_config(tmp_path, "model:\n  model: gpt-4o\n")
+    s = Settings.load(config_path=path)
+    assert s.model.model == "gpt-4o"
+    assert s.model.provider == ModelConfig().provider
+    assert s.model.max_tokens == ModelConfig().max_tokens
+
+
+@pytest.mark.parametrize("text", ["", "# only a comment\n", "other_section:\n  key: value\n"])
+def test_config_file_without_model_section(clean_env: pytest.MonkeyPatch, tmp_path: Path, text: str):
+    """Empty files or files without ``model:`` yield the default ModelConfig."""
+    path = _write_config(tmp_path, text)
+    s = Settings.load(config_path=path)
+    assert s.model == ModelConfig()
+
+
+def test_env_overrides_config_file(clean_env: pytest.MonkeyPatch, tmp_path: Path):
+    """Environment variables take precedence over values from the config file."""
+    path = _write_config(
+        tmp_path,
+        "model:\n  provider: anthropic\n  model: claude-sonnet-4-20250514\n  base_url: http://file-host:1\n",
+    )
+    clean_env.setenv("LABHARNESS_PROVIDER", "openai")
+    clean_env.setenv("LABHARNESS_MODEL", "gpt-4o")
+    clean_env.setenv("LABHARNESS_BASE_URL", "http://env-host:2")
+    s = Settings.load(config_path=path)
+    assert s.model.provider == "openai"
+    assert s.model.model == "gpt-4o"
+    assert s.model.base_url == "http://env-host:2"
+
+
+def test_env_override_api_key_and_base_url(clean_env: pytest.MonkeyPatch):
+    """LABHARNESS_API_KEY and LABHARNESS_BASE_URL populate the model config."""
+    clean_env.setenv("LABHARNESS_API_KEY", "test-key-not-real")
+    clean_env.setenv("LABHARNESS_BASE_URL", "http://localhost:8000/v1")
+    s = Settings.load()
+    assert s.model.api_key == "test-key-not-real"
+    assert s.model.base_url == "http://localhost:8000/v1"
+
+
+def test_empty_env_vars_are_ignored(clean_env: pytest.MonkeyPatch, tmp_path: Path):
+    """Empty LABHARNESS_* values do not clobber values from the config file."""
+    path = _write_config(tmp_path, "model:\n  model: gpt-4o\n")
+    clean_env.setenv("LABHARNESS_MODEL", "")
+    clean_env.setenv("LABHARNESS_API_KEY", "")
+    s = Settings.load(config_path=path)
+    assert s.model.model == "gpt-4o"
+    assert s.model.api_key is None
+
+
+def test_data_dir_default_without_env(clean_env: pytest.MonkeyPatch):
+    """Without LABHARNESS_DATA_DIR the data directory defaults to ./data."""
+    s = Settings.load()
+    assert s.data_dir == Path("./data")
