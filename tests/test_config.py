@@ -2,10 +2,12 @@
 
 from __future__ import annotations
 
+import builtins
 from pathlib import Path
 
 import pytest
 
+from lab_harness import config as config_module
 from lab_harness.config import ModelConfig, Settings
 
 # ---------------------------------------------------------------------------
@@ -180,3 +182,22 @@ def test_data_dir_default_without_env(clean_env: pytest.MonkeyPatch):
     """Without LABHARNESS_DATA_DIR the data directory defaults to ./data."""
     s = Settings.load()
     assert s.data_dir == Path("./data")
+
+
+def test_config_file_read_as_utf8_regardless_of_locale(clean_env: pytest.MonkeyPatch, tmp_path: Path):
+    """A UTF-8 models.yaml with non-ASCII text loads intact even under a non-UTF-8 locale.
+
+    Windows lab PCs typically default to a legacy code page (e.g. cp1252), so the
+    file must be opened with an explicit encoding rather than the locale default.
+    """
+    path = _write_config(tmp_path, "# temperature in °C\nmodel:\n  provider: ollama\n  model: qwen3-μ\n")
+
+    def legacy_locale_open(file, mode="r", *args, encoding=None, **kwargs):
+        if "b" not in mode and encoding is None:
+            encoding = "cp1252"
+        return builtins.open(file, mode, *args, encoding=encoding, **kwargs)
+
+    clean_env.setattr(config_module, "open", legacy_locale_open, raising=False)
+    s = Settings.load(config_path=path)
+    assert s.model.provider == "ollama"
+    assert s.model.model == "qwen3-μ"
