@@ -85,7 +85,9 @@ def generate_skill(
 
     # Strip markdown fences if present
     if content.startswith("```"):
-        content = content[content.index("\n") + 1 :]
+        # Drop the opening fence line; a single-line reply has no newline to split on.
+        newline = content.find("\n")
+        content = content[newline + 1 :] if newline != -1 else content[3:]
         if content.endswith("```"):
             content = content[:-3]
         content = content.strip()
