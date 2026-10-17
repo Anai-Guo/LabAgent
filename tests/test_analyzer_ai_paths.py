@@ -78,6 +78,16 @@ class TestGenerateScriptWithAI:
         script = Analyzer().generate_script_with_ai(tmp_path / "x.csv", "IV")
         assert script == "import numpy\nprint(1)"
 
+    @pytest.mark.parametrize(
+        ("raw", "expected"),
+        [("```print(1)```", "print(1)"), ("```", ""), ("```python\n```", "")],
+        ids=["single-line", "bare", "empty-block"],
+    )
+    def test_fences_without_newline_do_not_raise(self, llm_on, tmp_path: Path, raw: str, expected: str):
+        """A fenced reply with no newline after the opening fence must not raise ValueError."""
+        llm_on.return_value = _router(raw)
+        assert Analyzer().generate_script_with_ai(tmp_path / "x.csv", "IV") == expected
+
 
 class TestInterpretResults:
     def test_data_path_preview_in_context(self, llm_on, tmp_path: Path):
