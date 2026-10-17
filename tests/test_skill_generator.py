@@ -63,6 +63,24 @@ def test_generate_strips_markdown_fences(mock_router_cls, mock_settings):
     assert generate_skill("HALL", example_skills=[]) == SKILL_MD
 
 
+@pytest.mark.parametrize(
+    ("raw", "expected"),
+    [
+        ("```# Hall Effect```", "# Hall Effect"),  # single-line fence: no newline after the opening fence
+        ("```", ""),  # bare fence only
+        ("```markdown\n```", ""),  # empty fenced block
+    ],
+    ids=["single-line", "bare", "empty-block"],
+)
+@patch("lab_harness.config.Settings.load")
+@patch("lab_harness.llm.router.LLMRouter")
+def test_generate_handles_fences_without_newline(mock_router_cls, mock_settings, raw, expected):
+    """A fenced reply with no newline after the opening fence must not raise ValueError."""
+    _configure(mock_settings, mock_router_cls, raw)
+
+    assert generate_skill("HALL", example_skills=[]) == expected
+
+
 @patch("lab_harness.config.Settings.load")
 @patch("lab_harness.llm.router.LLMRouter")
 def test_generate_prompt_includes_context_and_examples(mock_router_cls, mock_settings):
