@@ -2,7 +2,9 @@
 
 from unittest.mock import MagicMock
 
-from lab_harness.discovery.classifier import classify_instruments
+import pytest
+
+from lab_harness.discovery.classifier import classify_instruments, classify_with_llm
 from lab_harness.models.instrument import InstrumentBus, InstrumentRecord, LabInventory
 
 
@@ -150,3 +152,27 @@ def test_classify_without_router_unchanged():
     assert "source_meter" in assignments
     assert "gaussmeter" not in assignments
     assert "dmm" not in assignments
+
+
+_GAUSSMETER_JSON = (
+    '{"assignments": {"USB0::0x1234::INSTR": {"role": "gaussmeter", "confidence": 0.8, "reasoning": "x"}}}'
+)
+
+
+@pytest.mark.parametrize(
+    "content",
+    [
+        f"```json\n{_GAUSSMETER_JSON}\n```",
+        f"```{_GAUSSMETER_JSON}```",
+        f"```\n{_GAUSSMETER_JSON}```",
+        _GAUSSMETER_JSON,
+    ],
+    ids=["multi-line", "single-line", "bare-fence", "no-fence"],
+)
+def test_classify_with_llm_strips_fences(content):
+    """Fenced replies parse, including single-line fences with no newline."""
+    unmatched = [_make_instrument("USB0::0x1234::INSTR", "ACME", "MagSensor-9000")]
+
+    assignments = classify_with_llm(unmatched, ["gaussmeter"], "AHE", _make_mock_router(content))
+
+    assert assignments["gaussmeter"].resource == "USB0::0x1234::INSTR"
