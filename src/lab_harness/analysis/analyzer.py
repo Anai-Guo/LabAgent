@@ -143,8 +143,9 @@ class Analyzer:
 
         # Strip markdown fences if present
         if script.startswith("```"):
-            first_nl = script.index("\n")
-            script = script[first_nl + 1 :]
+            # Drop the opening fence line; a single-line reply has no newline to split on.
+            first_nl = script.find("\n")
+            script = script[first_nl + 1 :] if first_nl != -1 else script[3:]
             if script.endswith("```"):
                 script = script[:-3]
             script = script.strip()
