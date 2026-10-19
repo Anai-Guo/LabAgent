@@ -138,3 +138,46 @@ def test_save_skill_writes_lowercase_file_and_creates_dir(tmp_path, monkeypatch)
 
     assert path == skills_dir / "hall.md"
     assert path.read_text() == SKILL_MD
+
+
+@pytest.fixture
+def legacy_locale_paths(monkeypatch):
+    """Make Path.read_text/write_text default to cp1252, like a typical Windows lab PC."""
+    from pathlib import Path
+
+    real_read, real_write = Path.read_text, Path.write_text
+
+    def read_text(self, encoding=None, errors=None):
+        return real_read(self, encoding=encoding or "cp1252", errors=errors)
+
+    def write_text(self, data, encoding=None, errors=None, newline=None):
+        return real_write(self, data, encoding=encoding or "cp1252", errors=errors, newline=newline)
+
+    monkeypatch.setattr(Path, "read_text", read_text)
+    monkeypatch.setattr(Path, "write_text", write_text)
+
+
+def test_save_skill_writes_utf8_regardless_of_locale(tmp_path, monkeypatch, legacy_locale_paths):
+    """Saved skills must be UTF-8 so the registry (which reads UTF-8) can load them."""
+    monkeypatch.setattr(generator, "SKILLS_DIR", tmp_path)
+    content = SKILL_MD + "\n\nKeep R below 10 MΩ at 2 K (±0.1 µA)."
+
+    path = save_skill("HALL", content)
+
+    assert path.read_text(encoding="utf-8") == content
+
+
+@patch("lab_harness.config.Settings.load")
+@patch("lab_harness.llm.router.LLMRouter")
+def test_generate_reads_example_skills_as_utf8(
+    mock_router_cls, mock_settings, tmp_path, monkeypatch, legacy_locale_paths
+):
+    """Default example skills containing non-ASCII text reach the prompt intact."""
+    (tmp_path / "a_skill.md").write_bytes("Spin–orbit torque, 10 MΩ, ±1 µA".encode())
+    monkeypatch.setattr(generator, "SKILLS_DIR", tmp_path)
+    router = _configure(mock_settings, mock_router_cls, SKILL_MD)
+
+    generate_skill("SOT")
+
+    user_msg = router.complete.call_args[0][0][1]["content"]
+    assert "Spin–orbit torque, 10 MΩ, ±1 µA" in user_msg

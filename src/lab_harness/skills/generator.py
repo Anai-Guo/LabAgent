@@ -65,7 +65,7 @@ def generate_skill(
     if example_skills is None:
         example_skills = []
         for skill_path in sorted(SKILLS_DIR.glob("*.md"))[:2]:
-            example_skills.append(skill_path.read_text())
+            example_skills.append(skill_path.read_text(encoding="utf-8"))
 
     user_msg = f"Generate a measurement protocol skill for: {measurement_type}\n"
     if sample_description:
@@ -99,6 +99,6 @@ def save_skill(measurement_type: str, content: str) -> Path:
     """Save a generated skill to the skills directory."""
     SKILLS_DIR.mkdir(parents=True, exist_ok=True)
     path = SKILLS_DIR / f"{measurement_type.lower()}.md"
-    path.write_text(content)
+    path.write_text(content, encoding="utf-8")
     logger.info("Saved skill to %s", path)
     return path
