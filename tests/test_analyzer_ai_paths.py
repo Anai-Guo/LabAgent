@@ -116,6 +116,21 @@ class TestRunScript:
         with pytest.raises(RuntimeError, match="Analysis failed: .*boom"):
             Analyzer(output_dir=tmp_path).run_script(script)
 
+    def test_script_source_read_back_as_utf8(self, tmp_path: Path, monkeypatch):
+        """save_script writes UTF-8; run_script must read it back as UTF-8 under a cp1252 locale."""
+        real_read = Path.read_text
+        monkeypatch.setattr(
+            Path, "read_text", lambda self, encoding=None, errors=None: real_read(self, encoding or "cp1252", errors)
+        )
+        analyzer = Analyzer(output_dir=tmp_path)
+        source = "# R(\u03a9) vs T(\u00b5K)\nprint('R0 = 1.0')\n"
+        script = analyzer.save_script(source, "iv")
+        done = MagicMock(returncode=0, stdout="R0 = 1.0\n", stderr="")
+        with patch("lab_harness.analysis.analyzer.subprocess.run", return_value=done):
+            result = analyzer.run_script(script)
+        assert result.script_source == source
+        assert result.extracted_values == {"R0": "1.0"}
+
 
 class TestAnalyzePipeline:
     @pytest.fixture
