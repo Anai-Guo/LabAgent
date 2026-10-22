@@ -280,7 +280,7 @@ class Analyzer:
         return AnalysisResult(
             measurement_type=script_path.stem.replace("_analysis", ""),
             script_path=str(script_path),
-            script_source=script_path.read_text(),
+            script_source=script_path.read_text(encoding="utf-8"),
             figures=[str(f) for f in figures],
             extracted_values=extracted,
             stdout=result.stdout,
