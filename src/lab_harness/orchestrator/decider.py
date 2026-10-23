@@ -84,7 +84,10 @@ def decide_measurement(
 
     # Strip markdown fences if present
     if text.startswith("```"):
-        text = text[text.index("\n") + 1 :]
+        # Drop the opening fence line; a single-line reply has no newline to split on,
+        # so strip the backticks and an optional language tag instead.
+        first_nl = text.find("\n")
+        text = text[first_nl + 1 :] if first_nl != -1 else text[3:].removeprefix("json")
         if text.endswith("```"):
             text = text[:-3]
         text = text.strip()
