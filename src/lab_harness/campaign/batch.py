@@ -104,13 +104,13 @@ class Campaign:
                 for p in self.points
             ],
         }
-        path.write_text(json.dumps(data, indent=2, default=str))
+        path.write_text(json.dumps(data, indent=2, default=str), encoding="utf-8")
         logger.info("Campaign saved to %s", path)
 
     @classmethod
     def load(cls, path: Path) -> Campaign:
         """Load campaign from JSON."""
-        data = json.loads(path.read_text())
+        data = json.loads(path.read_text(encoding="utf-8"))
         campaign = cls(
             campaign_id=data["campaign_id"],
             measurement_type=data["measurement_type"],
