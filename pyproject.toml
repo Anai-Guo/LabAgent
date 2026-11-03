@@ -59,8 +59,9 @@ dependencies = [
     # Security floor for litellm's transitive aiohttp dependency:
     # 3.13.x is affected by CVE-2026-34993 / CVE-2026-47265 (fixed in 3.14.0), and
     # 3.14.0 by CVE-2026-54273..54280 (fixed in 3.14.1), and 3.14.0-3.14.2 by
-    # CVE-2026-59881 / CVE-2026-69243 / CVE-2026-69244 (fixed in 3.14.3).
-    "aiohttp>=3.14.3",
+    # CVE-2026-59881 / CVE-2026-69243 / CVE-2026-69244 (fixed in 3.14.3), and 3.14.3 by
+    # CVE-2026-111063..111066 / CVE-2026-111748..111750 / GHSA-2g87-pp6c-29x5 (fixed in 3.14.4).
+    "aiohttp>=3.14.4",
 ]
 
 [project.optional-dependencies]
