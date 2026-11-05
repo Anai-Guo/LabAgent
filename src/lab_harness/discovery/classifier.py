@@ -497,8 +497,9 @@ def classify_with_llm(
     # Strip markdown fences if the model wraps the JSON
     text = content.strip()
     if text.startswith("```"):
-        first_newline = text.index("\n")
-        text = text[first_newline + 1 :]
+        # Drop the opening fence line; a single-line reply has no newline to split on.
+        first_newline = text.find("\n")
+        text = text[first_newline + 1 :] if first_newline != -1 else text[3:]
         if text.endswith("```"):
             text = text[: -len("```")]
         text = text.strip()

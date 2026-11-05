@@ -43,7 +43,7 @@ class Settings:
 
         # Load from config file
         if config_path and config_path.exists():
-            with open(config_path) as f:
+            with open(config_path, encoding="utf-8") as f:
                 raw = yaml.safe_load(f) or {}
             if "model" in raw:
                 model_kwargs = raw["model"]

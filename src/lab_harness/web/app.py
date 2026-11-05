@@ -311,7 +311,7 @@ async def list_templates():
 
     templates = {}
     for path in sorted(TEMPLATES_DIR.glob("*.yaml")):
-        with open(path) as f:
+        with open(path, encoding="utf-8") as f:
             data = yaml.safe_load(f)
         templates[path.stem] = {
             "name": data.get("name", path.stem),
@@ -334,7 +334,7 @@ async def get_template(measurement_type: str):
     if not path.exists():
         return {"error": f"Template '{measurement_type}' not found"}
 
-    with open(path) as f:
+    with open(path, encoding="utf-8") as f:
         data = yaml.safe_load(f)
     return data
 

@@ -23,7 +23,7 @@ def cmd_scan(args: argparse.Namespace, settings: Settings) -> None:
         from lab_harness.models.instrument import LabInventory
 
         inventory = LabInventory(instruments=instruments)
-        Path(args.output).write_text(inventory.model_dump_json(indent=2))
+        Path(args.output).write_text(inventory.model_dump_json(indent=2), encoding="utf-8")
         print(f"\nSaved to {args.output}")
 
 
@@ -34,7 +34,7 @@ def cmd_classify(args: argparse.Namespace, settings: Settings) -> None:
     from lab_harness.models.instrument import LabInventory
 
     if args.inventory:
-        inventory = LabInventory.model_validate_json(Path(args.inventory).read_text())
+        inventory = LabInventory.model_validate_json(Path(args.inventory).read_text(encoding="utf-8"))
     else:
         instruments = scan_visa_instruments()
         inventory = LabInventory(instruments=instruments)
