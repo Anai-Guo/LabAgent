@@ -33,7 +33,7 @@ def _load_template(measurement_type: str) -> dict:
             f"Available: {[p.stem for p in TEMPLATES_DIR.glob('*.yaml')]}"
         )
 
-    with open(template_path) as f:
+    with open(template_path, encoding="utf-8") as f:
         return yaml.safe_load(f)
 
 

@@ -252,9 +252,9 @@ class PaperPilotClient:
         # Strip markdown fences if the LLM included them despite instructions
         text = content.strip()
         if text.startswith("```"):
-            # Remove opening fence (```json or ```)
-            first_newline = text.index("\n")
-            text = text[first_newline + 1 :]
+            # Drop the opening fence line; a single-line reply has no newline to split on.
+            newline = text.find("\n")
+            text = text[newline + 1 :] if newline != -1 else text[3:]
         if text.endswith("```"):
             text = text[: -len("```")]
         text = text.strip()
