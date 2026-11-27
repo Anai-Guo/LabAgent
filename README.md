@@ -5,7 +5,7 @@
 <p align="center">
   <a href="https://github.com/Anai-Guo/LabAgent/actions/workflows/ci.yml"><img src="https://github.com/Anai-Guo/LabAgent/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
   <img src="https://img.shields.io/badge/python-3.10%2B-blue.svg" alt="Python">
-  <img src="https://img.shields.io/badge/tests-276%20passed-brightgreen.svg" alt="Tests">
+  <img src="https://img.shields.io/badge/tests-676%20passed-brightgreen.svg" alt="Tests">
   <img src="https://img.shields.io/badge/templates-46-orange.svg" alt="Templates">
   <img src="https://img.shields.io/badge/instruments-68%20models-blue.svg" alt="Instruments">
   <img src="https://img.shields.io/badge/AI%20models-4%20providers-purple.svg" alt="Models">
